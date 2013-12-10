@@ -1,0 +1,20 @@
+{
+  "name": "multilatex",
+  "version": "0.0.1",
+  "author": "Paul Nechifor <paul@nechifor.net>",
+  "description": "A collaborative web editor for LaTeX projects.",
+  "scripts": {
+    "start": "node app/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paul-nechifor/multilatex.git"
+  },
+  "dependencies": {
+    "express": ">=3.4.5",
+    "jade": ">=0.35.0",
+    "mongodb": ">=1.3.20",
+    "stylus": ">=0.40.3"
+  },
+  "license": "MIT",
+}

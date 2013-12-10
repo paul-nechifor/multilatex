@@ -1,0 +1,12 @@
+# Editor and OS things.
+*~
+.*.sw[op]
+.DS_Store
+
+# Node.
+node_modules
+
+# Project specific.
+/app/static/blog
+# Use your own secret.
+/config/secret.json
