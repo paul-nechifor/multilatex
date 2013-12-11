@@ -5,4 +5,4 @@ Multilatex
 the [blog][blog] for project updates.
 
 [multilatex]: http://multilatex.com
-[blog]: http://blog.multilatex.com
+[blog]: http://multilatex.com/blog

@@ -1,0 +1,126 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var exec = require('child_process').exec;
+var util = require('../app/lib/util');
+
+function main() {
+  var program = buildProgram();
+  program.parse(process.argv);
+  
+  if (program.args.length === 0) {
+    program.help();
+  }
+}
+
+function buildProgram() {
+  var program = require('commander');
+  
+  program
+    .option('-c, --config <path>', 'Set config path.', parseConfig);
+    
+  program
+    .command('install')
+    .description('Generate and copy files to the necessary locations (must be' +
+        ' root).')
+    .action(install);
+    
+  program
+    .command('deploy')
+    .description('Deploy this project to the remote server (must be specified' +
+        ' in the config).')
+    .action(deploy);
+    
+  return program;
+}
+
+function parseConfig(val) {
+  try {
+    return require(val);
+  } catch (e) {
+    util.die('Invalid config: ' + val);
+  }
+}
+
+function install(env) {
+  var config = getConfig(env);
+  requireRoot();
+  
+  createUser(config, function () {
+    createUpstartConfig(config, function () {
+    });
+  });
+}
+
+function deploy(env) {
+  var config = getConfig(env);
+  
+  var script = replaceFileTemplate(__dirname + '/templates/deploy.sh', {
+    hostname: config.deploy.hostname,
+    work: config.deploy.work,
+    src: __dirname + '/..'
+  });
+  
+  exec(script, function (error, stdout, stderr) {
+    if (error) {
+      util.die(error);
+    }
+  });
+}
+
+function createUser(config, callback) {
+  var script = replaceFileTemplate(__dirname + '/templates/install.sh', {
+    username: config.username,
+    home: config.dirs.home,
+    logs: config.dirs.logs,
+    install: config.dirs.install,
+    src: __dirname + '/..'
+  });
+  
+  exec(script, function (error, stdout, stderr) {
+    if (error) {
+      util.die(error);
+    }
+    
+    callback();
+  });
+}
+
+function createUpstartConfig(config, callback) {
+  var conf = replaceFileTemplate(__dirname + '/templates/multilatex.conf', {
+    username: config.username,
+    home: config.dirs.home,
+    install: config.dirs.install,
+    logs: config.dirs.logs
+  });
+  
+  fs.writeFileSync('/etc/init/multilatex.conf', conf);
+  callback();
+}
+
+function getConfig(env) {
+  return env.config || parseConfig(__dirname + '/../config/config.js');
+}
+
+function requireRoot() {
+  if (process.getuid() !== 0) {
+    util.die('You have to be root.');
+  }
+}
+
+function replaceFileTemplate(fileName, vals) {
+  var file = fs.readFileSync(fileName).toString();
+  return replaceTemplate(file, vals);
+}
+
+function replaceTemplate(template, vals) {
+  var ret = template;
+  
+  for (var key in vals) {
+    ret = ret.replace(new RegExp('{{' + key + '}}', 'g'), vals[key]);
+  }
+  
+  return ret;
+}
+
+main();

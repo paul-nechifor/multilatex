@@ -1,12 +1,25 @@
 var fs = require('fs');
 
+var config = {
+  cookieSecret: 'default secret',
+  mongoUrl: 'mongodb://localhost:27017/multilatex',
+  port: process.env.PORT || 3000,
+  // The name of the user under which the node server will run.
+  username: 'multilatex',
+  dirs: {
+    home: '/home/multilatex',
+    install: '/home/multilatex/apps/multilatex',
+    logs: '/home/multilatex/logs'
+  },
+  // This is where the whole package is copied. After that, the install on that
+  // system has to be updated.
+  deploy: {
+    work: 'work/multilatex',
+    hostname: 'ubuntu@multilatex.com'
+  }
+};
+
 function genConfig() {
-  var config = {
-    cookieSecret: 'default secret',
-    mongoUrl: 'mongodb://localhost:27017/multilatex',
-    port: process.env.PORT || 3000
-  };
-  
   try {
     var file = fs.readFileSync(__dirname + '/secret.json');
     var json = JSON.parse(file);
