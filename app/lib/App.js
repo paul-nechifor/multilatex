@@ -2,9 +2,8 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 
-var index = require('../routes/index');
-
 var Database = require('./Database');
+var registerRoutes = require('../logic/registerRoutes');
 
 function App(config) {
   this.config = config;
@@ -50,7 +49,7 @@ App.prototype.configure = function () {
 };
 
 App.prototype.registerRoutes = function () {
-  this.express.get('/', index.index);
+  registerRoutes(this);
 };
 
 App.prototype.createServer = function () {

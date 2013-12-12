@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  .container
+    form.form-pill.centered
+      h2 Please sign in
+      .list
+        input.username.form-control(type='text', placeholder='Username', required='required', autofocus='autofocus')
+        input.password.form-control(type='password', placeholder='Password', required='required')
+      button.btn.btn-lg.btn-primary.btn-block(type='button') Login
+      a(href='/password') Forgot your password?
