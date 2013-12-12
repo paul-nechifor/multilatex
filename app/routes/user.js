@@ -1,7 +1,7 @@
 var app = null;
 
 exports.setApp = function (pApp) {
-  this.app = pApp;
+  app = pApp;
 };
 
 exports.login = function (req, res) {
