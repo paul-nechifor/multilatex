@@ -15,7 +15,7 @@ function registerRoutes(app) {
   e.get('/login', user.login);
   e.get('/password', user.password);
   e.get('/register', user.register);
-  //e.get('/:username', user.username);
+  e.get('/:username', user.username);
 }
 
 module.exports = registerRoutes;

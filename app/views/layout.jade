@@ -17,6 +17,21 @@ html(lang='en')
             span.icon-bar
           a.navbar-brand(href='/') Multilatex
         .navbar-collapse.collapse
+          if session.username
+            ul.nav.navbar-nav.navbar-right
+              li.dropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                  i.glyphicon.glyphicon-user.white
+                  |  
+                  | #{session.username}
+                  b.caret
+                ul.dropdown-menu
+                  li
+                    a(href='/#{session.username}?tab=projects') Projects
+                  li.divider
+                  li
+                    a.clickable.btn-logout Logout
+          else
             ul.nav.navbar-nav.navbar-right
               li
                 a(href='/register') Register
@@ -36,5 +51,8 @@ html(lang='en')
 
     script(src='//code.jquery.com/jquery-1.10.2.min.js')
     script(src='/static/bootstrap/js/bootstrap.min.js')
+
+    if session.username
+      script(src='/static/javascripts/generalLoggedUser.js')
     
     block scripts

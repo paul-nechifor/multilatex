@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 
 function die(string) {
+  console.trace();
   console.error(string);
   process.exit(1);
 }

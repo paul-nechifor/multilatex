@@ -3,6 +3,7 @@ var fs = require('fs');
 var config = {
   cookieSecret: 'default secret',
   mongoUrl: 'mongodb://localhost:27017/multilatex',
+  mongoDbName: 'multilatex',
   port: process.env.PORT || 3000,
   // The name of the user under which the node server will run.
   username: 'multilatex',

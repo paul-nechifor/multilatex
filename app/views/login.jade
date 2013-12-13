@@ -2,10 +2,14 @@ extends layout
 
 block content
   .container
-    form.form-pill.centered
+    form.form-pill.form-login.centered
       h2 Please sign in
+      .alert.alert-danger(style='display: none') <p></p>
       .list
         input.username.form-control(type='text', placeholder='Username', required='required', autofocus='autofocus')
         input.password.form-control(type='password', placeholder='Password', required='required')
-      button.btn.btn-lg.btn-primary.btn-block(type='button') Login
+      button.btn.btn-lg.btn-primary.btn-block(type='submit') Login
       a(href='/password') Forgot your password?
+
+block scripts
+  script(src='/static/javascripts/login.js')

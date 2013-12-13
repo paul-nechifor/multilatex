@@ -18,6 +18,12 @@ Database.prototype.connect = function (callback) {
     that.db = db;
 
     that.users = that.db.collection('users');
+    that.users.ensureIndex({'username': 1}, {unique: true, w: 1},
+        function (err) {
+      if (err) {
+        util.die();
+      }
+    });
 
     callback();
   });

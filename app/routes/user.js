@@ -16,6 +16,11 @@ exports.register = function (req, res) {
   res.render('register', {title: 'Register'});
 };
 
-exports.username = function (req, res) {
+exports.username = function (req, res, next) {
+  if (req.params.username in app.nonUsers) {
+    next();
+    return;
+  }
+  
   res.render('username', {});
 };

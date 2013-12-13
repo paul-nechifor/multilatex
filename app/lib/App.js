@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
+var MongoStore = require('connect-mongo')(express);
 
 var Database = require('./Database');
 var registerRoutes = require('../logic/registerRoutes');
@@ -10,6 +11,11 @@ function App(config) {
   this.express = null;
   this.db = null;
   this.server = null;
+  
+  // Reserved usernames which lead to static content.
+  this.nonUsers = {
+    'blog': true
+  };
 }
 
 App.prototype.start = function () {
@@ -36,7 +42,10 @@ App.prototype.configure = function () {
   this.express.use(express.urlencoded());
   this.express.use(express.methodOverride());
   this.express.use(express.cookieParser(this.config.cookieSecret));
-  this.express.use(express.session());
+  this.express.use(express.session({
+    secret: this.config.cookieSecret,
+    store: new MongoStore({db: this.config.mongoDbName})
+  }));
   this.express.use(require('./jadeLocals.js'));
   this.express.use(this.express.router);
   this.express.use(require('stylus').middleware(__dirname + '/../public'));

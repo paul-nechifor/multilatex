@@ -11,6 +11,7 @@
     "url": "https://github.com/paul-nechifor/multilatex.git"
   },
   "dependencies": {
+    "connect-mongo": ">=0.4.0",
     "commander": ">=2.1.0",
     "express": ">=3.4.5",
     "jade": ">=0.35.0",
