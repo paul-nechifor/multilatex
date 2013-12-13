@@ -4,7 +4,6 @@ var app = null;
 
 exports.setApp = function (pApp) {
   app = pApp;
-  userLogic.setApp(app);
 };
 
 exports.login = function (req, res) {

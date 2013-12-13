@@ -1,5 +1,26 @@
 extends layout
 
 block content
-  .container
-    h1 User page
+  .container.margin-top-15
+    .row
+      .col-md-3
+        .thumbnail
+          div(style='height: 253px; background: #EEE')
+          h3= user.username
+          p Member since #{prettyDate(user.registered)}
+          if session.username === user.username
+            button.btn.btn-default.btn-block(type='button') Edit profile
+      .col-md-9
+        .nav.nav-tabs.margin-bottom-30
+          for tab in tabs
+            if tab[0] === activeTab
+              li.active
+                a= tab[1]
+            else
+              li
+                if tab[0] === 'overview'
+                  a(href='#{session.username}')= tab[1]
+                else
+                  a(href='?tab=#{tab[0]}')= tab[1]
+        block content2
+

@@ -42,6 +42,22 @@ exports.login = function (username, password, callback) {
   });
 };
 
+exports.getUser = function (username, callback) {
+  app.db.users.findOne({username: username}, function (err, item) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    
+    if (!item) {
+      callback('not-found');
+      return;
+    }
+    
+    callback(undefined, item);
+  });
+};
+
 // TODO: Do more advanced checks.
 // TODO: Check reserved list.
 function checkUsernameValidity(username) {

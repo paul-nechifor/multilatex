@@ -27,6 +27,8 @@ html(lang='en')
                   b.caret
                 ul.dropdown-menu
                   li
+                    a(href='/#{session.username}') Overview
+                  li
                     a(href='/#{session.username}?tab=projects') Projects
                   li.divider
                   li

@@ -47,9 +47,9 @@ App.prototype.configure = function () {
     store: new MongoStore({db: this.config.mongoDbName})
   }));
   this.express.use(require('./jadeLocals.js'));
-  this.express.use(this.express.router);
   this.express.use(require('stylus').middleware(__dirname + '/../public'));
   this.express.use(express.static(__dirname + '/../public'));
+  this.express.use(this.express.router);
 
   // development only
   if ('development' == this.express.get('env')) {
