@@ -21,7 +21,7 @@ Database.prototype.connect = function (callback) {
     that.users.ensureIndex({'username': 1}, {unique: true, w: 1},
         function (err) {
       if (err) {
-        util.die();
+        util.die(err);
       }
     });
 

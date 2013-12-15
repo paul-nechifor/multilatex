@@ -11,11 +11,6 @@ function App(config) {
   this.express = null;
   this.db = null;
   this.server = null;
-  
-  // Reserved usernames which lead to static content.
-  this.nonUsers = {
-    'blog': true
-  };
 }
 
 App.prototype.start = function () {
