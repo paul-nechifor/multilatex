@@ -1,0 +1,64 @@
+extends layout
+
+block head
+  link(rel='stylesheet', href='/static/jquery-file-upload/css/jquery.fileupload.css')
+
+block content
+  .container
+    h2= title
+
+    .row
+      .col-md-9
+        .row
+          .col-md-6
+            .panel.panel-default
+              .panel-heading
+                h3
+                  i.glyphicon.glyphicon-plus-sign
+                  | 
+                  | New
+              .panel-body
+                p Create an empty project.
+
+                form.form-create
+                  .form-group
+                    input.name.form-control(type='text', placeholder='Project name', autofocus)
+                  button.btn.btn-success(type='submit') Create
+
+          .col-md-6
+            .panel.panel-default
+              .panel-heading
+                h3
+                  i.glyphicon.glyphicon-cloud-upload
+                  | 
+                  | Upload
+              .panel-body
+                p Upload a ZIP file containing the project.
+
+                p
+                  span.btn.btn-success.fileinput-button
+                    i.glyphicon.glyphicon-plus
+                      span Select ZIP...
+                      input#fileupload(type='file', name='files[]', multiple='multiple')
+
+                #progress.progress
+                  .progress-bar.progress-bar-success
+
+      .col-md-3
+        .panel.panel-default
+          .panel-heading
+            h3
+              i.glyphicon.glyphicon-inbox
+              | 
+              | Fork
+          .panel-body
+            p If you want to start with a template or ready made project you can
+              | fork them.
+            a.btn.btn-primary.btn-block Browse Templates
+            a.btn.btn-default.btn-block Browse Galery
+
+block scripts
+  script(src='/static/jquery-file-upload/js/vendor/jquery.ui.widget.js')
+  script(src='/static/jquery-file-upload/js/jquery.iframe-transport.js')
+  script(src='/static/jquery-file-upload/js/jquery.fileupload.js')
+  script(src='/static/javascripts/create.js')

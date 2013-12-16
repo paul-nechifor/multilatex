@@ -31,6 +31,10 @@ exports.register = function (req, res) {
   res.render('register', {title: 'Register'});
 };
 
+exports.create = function (req, res) {
+  res.render('create', {title: 'Create Project'});
+};
+
 exports.username = function (req, res) {
   userLogic.getUser(req.params.username, function (err, user) {
     if (err) {

@@ -30,6 +30,7 @@ function render(req, res, file) {
         return;
       }
       res.render('blog', {
+        title: 'Multilatex Blog',
         side: side,
         data: data
       });

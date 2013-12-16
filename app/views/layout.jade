@@ -44,6 +44,13 @@ html(lang='en')
                 a(href='/register') Register
               li
                 a(href='/login') Login
+          if session.username
+            form.navbar-form.navbar-right
+              a.btn.btn-success(href='/create')
+                i.glyphicon.glyphicon-plus-sign
+                | 
+                | Create
+            
 
     block content
 

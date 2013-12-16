@@ -21,6 +21,10 @@ Database.prototype.connect = function (callback) {
     that.users.ensureIndex({'username': 1}, {unique: true, w: 1},
         function (err) {
       if (err) {
+        // TODO: Startup errors usually end up crashing here with 'MongoError:
+        // Connection Closed By Application' instead of where the exception
+        // was thrown.
+        // FIXIT
         util.die(err);
       }
     });

@@ -22,6 +22,7 @@ function registerRoutes(app) {
   e.get('/blog/:post', blog.post);
   e.get('/login', user.login);
   e.get('/password', user.password);
+  e.get('/create', user.create);
   e.get('/register', user.register);
   e.get('/:username', user.username);
   e.get('*', root.error404);
