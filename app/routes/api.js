@@ -1,9 +1,45 @@
+var projectLogic = require('../logic/project');
 var userLogic = require('../logic/user');
 
 var app = null;
 
 exports.setApp = function (pApp) {
   app = pApp;
+};
+
+exports.checkAuth = function (req, res, next) {
+  if (req.session.username) {
+    next();
+    return;
+  }
+  
+  // TODO: Get the userId here so it won't be necessary on every API call.
+
+  res.json({ok: false, error: 'You need to be logged in.'});
+};
+
+exports.create = function (req, res) {
+  userLogic.getUser(req.session.username, function (err, user) {
+    if (err) {
+      respond(res, err);
+      return;
+    }
+    
+    var doc = {
+      userId: user._id,
+      location: req.body.location
+    };
+  
+    projectLogic.create(doc, function (err) {
+      if (err) {
+        respond(res, err);
+        return;
+      }
+      
+      var location = '/' + req.session.username + '/' + doc.location;
+      res.json({ok: true, createdLocation: location})
+    });
+  });
 };
 
 exports.login = function (req, res) {

@@ -73,6 +73,7 @@ function createUser(config, callback) {
     username: config.username,
     home: config.dirs.home,
     logs: config.dirs.logs,
+    heads: config.dirs.heads,
     install: config.dirs.install,
     src: __dirname + '/..'
   });

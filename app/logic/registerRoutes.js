@@ -3,6 +3,8 @@ var blog = require('../routes/blog');
 var root = require('../routes/root');
 var user = require('../routes/user');
 
+var headDirLogic = require('../logic/headDir');
+var projectLogic = require('../logic/project');
 var userLogic = require('../logic/user');
 
 function registerRoutes(app) {
@@ -12,9 +14,15 @@ function registerRoutes(app) {
   blog.setApp(app);
   user.setApp(app);
   
+  headDirLogic.setApp(app);
+  projectLogic.setApp(app);
   userLogic.setApp(app);
   
+  e.post('/api/create', api.checkAuth);
+  e.get('/create', root.checkAuth);
+  
   e.get('/', root.index);
+  e.post('/api/create', api.create);
   e.post('/api/login', api.login);
   e.post('/api/logout', api.logout);
   e.post('/api/register', api.register);

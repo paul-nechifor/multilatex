@@ -20,7 +20,14 @@ exports.setApp = function (pApp) {
 };
 
 exports.login = function (req, res) {
-  res.render('login', {title: 'Login'});
+  var data = {title: 'Login'};
+  if (req.session.cameFrom) {
+    data.globalData = {
+      cameFrom: req.session.cameFrom
+    };
+    delete req.session.cameFrom;
+  }
+  res.render('login', data);
 };
 
 exports.password = function (req, res) {

@@ -50,7 +50,7 @@ exports.getUser = function (username, callback) {
     }
     
     if (!item) {
-      callback('not-found');
+      callback('user-not-found');
       return;
     }
     
@@ -61,8 +61,8 @@ exports.getUser = function (username, callback) {
 // TODO: Do more advanced checks.
 // TODO: Check reserved list.
 function checkUsernameValidity(username) {
-  if (!username) {
-    return 'No username';
+  if (!username || username.length === 0) {
+    return 'no-username-given';
   }
   
   if (!/[a-zA-Z][a-zA-Z0-9.-]{3,32}/.test(username)) {

@@ -10,7 +10,8 @@ var config = {
   dirs: {
     home: '/home/multilatex',
     install: '/home/multilatex/apps/multilatex',
-    logs: '/home/multilatex/logs'
+    logs: '/home/multilatex/logs',
+    heads: '/home/multilatex/heads'
   },
   // This is where the whole package is copied. After that, the install on that
   // system has to be updated.

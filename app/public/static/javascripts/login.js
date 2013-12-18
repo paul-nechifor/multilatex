@@ -4,9 +4,26 @@ $(document).ready(function () {
   var username = form.find('.username');
   var password = form.find('.password');
   
+  var redirectTo = null;
+
+  function showError(error) {
+    form.find('.alert').show();
+    form.find('.alert p').text(error);
+  }
+
+  function checkForInitialError() {
+    if (!window.globalData) {
+      return;
+    }
+    redirectTo = window.globalData.cameFrom;
+    showError("You have to login before you can go to: " + redirectTo);
+  }
+  
+  checkForInitialError();
+  
   form.submit(function (event) {
     event.preventDefault();
-    $('form .alert').hide();
+    form.find('.alert').hide();
     
     var postData = {
       username: username.val(),
@@ -15,13 +32,12 @@ $(document).ready(function () {
     
     $.post('/api/login', postData, function (data) {
       if (!data.ok) {
-        $('form .alert').show();
-        $('form .alert p').text(data.error);
+        showError(data.error);
         username.focus();
         return;
       }
       
-      window.location = '/' + postData.username;
+      window.location = redirectTo ? redirectTo : ('/' + postData.username);
     });
   });
 });
