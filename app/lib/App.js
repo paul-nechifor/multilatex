@@ -31,7 +31,6 @@ App.prototype.configure = function () {
   this.express.set('views', __dirname + '/../views');
   this.express.set('view engine', 'jade');
   this.express.use(express.compress());
-  this.express.use(express.favicon());
   this.express.use(express.logger('dev'));
   this.express.use(express.json());
   this.express.use(express.urlencoded());
