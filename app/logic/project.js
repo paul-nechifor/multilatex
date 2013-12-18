@@ -1,5 +1,5 @@
-var util = require('../lib/util');
 var headDir = require('./headDir');
+var util = require('./util');
 
 var app = null;
 

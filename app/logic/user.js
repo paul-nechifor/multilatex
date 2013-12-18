@@ -1,4 +1,8 @@
-var util = require('../lib/util');
+var identicon = require('identicon');
+var fs = require('fs');
+
+var fileStore = require('./fileStore');
+var util = require('./util');
 
 var app = null;
 
@@ -84,18 +88,21 @@ function checkPasswordValidity(password) {
 function registerInDb(doc, callback) {
   doc.registered = Date.now();
   doc.passwordSha1 = util.sha1Sum(doc.password + doc.registered);
-
-  app.db.users.insert(doc, {w: 1}, function (err) {
-    if (err) {
-      if (err.code === 11000) {
-        callback('Username exists.');
-      } else {
-        callback('Database error.');
+  
+  generateIdenticon(doc, function (err, hash) {
+    doc.avatarHash = hash;
+    app.db.users.insert(doc, {w: 1}, function (err) {
+      if (err) {
+        if (err.code === 11000) {
+          callback('Username exists.');
+        } else {
+          callback('Database error.');
+        }
+        return;
       }
-      return;
-    }
 
-    callback();
+      callback();
+    });
   });
 }
 
@@ -119,5 +126,31 @@ function checkAuth(username, password, callback) {
     }
     
     callback();
+  });
+}
+
+function generateIdenticon(doc, callback) {
+  var avatarSize = app.config.avatarSize;
+  identicon.generate(doc.username, avatarSize, function (err, buffer) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    
+    util.getRandomFile(app.config.dirs.tmp, function (err, path) {
+      if (err) {
+        callback(err);
+        return;
+      }
+      
+      fs.writeFile(path, buffer, function (err) {
+        if (err) {
+          callback(err);
+          return;
+        }
+        
+        fileStore.moveFile(path, callback);
+      });
+    });
   });
 }

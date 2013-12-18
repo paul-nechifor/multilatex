@@ -2,6 +2,8 @@ name="{{username}}"
 home="{{home}}"
 logs="{{logs}}"
 heads="{{heads}}"
+store="{{store}}"
+tmp="{{tmp}}"
 install="{{install}}"
 src="{{src}}"
 
@@ -15,6 +17,12 @@ chown $name:$name $logs
 
 mkdir -p $heads
 chown $name:$name $heads
+
+mkdir -p $store
+chown $name:$name $store
+
+mkdir -p $tmp
+chown $name:$name $tmp
 
 mkdir -p $install
 chown $name:$name $install

@@ -3,9 +3,9 @@ extends layout
 block content
   .container.margin-top-15
     .row
-      .col-md-3
+      .col-md-3.user-info-column
         .thumbnail
-          div(style='height: 253px; background: #EEE')
+          img(src='#{storeUrl(user.avatarHash)}', alt="#{user.username}' avatar")
           h3= user.username
           p Member since #{prettyDate(user.registered)}
           if session.username === user.username

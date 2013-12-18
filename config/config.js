@@ -11,14 +11,17 @@ var config = {
     home: '/home/multilatex',
     install: '/home/multilatex/apps/multilatex',
     logs: '/home/multilatex/logs',
-    heads: '/home/multilatex/heads'
+    store: '/home/multilatex/store',
+    heads: '/home/multilatex/heads',
+    tmp: '/home/multilatex/tmp'
   },
   // This is where the whole package is copied. After that, the install on that
   // system has to be updated.
   deploy: {
     work: 'work/multilatex',
     hostname: 'ubuntu@multilatex.com'
-  }
+  },
+  avatarSize: 253
 };
 
 function genConfig() {

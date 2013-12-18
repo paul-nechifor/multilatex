@@ -1,8 +1,11 @@
+var express = require('express');
+
 var api = require('../routes/api');
 var blog = require('../routes/blog');
 var root = require('../routes/root');
 var user = require('../routes/user');
 
+var fileStoreLogic = require('../logic/fileStore');
 var headDirLogic = require('../logic/headDir');
 var projectLogic = require('../logic/project');
 var userLogic = require('../logic/user');
@@ -14,6 +17,7 @@ function registerRoutes(app) {
   blog.setApp(app);
   user.setApp(app);
   
+  fileStoreLogic.setApp(app);
   headDirLogic.setApp(app);
   projectLogic.setApp(app);
   userLogic.setApp(app);

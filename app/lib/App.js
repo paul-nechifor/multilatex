@@ -44,6 +44,7 @@ App.prototype.configure = function () {
   this.express.use(require('./jadeLocals.js'));
   this.express.use(require('stylus').middleware(__dirname + '/../public'));
   this.express.use(express.static(__dirname + '/../public'));
+  this.express.use('/store', express.static(this.config.dirs.store));
   this.express.use(this.express.router);
 
   // development only

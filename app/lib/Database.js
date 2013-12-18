@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
-var util = require('./util');
+var util = require('../logic/util');
 
 function Database(url) {
   this.url = url;
