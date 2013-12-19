@@ -85,14 +85,10 @@ code, kbd, pre, samp
   .thumbnail
     img
       width: 100%
+      max-width: 253px
+      margin: 0 auto
 
 /* Footer --------------------------------------------------------------------*/
-
-footer
-  .left-links
-    float: left
-  .right-links
-    float: right
 
 /* Blog ----------------------------------------------------------------------*/
 
@@ -106,6 +102,19 @@ footer
     p
       margin: 0
       color: #888
+  .well
+    margin-top: 30px
+    p, h2
+      text-align: center
+    h2
+      margin-top: 0
+    img
+      display: block
+      margin: 0 auto
+    p.tagline
+      margin-top: 10px
+    p:last-child
+      margin-bottom: 0
 
 .blog-data
   h1.title
@@ -117,3 +126,9 @@ footer
   .date
     color: #888
     margin-bottom: 20px
+
+@media (min-width: 768px)
+  .post
+    p, li
+      font-size: 16px
+      max-width: 600px

@@ -3,8 +3,14 @@ extends layout
 block content
   .container
     .row
-      .col-md-3.blog-side
-        h2 Posts
-        | !{side}
       .col-md-9.blog-data
         | !{data}
+      .col-md-3.blog-side
+        .well
+          h2 Multilatex Blog
+          img.blog-logo(src='/static/images/blog-logo.png', alt='Multilatex Blog Logo')
+          p.tagline A collaborative web editor for LaTeX projects.
+          p <a href='/static/blog/atom.xml'>Blog Feed</a>
+          
+        h2 Posts
+        | !{side}
