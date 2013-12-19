@@ -45,7 +45,7 @@ exports.create = function (req, res) {
 exports.username = function (req, res) {
   userLogic.getUser(req.params.username, function (err, user) {
     if (err) {
-      if (err === 'not-found') {
+      if (err === 'user-not-found') {
         root.error404(req, res);
       } else {
         root.error500(req, res);

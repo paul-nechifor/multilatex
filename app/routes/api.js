@@ -43,9 +43,10 @@ exports.create = function (req, res) {
 };
 
 exports.login = function (req, res) {
-  userLogic.login(req.body.username, req.body.password, function (err) {
+  userLogic.login(req.body.username, req.body.password, function (err, userId) {
     if (!err) {
       req.session.username = req.body.username;
+      req.session.userId = userId;
     }
     
     respond(res, err);
@@ -67,9 +68,10 @@ exports.register = function (req, res) {
     doc.email = req.body.email;
   }
   
-  userLogic.register(doc, function (err) {
+  userLogic.register(doc, function (err, userId) {
     if (!err) {
       req.session.username = doc.username;
+      req.session.userId = userId;
     }
     
     respond(res, err);

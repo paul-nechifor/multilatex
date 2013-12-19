@@ -31,8 +31,8 @@ Database.prototype.connect = function (callback) {
     that.users = that.db.collection('users');
     that.users.ensureIndex({'username': 1}, {unique: true, w: 1}, errFunc);
     that.projects = that.db.collection('projects');
-    that.projects.ensureIndex({'userId': 1, 'location': 1}, {unique: true, w: 1},
-        errFunc);
+    that.projects.ensureIndex({'userId': 1, 'location': 1},
+        {unique: true, w: 1}, errFunc);
 
     callback();
   });

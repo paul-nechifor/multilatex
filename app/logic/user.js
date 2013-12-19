@@ -25,24 +25,24 @@ exports.register = function (doc, callback) {
     return;
   }
   
-  registerInDb(doc, function (err) {
+  registerInDb(doc, function (err, userId) {
     if (err) {
       callback(err);
       return;
     }
     
-    callback();
+    callback(undefined, userId);
   });
 };
 
 exports.login = function (username, password, callback) {
-  checkAuth(username, password, function (err) {
+  checkAuth(username, password, function (err, userId) {
     if (err) {
       callback(err);
       return;
     }
     
-    callback();
+    callback(undefined, userId);
   });
 };
 
@@ -91,7 +91,7 @@ function registerInDb(doc, callback) {
   
   generateIdenticon(doc, function (err, hash) {
     doc.avatarHash = hash;
-    app.db.users.insert(doc, {w: 1}, function (err) {
+    app.db.users.insert(doc, {w: 1}, function (err, item) {
       if (err) {
         if (err.code === 11000) {
           callback('Username exists.');
@@ -101,7 +101,7 @@ function registerInDb(doc, callback) {
         return;
       }
 
-      callback();
+      callback(undefined, item._id);
     });
   });
 }
@@ -125,7 +125,7 @@ function checkAuth(username, password, callback) {
       return;
     }
     
-    callback();
+    callback(undefined, item._id);
   });
 }
 

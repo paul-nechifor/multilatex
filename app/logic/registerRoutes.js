@@ -2,6 +2,7 @@ var express = require('express');
 
 var api = require('../routes/api');
 var blog = require('../routes/blog');
+var project = require('../routes/project');
 var root = require('../routes/root');
 var user = require('../routes/user');
 
@@ -15,6 +16,7 @@ function registerRoutes(app) {
   
   api.setApp(app);
   blog.setApp(app);
+  project.setApp(app);
   user.setApp(app);
   
   fileStoreLogic.setApp(app);
@@ -37,6 +39,7 @@ function registerRoutes(app) {
   e.get('/create', user.create);
   e.get('/register', user.register);
   e.get('/:username', user.username);
+  e.get('/:username/:location', project.location);
   e.get('*', root.error404);
 }
 

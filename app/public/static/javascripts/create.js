@@ -2,6 +2,11 @@ $(document).ready(function () {
   var form = $('.form-create');
   
   var location = form.find('.location');
+
+  function showError(error) {
+    form.find('.alert').show();
+    form.find('.alert p').text(error);
+  }
   
   form.submit(function (event) {
     event.preventDefault();

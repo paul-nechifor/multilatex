@@ -68,3 +68,28 @@ exports.getRandomFile = function (parent, callback) {
   
   next();
 };
+
+exports.copyFile = function (source, target, callback) {
+  var callbackUsed = false;
+  
+  var checkError = function (err) {
+    if (err && !callbackUsed) {
+      callbackUsed = true;
+      callback(err);
+    }
+  }
+
+  var rs = fs.createReadStream(source);
+  rs.on('error', checkError);
+  
+  var ws = fs.createWriteStream(target);
+  ws.on('error', checkError);
+  
+  ws.on('close', function(ex) {
+    if (!callbackUsed) {
+      callbackUsed = true;
+      callback();
+    }
+  });
+  rs.pipe(ws);
+}

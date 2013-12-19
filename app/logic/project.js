@@ -33,6 +33,23 @@ exports.create = function (doc, callback) {
   });
 };
 
+exports.getProject = function (userId, location, callback) {
+  var query = {userId: userId, location: location};
+  app.db.projects.findOne(query, function (err, item) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    
+    if (!item) {
+      callback('project-not-found');
+      return;
+    }
+    
+    callback(undefined, item);
+  });
+};
+
 // TODO: Do more advanced checks.
 // TODO: Check reserved list.
 function checkLocationValidity(location) {
@@ -67,13 +84,43 @@ function createAndInitHead(project, callback) {
     var update = {
       headPath: path
     };
-    app.db.projects.update({_id: project._id}, update, {w: 1}, function (err) {
+    
+    initHead(path, function (err, headStruct) {
       if (err) {
-        callback('database-project-update-error');
-        return;
+        callback('error-creating-head');
+        console.err(err);
       }
-      
-      callback();
+      update.headStruct = headStruct;
+    
+      app.db.projects.update({_id: project._id}, update, {w: 1}, function (err) {
+        if (err) {
+          callback('database-project-update-error');
+          console.err(err);
+          return;
+        }
+
+        callback();
+      });
     });
+  });
+}
+
+function initHead(headPath, callback) {
+  var initFile = __dirname + '/../data/latex/empty.tex';
+  var mainFile = headPath + '/main.tex';
+  util.copyFile(initFile, mainFile, function (err) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    
+    var headStruct = {
+      main: 'main.tex',
+      files: {
+        'main.tex': true
+      }
+    };
+    
+    callback(undefined, headStruct);    
   });
 }
