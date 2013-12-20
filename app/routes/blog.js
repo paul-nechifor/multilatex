@@ -20,15 +20,9 @@ exports.post = function (req, res) {
 
 function render(req, res, file) {
   fs.readFile(INCLUDES_DIR + 'side.html', function (err, side) {
-    if (err) {
-      root.error404(req, res);
-      return;
-    }
+    if (err) return root.error404(req, res);
     fs.readFile(file, function (err, data) {
-      if (err) {
-        root.error404(req, res);
-        return;
-      }
+      if (err) return root.error404(req, res);
       res.render('blog', {
         title: 'Multilatex Blog',
         side: side,

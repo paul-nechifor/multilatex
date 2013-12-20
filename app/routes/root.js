@@ -13,11 +13,7 @@ exports.error500 = function (req, res) {
 };
 
 exports.checkAuth = function (req, res, next) {
-  if (req.session.username) {
-    next();
-    return;
-  }
-
+  if (req.session.username) return next();
   req.session.cameFrom = req.url;
   res.redirect('/login');
 };

@@ -9,28 +9,16 @@ exports.setApp = function (pApp) {
 };
 
 exports.create = function (opts, callback) {
-  var err;
-  
-  err = checkLocationValidity(opts.location);
-  if (err) {
-    callback(err);
-    return;
-  }
+  var err = checkLocationValidity(opts.location);
+  if (err) return callback(err);
   
   var doc = projectMd.init(opts);
   
   createInDb(doc, function (err, project) {
-    if (err) {
-      callback(err);
-      return;
-    }
+    if (err) return callback(err);
     
     createAndInitHead(project, function (err) {
-      if (err) {
-        callback(err);
-        return;
-      }
-    
+      if (err) return callback(err);
       callback();
     });
   });
@@ -39,16 +27,8 @@ exports.create = function (opts, callback) {
 exports.getProject = function (userId, location, callback) {
   var query = {userId: userId, location: location};
   app.db.projects.findOne(query, function (err, item) {
-    if (err) {
-      callback(err);
-      return;
-    }
-    
-    if (!item) {
-      callback('project-not-found');
-      return;
-    }
-    
+    if (err) return callback(err);
+    if (!item) return callback('project-not-found');
     callback(undefined, item);
   });
 };
@@ -89,19 +69,10 @@ function createAndInitHead(project, callback) {
     };
     
     initHead(update, function (err) {
-      if (err) {
-        callback('error-creating-head');
-        console.err(err);
-        return;
-      }
+      if (err) return callback(err);
     
       app.db.projects.update({_id: project._id}, update, {w: 1}, function (err) {
-        if (err) {
-          callback('database-project-update-error');
-          console.err(err);
-          return;
-        }
-
+        if (err) return callback(err);
         callback();
       });
     });
@@ -112,13 +83,10 @@ function initHead(update, callback) {
   var initFile = __dirname + '/../data/latex/empty.tex';
   var mainFile = update.headPath + '/main.tex';
   util.copyFile(initFile, mainFile, function (err) {
-    if (err) {
-      callback(err);
-      return;
-    }
+    if (err) return callback(err);
     
-    update.main = 'main.tex';
-    update.tree = {
+    update.headFile = 'main.tex';
+    update.headTree = {
       'main.tex': true
     };
     

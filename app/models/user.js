@@ -1,9 +1,6 @@
 exports.init = function (opts, callback) {
   var err = checkValidity(opts);
-  if (err) {
-    callback(err);
-    return;
-  }
+  if (err) return callback(err);
   
   // TODO: Check if name is on a forbidden list.
   

@@ -13,17 +13,10 @@ exports.setApp = function (pApp) {
 
 exports.register = function (opts, callback) {
   userMd.init(opts, function (err, doc) {
-    if (err) {
-      callback(err);
-      return;
-    }
+    if (err) return callback(err);
     
     registerInDb(opts, doc, function (err, user) {
-      if (err) {
-        callback(err);
-        return;
-      }
-
+      if (err) return callback(err);
       callback(undefined, user);
     });
   });
@@ -31,27 +24,15 @@ exports.register = function (opts, callback) {
 
 exports.login = function (username, password, callback) {
   checkAuth(username, password, function (err, user) {
-    if (err) {
-      callback(err);
-      return;
-    }
-    
+    if (err) return callback(err);
     callback(undefined, user);
   });
 };
 
 exports.getUser = function (username, callback) {
   app.db.users.findOne({username: username}, function (err, item) {
-    if (err) {
-      callback(err);
-      return;
-    }
-    
-    if (!item) {
-      callback('user-not-found');
-      return;
-    }
-    
+    if (err) return callback(err);
+    if (!item) return callback('user-not-found');
     callback(undefined, item);
   });
 };
@@ -78,23 +59,12 @@ function registerInDb(opts, doc, callback) {
 
 function checkAuth(username, password, callback) {
   app.db.users.findOne({username: username}, function (err, item) {
-    if (err) {
-      callback(err);
-      return;
-    }
-    
-    if (!item) {
-      callback('Incorrect.');
-      return;
-    }
+    if (err) return callback(err);
+    if (!item) return callback('incorrect');
     
     var hash = util.sha1Sum(password + item.registered);
     
-    if (item.passwordSha1 !== hash) {
-      callback('Incorrect.');
-      return;
-    }
-    
+    if (item.passwordSha1 !== hash) return callback('incorrect');    
     callback(undefined, item);
   });
 }
@@ -102,23 +72,13 @@ function checkAuth(username, password, callback) {
 function generateIdenticon(doc, callback) {
   var avatarSize = app.config.avatarSize;
   identicon.generate(doc.username, avatarSize, function (err, buffer) {
-    if (err) {
-      callback(err);
-      return;
-    }
+    if (err) return callback(err);
     
     util.getRandomFile(app.config.dirs.tmp, function (err, path) {
-      if (err) {
-        callback(err);
-        return;
-      }
+      if (err) return callback(err);
       
       fs.writeFile(path, buffer, function (err) {
-        if (err) {
-          callback(err);
-          return;
-        }
-        
+        if (err) return callback(err);
         fileStore.moveFile(path, callback);
       });
     });

@@ -27,17 +27,10 @@ exports.location = function (req, res) {
 
 function getProjectData(username, projectLocation, callback) {
   userLogic.getUser(username, function (err, user) {
-    if (err) {
-      callback(err);
-      return;
-    }
+    if (err) return callback(err);
     
     projectLogic.getProject(user._id, projectLocation, function (err, project) {
-      if (err) {
-        callback(err);
-        return;
-      }
-      
+      if (err) return callback(err);
       callback(undefined, project);
     });
   });

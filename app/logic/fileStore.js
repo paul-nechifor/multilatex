@@ -10,19 +10,13 @@ exports.setApp = function (pApp) {
 
 exports.moveFile = function (path, callback) {
   getFileHash(path, function (err, hash) {
-    if (err) {
-      callback(err);
-      return;
-    }
+    if (err) return callback(err);
     
     var dir = app.config.dirs.store + '/' + hash.substring(0, 3);
     var file = dir + '/' + hash.substring(3);
     
     moveIfNecessary(path, dir, file, function (err) {
-      if (err) {
-        callback(err);
-        return;
-      }
+      if (err) return callback(err);
       callback(undefined, hash);
     })
   });
@@ -43,23 +37,13 @@ function getFileHash(path, callback) {
   
 function moveIfNecessary(path, dir, file, callback) {
   fs.exists(file, function (exists) {
-    if (exists) {
-      callback();
-      return;
-    }
+    if (exists) return callback(); 
     
     fs.mkdir(dir, function (err) {
-      if (err) {
-        callback(err);
-        return;
-      }
+      if (err) return callback(err);
       
       fs.rename(path, file, function (err) {
-        if (err) {
-          callback(err);
-          return;
-        }
-        
+        if (err) return callback(err);
         callback();
       });
     });

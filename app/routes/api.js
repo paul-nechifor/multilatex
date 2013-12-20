@@ -8,20 +8,13 @@ exports.setApp = function (pApp) {
 };
 
 exports.checkAuth = function (req, res, next) {
-  if (req.session.username) {
-    next();
-    return;
-  }
-  
+  if (req.session.username) return next();
   res.json({ok: false, error: 'You need to be logged in.'});
 };
 
 exports.create = function (req, res) {
   userLogic.getUser(req.session.username, function (err, user) {
-    if (err) {
-      respond(res, err);
-      return;
-    }
+    if (err) return respond(res, err);
     
     var opts = {
       username: req.session.username,
@@ -30,11 +23,7 @@ exports.create = function (req, res) {
     };
   
     projectLogic.create(opts, function (err) {
-      if (err) {
-        respond(res, err);
-        return;
-      }
-      
+      if (err) return respond(res, err);
       var location = '/' + req.session.username + '/' + opts.location;
       res.json({ok: true, createdLocation: location})
     });

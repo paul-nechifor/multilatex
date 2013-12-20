@@ -31,11 +31,7 @@ exports.getRandomDir = function (parent, callback) {
   var next = function () {
     var path = parent + '/' + exports.randomBase36(8);
     fs.mkdir(path, function (err) {
-      if (err) {
-        next();
-        return;
-      }
-      
+      if (err) return next();
       callback(path);
     });
   };
@@ -57,10 +53,7 @@ exports.getRandomFile = function (parent, callback) {
       }
       
       fs.close(fd, function (err) {
-        if (err) {
-          callback(err);
-          return;
-        }
+        if (err) return callback(err);
         callback(undefined, path);
       });
     });
