@@ -4,6 +4,16 @@ var root = require('./root');
 
 var app = null;
 
+var tabs = [
+  ['overview', 'Overview', null],
+  ['history', 'History', '?tab=history']
+];
+
+var tabFuncs = {
+  'overview': projectOverview,
+  'history': projectHistory
+}
+
 exports.setApp = function (pApp) {
   app = pApp;
 };
@@ -11,7 +21,7 @@ exports.setApp = function (pApp) {
 exports.location = function (req, res) {
   var username = req.params.username;
   var projectLocation = req.params.location;
-  getProjectData(username, projectLocation, function (err, data) {
+  getProjectData(username, projectLocation, function (err, project) {
     if (err) {
       if (err === 'project-not-found') {
         root.error404(req, res);
@@ -21,7 +31,14 @@ exports.location = function (req, res) {
       return;
     }
     
-    res.render('project', {p: data});
+    var activeTab = req.query.tab in tabFuncs ? req.query.tab : 'overview';
+    var data = {
+      p: project,
+      tabs: tabs,
+      activeTab: activeTab
+    };
+    
+    tabFuncs[activeTab](req, res, data);
   });
 };
 
@@ -34,4 +51,12 @@ function getProjectData(username, projectLocation, callback) {
       callback(undefined, project);
     });
   });
+}
+
+function projectOverview(req, res, data) {
+  res.render('projectOverview', data);
+}
+
+function projectHistory(req, res, data) {
+  res.render('projectHistory', data);
 }

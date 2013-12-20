@@ -22,7 +22,7 @@ exports.create = function (req, res) {
       location: req.body.location
     };
   
-    projectLogic.create(opts, function (err) {
+    projectLogic.create(opts, function (err, project) {
       if (err) return respond(res, err);
       var location = '/' + req.session.username + '/' + opts.location;
       res.json({ok: true, createdLocation: location})

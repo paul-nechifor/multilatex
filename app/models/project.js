@@ -31,5 +31,5 @@ exports.init = function (opts, callback) {
   
   // TODO: Validate values.
   
-  callback(doc);
+  callback(undefined, doc);
 };

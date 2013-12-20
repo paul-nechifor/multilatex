@@ -1,21 +1,35 @@
 extends layout
 
 block content
-  .container.margin-top-15
-    h1
+  .container
+    - var pLink = '/' + p.username + '/' + p.location
+    h1.project-urls
       | <a href='/#{p.username}'>#{p.username}</a> /
-      | <a href='/#{p.username}/#{p.location}'>#{p.location}</a>
-
-    .row
-      .col-md-10
-      .col-md-2
-        .input-group
-          button.form-control.btn.btn-primary View PDF
-          span.input-group-addon 995
-        .input-group
-          button.form-control.btn.btn-primary Fork
-          span.input-group-addon 38
-        .input-group
-          button.form-control.btn.btn-primary Download ZIP
-          span.input-group-addon 99
-
+      | <a href='#{pLink}'>#{p.location}</a>
+    .nav.nav-tabs.margin-bottom-15
+      for tab in tabs
+        if tab[0] === activeTab
+          li.active
+            a= tab[1]
+        else
+          li
+            a(href='#{ tab[2] ? tab[2] : "/"+p.username+"/"+p.location }')= tab[1]
+      
+      .navbar-right
+        a.btn.btn-success(href='#{pLink}/edit')
+          i.glyphicon.glyphicon-pencil
+          |  Open in editor
+        |  
+        a.btn.btn-default(href='#{pLink}/download/pdf')
+          i.glyphicon.glyphicon-share
+          |  View PDF
+        |  
+        a.btn.btn-default(href='#{pLink}/fork')
+          i.glyphicon.glyphicon-random
+          |  Fork
+        |  
+        a.btn.btn-default(href='#{pLink}/download/zip')
+          i.glyphicon.glyphicon-cloud-download
+          |  Download ZIP
+      
+    block content2

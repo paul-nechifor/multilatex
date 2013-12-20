@@ -12,14 +12,16 @@ exports.create = function (opts, callback) {
   var err = checkLocationValidity(opts.location);
   if (err) return callback(err);
   
-  var doc = projectMd.init(opts);
-  
-  createInDb(doc, function (err, project) {
+  projectMd.init(opts, function (err, doc) {
     if (err) return callback(err);
-    
-    createAndInitHead(project, function (err) {
+  
+    createInDb(doc, function (err, project) {
       if (err) return callback(err);
-      callback();
+
+      createAndInitHead(project, function (err) {
+        if (err) return callback(err);
+        callback(undefined, project);
+      });
     });
   });
 };

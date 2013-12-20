@@ -4,9 +4,9 @@ var root = require('./root');
 var app = null;
 
 var tabs = [
-  ['overview', 'Overview'],
-  ['projects', 'Projects'],
-  ['activity', 'Activity']
+  ['overview', 'Overview', null],
+  ['projects', 'Projects', '?tab=projects'],
+  ['activity', 'Activity', '?tab=activity']
 ];
 
 var tabFuncs = {
@@ -65,16 +65,13 @@ exports.username = function (req, res) {
 };
 
 function userOverview(req, res, data) {
-  data.title = data.user.username;
   res.render('userOverview', data);
 }
 
 function userProjects(req, res, data) {
-  data.title = data.user.username + "'s projects";
   res.render('userProjects', data);
 }
 
 function userActivity(req, res, data) {
-  data.title = data.user.username + "'s activity";
   res.render('userActivity', data);
 }
