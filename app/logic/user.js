@@ -3,6 +3,7 @@ var fs = require('fs');
 
 var fileStore = require('./fileStore');
 var util = require('./util');
+var userMd = require('../models/user');
 
 var app = null;
 
@@ -10,39 +11,32 @@ exports.setApp = function (pApp) {
   app = pApp;
 };
 
-exports.register = function (doc, callback) {
-  var err;
-  
-  err = checkUsernameValidity(doc.username);
-  if (err) {
-    callback(err);
-    return;
-  }
-  
-  err = checkPasswordValidity(doc.password);
-  if (err) {
-    callback(err);
-    return;
-  }
-  
-  registerInDb(doc, function (err, userId) {
+exports.register = function (opts, callback) {
+  userMd.init(opts, function (err, doc) {
     if (err) {
       callback(err);
       return;
     }
     
-    callback(undefined, userId);
+    registerInDb(opts, doc, function (err, user) {
+      if (err) {
+        callback(err);
+        return;
+      }
+
+      callback(undefined, user);
+    });
   });
 };
 
 exports.login = function (username, password, callback) {
-  checkAuth(username, password, function (err, userId) {
+  checkAuth(username, password, function (err, user) {
     if (err) {
       callback(err);
       return;
     }
     
-    callback(undefined, userId);
+    callback(undefined, user);
   });
 };
 
@@ -62,32 +56,8 @@ exports.getUser = function (username, callback) {
   });
 };
 
-// TODO: Do more advanced checks.
-// TODO: Check reserved list.
-function checkUsernameValidity(username) {
-  if (!username || username.length === 0) {
-    return 'no-username-given';
-  }
-  
-  if (!/[a-zA-Z][a-zA-Z0-9.-]{3,32}/.test(username)) {
-    return 'Username is invalid. Allowed characters are alphanumerics, “.”, and “-”.';
-  }
-  
-  return null;
-}
-
-// TODO: Check in bad passwords.
-function checkPasswordValidity(password) {
-  if (typeof password !== 'string') {
-    return 'No password';
-  }
-  
-  return null;
-}
-
-function registerInDb(doc, callback) {
-  doc.registered = Date.now();
-  doc.passwordSha1 = util.sha1Sum(doc.password + doc.registered);
+function registerInDb(opts, doc, callback) {
+  doc.passwordSha1 = util.sha1Sum(opts.password + doc.registered);
   
   generateIdenticon(doc, function (err, hash) {
     doc.avatarHash = hash;
@@ -101,7 +71,7 @@ function registerInDb(doc, callback) {
         return;
       }
 
-      callback(undefined, item._id);
+      callback(undefined, item);
     });
   });
 }
@@ -125,7 +95,7 @@ function checkAuth(username, password, callback) {
       return;
     }
     
-    callback(undefined, item._id);
+    callback(undefined, item);
   });
 }
 

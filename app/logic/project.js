@@ -1,5 +1,6 @@
 var headDir = require('./headDir');
 var util = require('./util');
+var projectMd = require('../models/project');
 
 var app = null;
 
@@ -7,14 +8,16 @@ exports.setApp = function (pApp) {
   app = pApp;
 };
 
-exports.create = function (doc, callback) {
+exports.create = function (opts, callback) {
   var err;
   
-  err = checkLocationValidity(doc.location);
+  err = checkLocationValidity(opts.location);
   if (err) {
     callback(err);
     return;
   }
+  
+  var doc = projectMd.init(opts);
   
   createInDb(doc, function (err, project) {
     if (err) {
@@ -85,12 +88,12 @@ function createAndInitHead(project, callback) {
       headPath: path
     };
     
-    initHead(path, function (err, headStruct) {
+    initHead(update, function (err) {
       if (err) {
         callback('error-creating-head');
         console.err(err);
+        return;
       }
-      update.headStruct = headStruct;
     
       app.db.projects.update({_id: project._id}, update, {w: 1}, function (err) {
         if (err) {
@@ -105,22 +108,20 @@ function createAndInitHead(project, callback) {
   });
 }
 
-function initHead(headPath, callback) {
+function initHead(update, callback) {
   var initFile = __dirname + '/../data/latex/empty.tex';
-  var mainFile = headPath + '/main.tex';
+  var mainFile = update.headPath + '/main.tex';
   util.copyFile(initFile, mainFile, function (err) {
     if (err) {
       callback(err);
       return;
     }
     
-    var headStruct = {
-      main: 'main.tex',
-      files: {
-        'main.tex': true
-      }
+    update.main = 'main.tex';
+    update.tree = {
+      'main.tex': true
     };
     
-    callback(undefined, headStruct);    
+    callback();    
   });
 }

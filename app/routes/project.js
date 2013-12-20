@@ -21,7 +21,7 @@ exports.location = function (req, res) {
       return;
     }
     
-    res.render('project', data);
+    res.render('project', {p: data});
   });
 };
 

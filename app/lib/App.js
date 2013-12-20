@@ -4,7 +4,7 @@ var path = require('path');
 var MongoStore = require('connect-mongo')(express);
 
 var Database = require('./Database');
-var registerRoutes = require('../logic/registerRoutes');
+var registerRoutes = require('../routes/registerRoutes');
 
 function App(config) {
   this.config = config;

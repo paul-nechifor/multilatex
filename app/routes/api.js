@@ -13,8 +13,6 @@ exports.checkAuth = function (req, res, next) {
     return;
   }
   
-  // TODO: Get the userId here so it won't be necessary on every API call.
-
   res.json({ok: false, error: 'You need to be logged in.'});
 };
 
@@ -25,28 +23,29 @@ exports.create = function (req, res) {
       return;
     }
     
-    var doc = {
+    var opts = {
+      username: req.session.username,
       userId: user._id,
       location: req.body.location
     };
   
-    projectLogic.create(doc, function (err) {
+    projectLogic.create(opts, function (err) {
       if (err) {
         respond(res, err);
         return;
       }
       
-      var location = '/' + req.session.username + '/' + doc.location;
+      var location = '/' + req.session.username + '/' + opts.location;
       res.json({ok: true, createdLocation: location})
     });
   });
 };
 
 exports.login = function (req, res) {
-  userLogic.login(req.body.username, req.body.password, function (err, userId) {
+  userLogic.login(req.body.username, req.body.password, function (err, user) {
     if (!err) {
       req.session.username = req.body.username;
-      req.session.userId = userId;
+      req.session.userId = user._id;
     }
     
     respond(res, err);
@@ -68,10 +67,10 @@ exports.register = function (req, res) {
     doc.email = req.body.email;
   }
   
-  userLogic.register(doc, function (err, userId) {
+  userLogic.register(doc, function (err, user) {
     if (!err) {
       req.session.username = doc.username;
-      req.session.userId = userId;
+      req.session.userId = user._id;
     }
     
     respond(res, err);

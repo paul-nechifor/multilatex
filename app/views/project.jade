@@ -2,5 +2,20 @@ extends layout
 
 block content
   .container.margin-top-15
-    p Project
+    h1
+      | <a href='/#{p.username}'>#{p.username}</a> /
+      | <a href='/#{p.username}/#{p.location}'>#{p.location}</a>
+
+    .row
+      .col-md-10
+      .col-md-2
+        .input-group
+          button.form-control.btn.btn-primary View PDF
+          span.input-group-addon 995
+        .input-group
+          button.form-control.btn.btn-primary Fork
+          span.input-group-addon 38
+        .input-group
+          button.form-control.btn.btn-primary Download ZIP
+          span.input-group-addon 99
 
