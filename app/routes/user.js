@@ -1,4 +1,5 @@
 var userLogic = require('../logic/user');
+var projectLogic = require('../logic/project');
 var root = require('./root');
 
 var app = null;
@@ -69,7 +70,10 @@ function userOverview(req, res, data) {
 }
 
 function userProjects(req, res, data) {
-  res.render('userProjects', data);
+  projectLogic.getProjectsForUser(data.user._id, function (err, projects) {
+    data.projects = projects;
+    res.render('userProjects', data);
+  });
 }
 
 function userActivity(req, res, data) {

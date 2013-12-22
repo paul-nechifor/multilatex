@@ -47,18 +47,18 @@ exports.logout = function (req, res) {
 };
 
 exports.register = function (req, res) {
-  var doc = {
+  var opts = {
     username: req.body.username,
     password: req.body.password
   };
   
   if (req.body.email) {
-    doc.email = req.body.email;
+    opts.email = req.body.email;
   }
   
-  userLogic.register(doc, function (err, user) {
+  userLogic.register(opts, function (err, user) {
     if (!err) {
-      req.session.username = doc.username;
+      req.session.username = user.username;
       req.session.userId = user._id;
     }
     

@@ -19,18 +19,9 @@ exports.setApp = function (pApp) {
 };
 
 exports.location = function (req, res) {
-  var username = req.params.username;
-  var projectLocation = req.params.location;
-  getProjectData(username, projectLocation, function (err, project) {
-    if (err) {
-      if (err === 'project-not-found') {
-        root.error404(req, res);
-      } else {
-        root.error500(req, res);
-      }
-      return;
-    }
-    
+  var name = req.params.username;
+  var loc = req.params.location;
+  getProjectDataNoErr(name, loc, req, res, function (user, project) {
     var activeTab = req.query.tab in tabFuncs ? req.query.tab : 'overview';
     var data = {
       p: project,
@@ -42,13 +33,46 @@ exports.location = function (req, res) {
   });
 };
 
+exports.edit = function (req, res) {
+  var name = req.params.username;
+  var loc = req.params.location;
+  getProjectDataNoErr(name, loc, req, res, function (user, project) {
+    if (!(req.session.userId in project.contribuitorsIds)) {
+      root.error403(req, res, 'not-a-contribuitor');
+      return;
+    }
+    
+    var data = {
+      project: project
+    };
+    
+    res.render('editor', data);
+  });
+};
+
+function getProjectDataNoErr(username, projectLocation, req, res, callback) {
+  getProjectData(username, projectLocation, function (err, user, project) {
+    if (err) {
+      if (err === 'project-not-found') {
+        root.error404(req, res);
+      } else {
+        root.error500(req, res);
+        console.error(err);
+      }
+      return;
+    }
+    
+    callback(user, project);
+  });
+}
+
 function getProjectData(username, projectLocation, callback) {
   userLogic.getUser(username, function (err, user) {
     if (err) return callback(err);
     
     projectLogic.getProject(user._id, projectLocation, function (err, project) {
       if (err) return callback(err);
-      callback(undefined, project);
+      callback(undefined, user, project);
     });
   });
 }

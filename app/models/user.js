@@ -13,7 +13,7 @@ exports.init = function (opts, callback) {
     // Small version.
     avatarHashS: null,
     // Extra small version.
-    avatarHashXs: null,
+    avatarHashXs: null
   };
   
   if (opts.email) {

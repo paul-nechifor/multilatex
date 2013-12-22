@@ -7,9 +7,14 @@ exports.error404 = function (req, res) {
   res.render('error404', {title: '404: Not Found'});
 };
 
+exports.error403 = function (req, res, msg) {
+  res.statusCode = 403;
+  res.render('error403', {title: '403: Forbidden', msg: msg});
+};
+
 exports.error500 = function (req, res) {
   res.statusCode = 500;
-  res.render('error500', {title: '500'});
+  res.render('error500', {title: '500: Server error'});
 };
 
 exports.checkAuth = function (req, res, next) {

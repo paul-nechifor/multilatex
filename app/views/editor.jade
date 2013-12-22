@@ -1,0 +1,10 @@
+extends editorLayout
+
+block content
+  div#editor-zone
+
+block scripts
+  script(src='/static/editor/Editor.js')
+  script.
+    var editor = new Editor('#editor-zone', !{JSON.stringify(project._id)});
+    editor.load();

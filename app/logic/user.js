@@ -42,17 +42,21 @@ function registerInDb(opts, doc, callback) {
   
   generateIdenticon(doc, function (err, hash) {
     doc.avatarHash = hash;
-    app.db.users.insert(doc, {w: 1}, function (err, item) {
+    app.db.users.insert(doc, {w: 1}, function (err, items) {
       if (err) {
         if (err.code === 11000) {
-          callback('Username exists.');
+          callback('username-exists');
         } else {
-          callback('Database error.');
+          callback('database-error');
+          console.error(err);
+        }
+        if (!items || items.length === 0) {
+          callback('nothing-inserted');
         }
         return;
       }
-
-      callback(undefined, item);
+      
+      callback(undefined, items[0]);
     });
   });
 }

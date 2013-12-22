@@ -35,6 +35,11 @@ exports.getProject = function (userId, location, callback) {
   });
 };
 
+exports.getProjectsForUser = function (userId, callback) {
+  // TODO: Use streaming and not toArray.
+  app.db.projects.find({userId: userId}).toArray(callback);
+};
+
 // TODO: Do more advanced checks.
 // TODO: Check reserved list.
 function checkLocationValidity(location) {

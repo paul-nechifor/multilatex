@@ -3,4 +3,7 @@ block variables
 extends username
 
 block content2
-  h2 TODO
+  for project in projects
+    h3
+      a(href='/#{project.username}/#{project.location}')= project.location
+    hr

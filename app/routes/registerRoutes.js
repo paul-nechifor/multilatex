@@ -26,6 +26,7 @@ function registerRoutes(app) {
   
   e.post('/api/create', api.checkAuth);
   e.get('/create', root.checkAuth);
+  e.get('/:username/:location/edit', root.checkAuth);
   
   e.get('/', root.index);
   e.post('/api/create', api.create);
@@ -40,6 +41,7 @@ function registerRoutes(app) {
   e.get('/register', user.register);
   e.get('/:username', user.username);
   e.get('/:username/:location', project.location);
+  e.get('/:username/:location/edit', project.edit);
   e.get('*', root.error404);
 }
 
