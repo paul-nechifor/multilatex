@@ -1,10 +1,18 @@
 extends editorLayout
 
 block content
-  div#editor-zone
+  div#workspace
 
 block scripts
-  script(src='/static/editor/Editor.js')
+  script(src='/static/ace-builds/src-min-noconflict/ace.js')
+  script(src='/static/editor/util.js')
+  script(src='/static/editor/Menu.js')
+  script(src='/static/editor/ProjectView.js')
+  script(src='/static/editor/EditorView.js')
+  script(src='/static/editor/OutputView.js')
+  script(src='/static/editor/Workspace.js')
+  script(src='/static/editor/Gui.js')
+  script(src='/static/editor/App.js')
+  script(src='/static/editor/main.js')
   script.
-    var editor = new Editor('#editor-zone', !{JSON.stringify(project._id)});
-    editor.load();
+    main(!{JSON.stringify(project._id)});
