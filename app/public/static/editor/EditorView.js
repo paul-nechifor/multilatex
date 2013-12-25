@@ -19,6 +19,6 @@ EditorView.prototype.setupElement = function () {
 };
 
 EditorView.prototype.setupEditor = function () {
-  this.editor.setTheme("ace/theme/monokai");
+  this.editor.setTheme("ace/theme/eclipse");
   this.editor.getSession().setMode("ace/mode/latex");
 };

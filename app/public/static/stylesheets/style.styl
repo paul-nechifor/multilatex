@@ -215,3 +215,40 @@ footer
     p, li
       font-size: 16px
       max-width: 600px
+
+/* Tree view things ----------------------------------------------------------*/
+
+.tree-view
+  overflow: auto;
+  ul
+    margin: 0
+    list-style-type: none
+    padding-left: 20px
+  i
+    display: inline-block
+    width: 20px
+    text-align: left
+  i.collapser
+    width: 21px
+  span
+    cursor: pointer
+    padding: 0 6px
+  .item:hover
+    background-color: #CCDFDC
+  .item.selected
+    background-color: #C5F0E9
+
+.project-bar
+  background-color: #EEE
+  h3
+    display: inline
+    line-height: 30px
+    padding-left: 2px
+  span
+    float: right
+  .btn
+    padding: 2px 4px 0 4px
+    margin: 2px 4px
+
+.tree-view>ul
+  padding-left: 0
