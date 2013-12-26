@@ -7,7 +7,7 @@ function ProjectView(app) {
 }
 
 ProjectView.prototype.setup = function (parent) {
-  this.elem = createElement(parent);
+  this.elem = createElement(parent, 'div', 'noselect');
   this.setupView();
   this.bar = createElement(this.elem);
   this.title = createElement(this.bar, 'h3');
@@ -46,17 +46,21 @@ ProjectView.prototype.setupBar = function () {
 
 ProjectView.prototype.setupTree = function () {
   this.tree.onClick = this.itemClicked.bind(this);
+  var tree = {
+    'a/b/c/d': true,
+    'c/z/qq.tex': true,
+    'c/dd': true,
+    'a/b/d/qqqq': true
+  };
   
-  var t = this.tree.container.add({path: '23r.text', label: 'wf2wef.text', isFile: false});
-  this.tree.container.add({path: 'g4g.text', label: 'aswefwefdf.text'});
-  this.tree.container.add({path: 'asdf.text', label: 'asdf.text'});
-  t.container.add({path: '23r.text', label: 'wf2wef.text'});
-  t.container.add({path: '23r.text', label: 'wf2wef.text'});
-  t.container.add({path: '23r.text', label: 'wf2wef.text'});
+  this.tree.fillWith(tree, 'c/dd');
 };
 
 ProjectView.prototype.itemClicked = function (item) {
   item.setSelected(true);
+  if (item.isDir) {
+    item.collapse(!item.isCollapsed);
+  }
 };
 
 ProjectView.prototype.newFileClicked = function () {

@@ -1,5 +1,11 @@
 @import url('../fontello/css/fontello.css');
 
+/* Mixins --------------------------------------------------------------------*/
+border-radius()
+  -webkit-border-radius arguments
+  -moz-border-radius arguments
+  border-radius arguments
+
 /* Theme ---------------------------------------------------------------------*/
 
 body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6
@@ -119,6 +125,14 @@ footer
 .clickable
   cursor: pointer
 
+.noselect
+  -webkit-touch-callout: none
+  -webkit-user-select: none
+  -khtml-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+  user-select: none
+
 /* Simple form pill ----------------------------------------------------------*/
 
 .form-pill
@@ -227,12 +241,19 @@ footer
   i
     display: inline-block
     width: 20px
-    text-align: left
+    color: #888
   i.collapser
-    width: 21px
+    width: 20px
+    font-size: 10px
+    text-align: right
+    padding-right: 4px
+  .main i
+    color: #111
   span
     cursor: pointer
     padding: 0 6px
+  .item
+    border-radius 3px 0 0 3px
   .item:hover
     background-color: #CCDFDC
   .item.selected
@@ -244,6 +265,7 @@ footer
     display: inline
     line-height: 30px
     padding-left: 2px
+    cursor: default
   span
     float: right
   .btn

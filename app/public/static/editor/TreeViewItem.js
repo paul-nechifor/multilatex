@@ -3,9 +3,10 @@ TreeViewItem.OPEN = 'collapser glyphicon glyphicon-chevron-down';
 
 function TreeViewItem(tv, opts) {
   this.tv = tv;
-  this.isFile = opts.isFile === undefined ? true : false;
+  this.isDir = opts.isDir || false;
   this.isSelected = false;
-  this.path = opts.path;
+  this.isCollapsed = false;
+  this.name = opts.name;
   this.opts = opts;
   
   this.elem = null;
@@ -16,18 +17,17 @@ function TreeViewItem(tv, opts) {
   this.container = null;
 }
 
-TreeViewItem.prototype.setup = function (parent) {
-  this.elem = createElement(parent, 'li');
+TreeViewItem.prototype.setup = function (elem) {
+  this.elem = elem;
   
-  this.item = createElement(this.elem);
-  this.item.setAttribute('class', 'item');
+  this.item = createElement(this.elem, 'div', 'item');
   var that = this;
   this.item.addEventListener('click', function () {
     that.tv.onClick(that);
   });
   
   this.collapser = createElement(this.item, 'i');
-  if (!this.isFile) {
+  if (this.isDir) {
     this.collapser.setAttribute('class', TreeViewItem.OPEN);
   } else {
     this.collapser.setAttribute('class', 'collapser');
@@ -37,17 +37,17 @@ TreeViewItem.prototype.setup = function (parent) {
   if (this.opts.iconClass) {
     this.icon.setAttribute('class', this.opts.iconClass);
   } else {
-    if (this.isFile) {
-      this.icon.setAttribute('class', 'glyphicon glyphicon-file');
-    } else {
+    if (this.isDir) {
       this.icon.setAttribute('class', 'glyphicon glyphicon-folder-open');
+    } else {
+      this.icon.setAttribute('class', 'glyphicon glyphicon-file');
     }
   }
   
   this.label = createElement(this.item, 'span');
-  this.label.innerText = this.opts.label;
+  this.label.innerText = this.opts.name;
   
-  if (!this.isFile) {
+  if (this.isDir) {
     this.container = new TreeViewContainer(this.tv);
     this.container.setup(this.elem);
   }
@@ -69,5 +69,21 @@ TreeViewItem.prototype.setSelected = function (select) {
     this.tv.selectedItem = null;
     this.isSelected = false;
     this.item.setAttribute('class', 'item');
+  }
+};
+
+TreeViewItem.prototype.collapse = function (collapse) {
+  if ((collapse && this.isCollapsed) || (!collapse && !this.isCollapsed)) {
+    return;
+  }
+  
+  this.isCollapsed = collapse;
+  
+  if (collapse) {
+    this.container.elem.style.display = 'none';
+    this.collapser.setAttribute('class', TreeViewItem.CLOSED);
+  } else {
+    this.container.elem.style.display = 'block';
+    this.collapser.setAttribute('class', TreeViewItem.OPEN);
   }
 };
