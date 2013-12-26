@@ -4,7 +4,7 @@
  <title>Multilatex Blog</title>
  <link href="http://multilatex.com/static/blog/atom.xml" rel="self"/>
  <link href="http://multilatex.com/blog"/>
- <updated>2013-12-19T00:02:59+02:00</updated>
+ <updated>2013-12-26T15:02:26+02:00</updated>
  <id>http://multilatex.com/blog</id>
  <author>
    <name>Paul Nechifor</name>
@@ -24,7 +24,7 @@
 
 &lt;p&gt;The theme is a mix of traditional publishing (coming from LaTeX) and modern web (this service). For this reason I chose an extra bold italic serif L from the &lt;a href=&quot;http://www.google.com/fonts/specimen/Simonetta&quot;&gt;Simonetta&lt;/a&gt; font (standing for “LaTeX”) and a preceding extra bold sans serif M from the &lt;a href=&quot;http://www.google.com/fonts/specimen/Changa+One&quot;&gt;Changa One&lt;/a&gt; font (standing for “Multi”). The M is superscripted as a homage to the way TeX and LaTeX are written. (You’ll have noticed that I never write Multilatex as MultiLaTeX because I believe it’s silly to mix up names and logos.) Someone could look at it and just see a single long looping curve, but there is a bit of reasoning behind it. To make it more visible I also created a rectangle one.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/static/blog/img/logo.png&quot; alt=&quot;Multilatex logo&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/s/blog/img/logo.png&quot; alt=&quot;Multilatex logo&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I created the SVG with Inkscape and I used &lt;a href=&quot;http://fontello.com/&quot;&gt;Fontello&lt;/a&gt; to convert it to fonts usable in browsers.&lt;/p&gt;
 
@@ -108,7 +108,7 @@
 
 &lt;p&gt;Instead of allowing people easy login by connecting with account they already have on other sites, I’ve chosen to not ask much on signup. I’ve included a sign-up box on the main page with three fields: the desired username, password and password confirmation.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/static/blog/img/quick-signup.png&quot; alt=&quot;signup form&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/s/blog/img/quick-signup.png&quot; alt=&quot;signup form&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;All other information (real name, email address, birth day) can be entered when desired.&lt;/p&gt;
 

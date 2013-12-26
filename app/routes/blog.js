@@ -3,8 +3,8 @@ var root = require('./root');
 
 var app = null;
 
-var POSTS_DIR = __dirname + '/../public/blog-data/posts/';
-var INCLUDES_DIR = __dirname + '/../public/blog-data/includes/';
+var POSTS_DIR = __dirname + '/../data/blog/posts/';
+var INCLUDES_DIR = __dirname + '/../data/blog/includes/';
 
 exports.setApp = function (pApp) {
   app = pApp;

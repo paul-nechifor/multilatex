@@ -7,6 +7,6 @@
 node_modules
 
 # Project specific.
-/app/public/blog-data
+/app/data/blog
 # Use your own secret.
 /config/secret.json
