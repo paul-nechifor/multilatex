@@ -30,23 +30,30 @@
   i
     display: inline-block
     width: 20px
-    color: #888
-  i.collapser
-    width: 20px
-    font-size: 10px
-    text-align: right
-    padding-right: 4px
-  .main i
+    color: #777
+  .main > .item > i
     color: #111
   span
     cursor: pointer
     padding: 0 6px
   .item
     border-radius 3px 0 0 3px
+    padding-left: 3px
+    .actions
+      float: right
+      a
+        padding: 0 2px
+      a i
+        color: #888
+      display: none
   .item:hover
-    background-color: #CCDFDC
-  .item.selected
     background-color: #C5F0E9
+    .actions
+      display: inline
+      a:hover i
+        color: #000
+  .item.selected
+    background-color: #9BE9DC
 
 .project-bar
   background-color: #EEE

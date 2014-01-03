@@ -35,7 +35,6 @@ Vert3PaneView.prototype.setupListeners = function (pos) {
   };
 
   var onDrag = function (index, dx) {
-    var sep = that.seps[index];
     pos.dragPane(index, dx);
     that.app.gui.realign();
   };

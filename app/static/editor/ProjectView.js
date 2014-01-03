@@ -1,18 +1,14 @@
 function ProjectView(app) {
   this.app = app;
   this.elem = null;
-  this.bar = null;
-  this.title = null;
   this.tree = new TreeView();
 }
 
 ProjectView.prototype.setup = function (parent, pos) {
   this.elem = createElement(parent, 'div', 'noselect');
   this.setupView(pos);
-  this.bar = createElement(this.elem);
-  this.title = createElement(this.bar, 'h3');
-  this.setupBar();
   this.tree.setup(this.elem);
+  this.setupTreeActions();
   this.setupTree();
 };
 
@@ -34,25 +30,29 @@ ProjectView.prototype.realign = function (pos) {
   }
 };
 
-ProjectView.prototype.setupBar = function () {
-  this.bar.setAttribute('class', 'project-bar');
-  this.title.innerText = 'Project Name';
+ProjectView.prototype.setupTreeActions = function () {
+  var rename = this.onRenameItem.bind(this);
+  var delete_ = this.onDeleteItem.bind(this);
+  var newFile = this.onNewFile.bind(this);
+  var newFolder = this.onNewFolder.bind(this);
+  var upload = this.onUploadHere.bind(this);
   
-  var act = [
-    ['plus-sign', this.newFileClicked.bind(this), 'New file'],
-    ['upload', this.uploadClicked.bind(this), 'Upload'],
-    ['pencil', this.renameClicked.bind(this), 'Rename'],
-    ['trash', this.deleteClicked.bind(this), 'Delete'],
+  var common = [
+    {name: 'Rename', icon: 'glyphicon glyphicon-pencil', func: rename},
+    {name: 'Delete', icon: 'glyphicon glyphicon-trash', func: delete_}
   ];
   
-  var buttons = createElement(this.bar, 'span');
+  this.tree.dirActions = [
+    {name: 'New file', icon: 'glyphicon glyphicon-plus-sign', func: newFile},
+    {name: 'New folder', icon: 'glyphicon glyphicon-folder-close',
+      func: newFolder},
+    {name: 'Upload here', icon: 'glyphicon glyphicon-cloud-upload',
+      func: upload},
+    common[0],
+    common[1]
+  ];
   
-  for (var i = 0, len = act.length; i < len; i++) {
-    var info = act[i];
-    var a = createElement(buttons, 'a', 'btn btn-default');
-    createElement(a, 'i', 'glyphicon glyphicon-' + info[0]);
-    $(a).tooltip({title: info[2], placement: 'bottom'});
-  }
+  this.tree.fileActions = [common[0], common[1]];
 };
 
 ProjectView.prototype.setupTree = function () {
@@ -70,18 +70,21 @@ ProjectView.prototype.setupTree = function () {
 ProjectView.prototype.itemClicked = function (item) {
   item.setSelected(true);
   if (item.isDir) {
-    item.collapse(!item.isCollapsed);
+    item.collapse((item.collapsedState + 1) % 2);
   }
 };
 
-ProjectView.prototype.newFileClicked = function () {
+ProjectView.prototype.onRenameItem = function (item) {
 };
 
-ProjectView.prototype.uploadClicked = function () {
+ProjectView.prototype.onDeleteItem = function (item) {
 };
 
-ProjectView.prototype.renameClicked = function () {
+ProjectView.prototype.onNewFile = function (parentItem) {
 };
 
-ProjectView.prototype.deleteClicked = function () {
+ProjectView.prototype.onNewFolder = function (parentItem) {
+};
+
+ProjectView.prototype.onUploadHere = function (parentItem) {
 };

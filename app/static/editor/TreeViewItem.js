@@ -1,16 +1,17 @@
-TreeViewItem.CLOSED = 'collapser glyphicon glyphicon-chevron-right';
-TreeViewItem.OPEN = 'collapser glyphicon glyphicon-chevron-down';
+TreeViewItem.COLLAPSED_STATES = [
+  'glyphicon glyphicon-folder-close',
+  'glyphicon glyphicon-folder-open'
+];
 
 function TreeViewItem(tv, opts) {
   this.tv = tv;
   this.isDir = opts.isDir || false;
   this.isSelected = false;
-  this.isCollapsed = false;
+  this.collapsedState = 1;
   this.name = opts.name;
   this.opts = opts;
   
   this.elem = null;
-  this.collapser = null;
   this.item = null;
   this.icon = null;
   this.label = null;
@@ -26,19 +27,13 @@ TreeViewItem.prototype.setup = function (elem) {
     that.tv.onClick(that);
   });
   
-  this.collapser = createElement(this.item, 'i');
-  if (this.isDir) {
-    this.collapser.setAttribute('class', TreeViewItem.OPEN);
-  } else {
-    this.collapser.setAttribute('class', 'collapser');
-  }
-  
   this.icon = createElement(this.item, 'i');
   if (this.opts.iconClass) {
     this.icon.setAttribute('class', this.opts.iconClass);
   } else {
     if (this.isDir) {
-      this.icon.setAttribute('class', 'glyphicon glyphicon-folder-open');
+      this.icon.setAttribute('class',
+        TreeViewItem.COLLAPSED_STATES[this.collapsedState]);
     } else {
       this.icon.setAttribute('class', 'glyphicon glyphicon-file');
     }
@@ -50,6 +45,30 @@ TreeViewItem.prototype.setup = function (elem) {
   if (this.isDir) {
     this.container = new TreeViewContainer(this.tv);
     this.container.setup(this.elem);
+  }
+  
+  this.setupActions();
+};
+
+TreeViewItem.prototype.setupActions = function () {
+  if (!this.opts.actions) {
+    return;
+  }
+  
+  var actionSet = createElement(this.item, 'span', 'actions');
+  var that = this;
+  
+  for (var i = 0, len = this.opts.actions.length; i < len; i++) {
+    var action = this.opts.actions[i];
+    var a = createElement(actionSet, 'a');
+    createElement(a, 'i', action.icon);
+    $(a).tooltip({title: action.name, placement: 'bottom'});
+    a.addEventListener('click', (function (action) {
+      return function (e) {
+        e.stopPropagation();
+        action.func(that);
+      }
+    })(action));
   }
 };
 
@@ -72,18 +91,12 @@ TreeViewItem.prototype.setSelected = function (select) {
   }
 };
 
-TreeViewItem.prototype.collapse = function (collapse) {
-  if ((collapse && this.isCollapsed) || (!collapse && !this.isCollapsed)) {
+TreeViewItem.prototype.collapse = function (state) {
+  if (state === this.collapsedState) {
     return;
   }
   
-  this.isCollapsed = collapse;
-  
-  if (collapse) {
-    this.container.elem.style.display = 'none';
-    this.collapser.setAttribute('class', TreeViewItem.CLOSED);
-  } else {
-    this.container.elem.style.display = 'block';
-    this.collapser.setAttribute('class', TreeViewItem.OPEN);
-  }
+  this.collapsedState = state;
+  this.icon.setAttribute('class', TreeViewItem.COLLAPSED_STATES[state]);
+  this.container.elem.style.display = (state === 0) ? 'none' : 'block';
 };
