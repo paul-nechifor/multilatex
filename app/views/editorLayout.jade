@@ -18,9 +18,8 @@ html(lang='en')
       a.navbar-brand.editor(href='/') <i class='si-ml-square'></i>
       ul.nav.navbar-nav#menu
         li.dropdown
-          a.dropdown-toggle(href='#', data-toggle='dropdown')
-            | Project
-            b.caret
+          a.dropdown-toggle(href='#', data-toggle='dropdown')#project-menu
+            <i class="glyphicon glyphicon-folder-open"></i>
           ul.dropdown-menu
             li
               a(href='#') Manage access
@@ -30,23 +29,13 @@ html(lang='en')
             li
               a(href='#') Download PDF
         li.dropdown
-          a.dropdown-toggle(href='#', data-toggle='dropdown')
-            | Editor
-            b.caret
+          a.dropdown-toggle(href='#', data-toggle='dropdown')#editor-menu
+            <i class="glyphicon glyphicon-align-left"></i>
           ul.dropdown-menu
             li
               a(href='#') Theme
             li
               a(href='#') ...
-        li.dropdown
-          a.dropdown-toggle(href='#', data-toggle='dropdown')
-            | Workspace
-            b.caret
-          ul.dropdown-menu
-            li
-              a(href='#') Single
-            li
-              a(href='#') Double
       ul.nav.navbar-nav.navbar-right
         li.dropdown
           a.dropdown-toggle(href='#', data-toggle='dropdown')
@@ -84,3 +73,14 @@ html(lang='en')
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
+
+    script.
+      var menus = [
+        ['#project-menu', 'Project'],
+        ['#editor-menu', 'Editor']
+      ];
+      for (var i = 0, len = menus.length; i < len; i++) {
+        var menu = menus[i];
+        var elem = $(menu[0]);
+        elem.tooltip({title: menu[1], placement: 'right'});
+      }

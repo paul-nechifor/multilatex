@@ -1,5 +1,8 @@
 extends editorLayout
 
+block head
+  link(rel='stylesheet', href='/s/css/editor.css')
+
 block content
   div#workspace
 
@@ -13,7 +16,9 @@ block scripts
   script(src='/s/editor/ProjectView.js')
   script(src='/s/editor/EditorView.js')
   script(src='/s/editor/OutputView.js')
-  script(src='/s/editor/Workspace.js')
+  script(src='/s/editor/Positioning.js')
+  script(src='/s/editor/Vert3PaneView.js')
+  script(src='/s/editor/VertSepView.js')
   script(src='/s/editor/Gui.js')
   script(src='/s/editor/App.js')
   script(src='/s/editor/main.js')

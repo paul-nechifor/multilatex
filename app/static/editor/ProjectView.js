@@ -6,9 +6,9 @@ function ProjectView(app) {
   this.tree = new TreeView();
 }
 
-ProjectView.prototype.setup = function (parent) {
+ProjectView.prototype.setup = function (parent, pos) {
   this.elem = createElement(parent, 'div', 'noselect');
-  this.setupView();
+  this.setupView(pos);
   this.bar = createElement(this.elem);
   this.title = createElement(this.bar, 'h3');
   this.setupBar();
@@ -16,12 +16,23 @@ ProjectView.prototype.setup = function (parent) {
   this.setupTree();
 };
 
-ProjectView.prototype.setupView = function () {
+ProjectView.prototype.setupView = function (pos) {
   var s = this.elem.style;
   s.height = '100%';
-  s.width = '20%';
-  s['float'] = 'left';
+  s.cssFloat = 'left';
+  this.realign(pos);
 }
+
+ProjectView.prototype.realign = function (pos) {
+  var s = this.elem.style;
+  
+  if (pos.sepCollapsed[0]) {
+    s.display = 'none';
+  } else {
+    s.display = 'block';
+    s.width = pos.vertPaneRealWidth[0] + 'px';
+  }
+};
 
 ProjectView.prototype.setupBar = function () {
   this.bar.setAttribute('class', 'project-bar');

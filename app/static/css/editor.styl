@@ -1,0 +1,65 @@
+.separator
+  background-color: #3d3d3d
+
+.sep-vert
+  cursor: col-resize
+  .collapser
+    padding: 10px 1px
+    cursor: pointer
+    .arrow
+      border: 5px solid transparent
+  .collapser:hover
+    background-color: #666
+  .col-left
+    .arrow
+      border-left: 0
+      border-right-color: #ccc
+  .col-right
+    .arrow
+      border-right: 0
+      border-left-color: #ccc
+
+/* Tree view -----------------------------------------------------------------*/
+
+.tree-view
+  overflow: auto;
+  ul
+    margin: 0
+    list-style-type: none
+    padding-left: 20px
+  i
+    display: inline-block
+    width: 20px
+    color: #888
+  i.collapser
+    width: 20px
+    font-size: 10px
+    text-align: right
+    padding-right: 4px
+  .main i
+    color: #111
+  span
+    cursor: pointer
+    padding: 0 6px
+  .item
+    border-radius 3px 0 0 3px
+  .item:hover
+    background-color: #CCDFDC
+  .item.selected
+    background-color: #C5F0E9
+
+.project-bar
+  background-color: #EEE
+  h3
+    display: inline
+    line-height: 30px
+    padding-left: 2px
+    cursor: default
+  span
+    float: right
+  .btn
+    padding: 2px 4px 0 4px
+    margin: 2px 4px
+
+.tree-view>ul
+  padding-left: 0
