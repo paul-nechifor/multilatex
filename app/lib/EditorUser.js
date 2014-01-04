@@ -1,13 +1,66 @@
 var projectLogic = require('../logic/project');
+var util = require('../logic/util');
 
-function EditorUser(wss, ws, username, userId) {
+function EditorUser(eid, wss, ws) {
+  this.eid = eid;
   this.wss = wss;
   this.ws = ws;
-  this.username = username;
-  this.userId = userId;
+  this.isClosing = false;
+  this.username = null;
+  this.userId = null;
+  this.project = null;
 }
 
-EditorUser.prototype.setup = function () {
+EditorUser.prototype.open = function () {
+  var that = this;
+  
+  this.establishSession(function (err) {
+    if (err) {
+      util.logErr(err);
+      that.close();
+      return;
+    }
+  
+    that.connSetup();
+  });
+};
+
+EditorUser.prototype.close = function () {
+  if (this.isClosing) {
+    return;
+  }
+  this.isClosing = true;
+  this.wss.unregisterUser(this);
+  
+  var that = this;
+  this.projectClose(function () {
+    that.connClose();
+  });
+};
+
+EditorUser.prototype.establishSession = function (callback) {
+  var that = this;
+  
+  this.wss.app.getReqSession(this.ws.upgradeReq, function (err, session) {
+    if (err) return callback(err);
+    if (typeof session.userId !== 'string') return callback('no-id-set');
+    
+    that.username = session.username;
+    that.userId = session.userId;
+    
+    callback();
+  });
+};
+
+EditorUser.prototype.connSetup = function () {
+  this.setupListeners();
+};
+
+EditorUser.prototype.connClose = function () {
+  this.ws.close();
+};
+
+EditorUser.prototype.setupListeners = function () {
   var messageFuncs = {};
 
   for (var name in this) {
@@ -24,25 +77,39 @@ EditorUser.prototype.setup = function () {
     messageFuncs[type](msg);
   };
 
-  this.ws.onclose = this.onClose.bind(this);
+  this.ws.onclose = this.onSocketClose.bind(this);
 };
 
-EditorUser.prototype.onMessage_projectDoc = function (projectId) {
+EditorUser.prototype.onMessage_openProject = function (projectId) {
+  if (this.project) return this.close();
+  
   var that = this;
-  projectLogic.getProjectById(projectId, function (err, project) {
-    that.sendMsg('projectDoc', err ? null : project);
+  this.wss.openProject(this, projectId, function (err, project) {
+    if (err) {
+      that.sendMsg('openProject', {error: err}, function () {
+        that.close();
+      });
+      return;
+    }
+    that.project = project;
+    that.sendMsg('openProject', {project: project.doc});
   });
 };
 
-EditorUser.prototype.onClose = function (event) {
+EditorUser.prototype.onSocketClose = function (event) {
+  this.close();
 };
 
-EditorUser.prototype.send = function (str) {
-  this.ws.send(str);
+EditorUser.prototype.projectClose = function (callback) {
+  callback();
 };
 
 EditorUser.prototype.sendMsg = function (type, msg) {
   this.ws.send(JSON.stringify([type, msg]));
+};
+
+EditorUser.prototype.sendMsg = function (type, msg, callback) {
+  this.ws.send(JSON.stringify([type, msg]), callback);
 };
 
 module.exports = EditorUser;

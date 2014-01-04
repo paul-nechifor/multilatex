@@ -1,10 +1,13 @@
 var WsServer = require('ws').Server;
 var EditorUser = require('./EditorUser');
-var util = require('../logic/util');
+var EditorProject = require('./EditorProject');
 
 function WebSocketServer(app) {
   this.app = app;
   this.wss = null;
+  this.lastUserId = 0;
+  this.users = {};
+  this.projects = {};
 }
 
 WebSocketServer.prototype.setup = function () {
@@ -13,26 +16,29 @@ WebSocketServer.prototype.setup = function () {
 };
 
 WebSocketServer.prototype.onConnection = function (ws) {
-  var that = this;
+  this.lastUserId++;
+  var user = new EditorUser(this.lastUserId, this, ws);
+  this.users[user.eid] = user;
+  user.open();
+};
+
+WebSocketServer.prototype.openProject = function (user, projectId, callback) {
+  var project = this.projects[projectId];
   
-  this.app.getReqSession(ws.upgradeReq, function (err, session) {
-    if (err) return util.logErr(err);
-    
-    if (typeof session.userId !== 'string') {
-      ws.terminate();
-      return;
-    }
-    
-    that.openUser(ws, session);
-  });
+  if (!project) {
+    project = new EditorProject(projectId, this);
+    this.projects[project.id] = project;
+  }
+  
+  project.openForUser(user, callback);
 };
 
-WebSocketServer.prototype.openUser = function (ws, session) {
-  var editorUser = new EditorUser(this, ws, session.username, session.userId);
-  editorUser.setup();
+WebSocketServer.prototype.unregisterUser = function (user) {
+  delete this.users[user.eid];
 };
 
-//WebSocketServer.prototype.onMessage_startSession = function (player, msg) {
-//};
+WebSocketServer.prototype.unregisterProject = function (project) {
+  delete this.projects[project.eid];
+};
 
 module.exports = WebSocketServer;

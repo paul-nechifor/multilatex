@@ -15,13 +15,14 @@ App.prototype.load = function () {
 
 App.prototype.initProject = function () {
   var that = this;
-  this.wss.callMsg('projectDoc', this.opts.projectId, function (project) {
-    if (!project) {
-      alert('Project error');
+  this.wss.callMsg('openProject', this.opts.projectId, function (msg) {
+    if (msg.error) {
+      alert('Project error.');
+      console.log(msg.error);
       return;
     }
     
-    that.setupProjectTree(project);
+    that.setupProjectTree(msg.project);
   });
 };
 
@@ -29,7 +30,6 @@ App.prototype.onMessage_someMessage = function (msg) {
 };
 
 App.prototype.setupProjectTree = function (project) {
-    console.log(project);
     var treeView = this.gui.project.tree;
     treeView.root.changeName(project.location);
     treeView.fillWith(project.headTree, project.headFile);
