@@ -57,14 +57,6 @@ ProjectView.prototype.setupTreeActions = function () {
 
 ProjectView.prototype.setupTree = function () {
   this.tree.onClick = this.itemClicked.bind(this);
-  var tree = {
-    'a/b/c/d': true,
-    'c/z/qq.tex': true,
-    'c/dd': true,
-    'a/b/d/qqqq': true
-  };
-  
-  this.tree.fillWith(tree, 'c/dd');
 };
 
 ProjectView.prototype.itemClicked = function (item) {

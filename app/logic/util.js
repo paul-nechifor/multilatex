@@ -7,6 +7,12 @@ exports.die = function (string) {
   process.exit(1);
 }
 
+exports.logErr = function (err) {
+  console.error('Error:');
+  console.error(err);
+  console.trace();
+}
+
 var BASE36 = '0123456789abcdefghijklmnopqrstuvwxyz';
 
 exports.randomBase36 = function (length) {

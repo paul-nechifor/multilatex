@@ -4,13 +4,17 @@ var path = require('path');
 var MongoStore = require('connect-mongo')(express);
 
 var Database = require('./Database');
+var WebSocketServer = require('./WebSocketServer');
 var registerRoutes = require('../routes/registerRoutes');
 
 function App(config) {
   this.config = config;
   this.express = null;
   this.db = null;
+  this.sessionStore = null;
+  this.cookieParser = null;
   this.server = null;
+  this.webSocketServer = new WebSocketServer(this);
 }
 
 App.prototype.start = function () {
@@ -24,9 +28,12 @@ App.prototype.startStep2 = function () {
   this.configure();
   this.registerRoutes();
   this.createServer();
+  this.webSocketServer.setup();
 };
 
 App.prototype.configure = function () {
+  this.sessionStore = new MongoStore({db: this.config.mongoDbName});
+  this.cookieParser = express.cookieParser(this.config.cookieSecret);
   // all environments
   this.express.set('views', __dirname + '/../views');
   this.express.set('view engine', 'jade');
@@ -35,10 +42,10 @@ App.prototype.configure = function () {
   this.express.use(express.json());
   this.express.use(express.urlencoded());
   this.express.use(express.methodOverride());
-  this.express.use(express.cookieParser(this.config.cookieSecret));
+  this.express.use(this.cookieParser);
   this.express.use(express.session({
     secret: this.config.cookieSecret,
-    store: new MongoStore({db: this.config.mongoDbName})
+    store: this.sessionStore
   }));
   this.express.use(require('./jadeLocals.js'));
   this.express.use('/s', require('stylus').middleware(__dirname + '/../static'));
@@ -59,6 +66,20 @@ App.prototype.registerRoutes = function () {
 App.prototype.createServer = function () {
   this.server = http.createServer(this.express);
   this.server.listen(this.config.port);
+};
+
+App.prototype.getReqSession = function (req, callback) {
+  var that = this;
+  
+  this.cookieParser(req, null, function (err) {
+    if (err) return callback(err);
+    
+    var sessionId = req.signedCookies['connect.sid'];
+    that.sessionStore.get(sessionId, function (err, session) {
+      if (err) return callback(err);
+      callback(undefined, session);
+    });
+  });
 };
 
 module.exports = App;

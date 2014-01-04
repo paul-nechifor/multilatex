@@ -23,6 +23,9 @@ exports.init = function (opts, callback) {
     // Dict of relative file path to value. If the value is null, the file is
     // in the head, if it is a string, that string is the hash of a file in the
     // file store.
+    // TODO FIX THIS
+    // Note that keys cannot have '.' in them so they are all replaced with '%'
+    // before storing into Mongo and back when reading.
     headTree: {}
   };
   

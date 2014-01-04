@@ -40,7 +40,7 @@ TreeViewItem.prototype.setup = function (elem) {
   }
   
   this.label = createElement(this.item, 'span');
-  this.label.innerText = this.opts.name;
+  this.label.innerText = this.name;
   
   if (this.isDir) {
     this.container = new TreeViewContainer(this.tv);
@@ -99,4 +99,9 @@ TreeViewItem.prototype.collapse = function (state) {
   this.collapsedState = state;
   this.icon.setAttribute('class', TreeViewItem.COLLAPSED_STATES[state]);
   this.container.elem.style.display = (state === 0) ? 'none' : 'block';
+};
+
+TreeViewItem.prototype.changeName = function (name) {
+  this.name = name;
+  this.label.innerText = this.name;
 };

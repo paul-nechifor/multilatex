@@ -5,7 +5,7 @@ $(document).ready(function () {
 
   function showError(error) {
     form.find('.alert').show();
-    form.find('.alert p').text(error);
+    form.find('.alert p').text(JSON.stringify(error));
   }
   
   form.submit(function (event) {

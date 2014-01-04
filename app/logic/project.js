@@ -1,6 +1,7 @@
 var headDir = require('./headDir');
 var util = require('./util');
 var projectMd = require('../models/project');
+var ObjectID = require('mongodb').ObjectID;
 
 var app = null;
 
@@ -28,10 +29,21 @@ exports.create = function (opts, callback) {
 
 exports.getProject = function (userId, location, callback) {
   var query = {userId: userId, location: location};
-  app.db.projects.findOne(query, function (err, item) {
+  app.db.projects.findOne(query, function (err, project) {
     if (err) return callback(err);
-    if (!item) return callback('project-not-found');
-    callback(undefined, item);
+    if (!project) return callback('project-not-found');
+    project.headTree = fixHeadTreeFromMongo(project.headTree);
+    callback(undefined, project);
+  });
+};
+
+exports.getProjectById = function (projectIdStr, callback) {
+  var query = {_id: new ObjectID(projectIdStr)};
+  app.db.projects.findOne(query, function (err, project) {
+    if (err) return callback(err);
+    if (!project) return callback('project-not-found');
+    project.headTree = fixHeadTreeFromMongo(project.headTree);
+    callback(undefined, project);
   });
 };
 
@@ -65,20 +77,23 @@ function createInDb(doc, callback) {
       return;
     }
     
-    callback(undefined, project);
+    callback(undefined, project[0]);
   });
 }
 
 function createAndInitHead(project, callback) {
   headDir.getNewDir(function (path) {
-    var update = {
+    var updateDoc = {
       headPath: path
     };
     
-    initHead(update, function (err) {
+    initHead(updateDoc, function (err) {
       if (err) return callback(err);
+      var query = {_id: project._id};
+      updateDoc.headTree = fixHeadTreeToMongo(updateDoc.headTree);
+      var update = {$set: updateDoc};
     
-      app.db.projects.update({_id: project._id}, update, {w: 1}, function (err) {
+      app.db.projects.update(query, update, {w: 1}, function (err, nUpdated) {
         if (err) return callback(err);
         callback();
       });
@@ -86,17 +101,37 @@ function createAndInitHead(project, callback) {
   });
 }
 
-function initHead(update, callback) {
+function initHead(updateDoc, callback) {
   var initFile = __dirname + '/../data/latex/empty.tex';
-  var mainFile = update.headPath + '/main.tex';
+  var mainFile = updateDoc.headPath + '/main.tex';
   util.copyFile(initFile, mainFile, function (err) {
     if (err) return callback(err);
     
-    update.headFile = 'main.tex';
-    update.headTree = {
+    updateDoc.headFile = 'main.tex';
+    updateDoc.headTree = {
       'main.tex': true
     };
     
     callback();    
   });
+}
+
+function fixHeadTreeToMongo(headTree) {
+  var ret = {};
+  
+  for (var item in headTree) {
+    ret[item.replace(/\./g, '%')] = headTree[item];
+  }
+  
+  return ret;
+}
+
+function fixHeadTreeFromMongo(headTree) {
+  var ret = {};
+  
+  for (var item in headTree) {
+    ret[item.replace(/%/g, '.')] = headTree[item];
+  }
+  
+  return ret;
 }
