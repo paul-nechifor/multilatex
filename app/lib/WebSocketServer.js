@@ -4,7 +4,7 @@ var EditorProject = require('./EditorProject');
 
 function WebSocketServer(app) {
   this.app = app;
-  this.wss = null;
+  this.wss = null;  
   this.lastUserId = 0;
   this.users = {};
   this.projects = {};

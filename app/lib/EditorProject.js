@@ -1,4 +1,5 @@
 var projectLogic = require('../logic/project');
+var EditorFile = require('./EditorFile');
 
 function EditorProject(id, wss) {
   this.id = id;
@@ -64,21 +65,44 @@ EditorProject.prototype.close = function () {
   this.isClosing = true;
   this.wss.unregisterProject(this);
   
-  // Close all the users.
-  for (var userEid in this.users) {
-    this.closeForUser(this.users[userEid]);
+  // Close all the users (and they close all their files).
+  for (var eid in this.users) {
+    this.closeForUser(this.users[eid]);
+  }
+};
+
+EditorProject.prototype.openFile = function (user, path, callback) {
+  var file = this.files[path];
+  if (file) {
+    if (user.eid in file.users) {
+      callback('you-have-it-open'); // This shouldn't happen now.
+    } else {
+      this.openFile2(file, user, callback);
+    }
+    return;
   }
   
-  // Close all the files.
-  // TODO
+  if (!(path in this.doc.headTree)) {
+    return callback('no-such-file');
+  }
+  
+  file = new EditorFile(path, this);
+  this.files[file.path] = file;
+  
+  var that = this;
+  file.open(function (err) {
+    if (err) return callback(err);
+    that.openFile2(file, user, callback);
+  });
 };
 
-EditorProject.prototype.openFile = function (user, path) {
-  
+EditorProject.prototype.openFile2 = function (file, user, callback) {
+  file.users[user.eid] = user;
+  callback(undefined, file);
 };
 
-EditorProject.prototype.closeFile = function () {
-  
+EditorProject.prototype.unregisterFile = function (file) {
+  delete this.files[file.path];
 };
 
 module.exports = EditorProject;

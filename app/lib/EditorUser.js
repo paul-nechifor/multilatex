@@ -2,13 +2,14 @@ var projectLogic = require('../logic/project');
 var util = require('../logic/util');
 
 function EditorUser(eid, wss, ws) {
-  this.eid = eid;
+  this.eid = eid; // Ephemeral user ID.
   this.wss = wss;
   this.ws = ws;
   this.isClosing = false;
   this.username = null;
   this.userId = null;
   this.project = null;
+  this.file = null;
 }
 
 EditorUser.prototype.open = function () {
@@ -31,6 +32,8 @@ EditorUser.prototype.close = function () {
   }
   this.isClosing = true;
   this.wss.unregisterUser(this);
+  
+  this.file.closeForUser(this);
   
   var that = this;
   this.projectClose(function () {
@@ -81,6 +84,7 @@ EditorUser.prototype.setupListeners = function () {
 };
 
 EditorUser.prototype.onMessage_openProject = function (projectId) {
+  // If a project is already opened, kick.
   if (this.project) return this.close();
   
   var that = this;
@@ -96,16 +100,31 @@ EditorUser.prototype.onMessage_openProject = function (projectId) {
   });
 };
 
+EditorUser.prototype.onMessage_openFile = function (path) {
+  // If the project isn't open, kick.
+  if (!this.project) return this.close();
+  
+  // If a file was open, close it.
+  if (this.file) {
+    this.file.closeForUser(this);
+  }
+  
+  var that = this;
+  this.project.openFile(this, path, function (err, file) {
+    if (err) return that.sendMsg('openFile', {error: err});
+    
+    that.file = file;
+    
+    that.sendMsg('openFile', {data: file.getData()});
+  });
+};
+
 EditorUser.prototype.onSocketClose = function (event) {
   this.close();
 };
 
 EditorUser.prototype.projectClose = function (callback) {
   callback();
-};
-
-EditorUser.prototype.sendMsg = function (type, msg) {
-  this.ws.send(JSON.stringify([type, msg]));
 };
 
 EditorUser.prototype.sendMsg = function (type, msg, callback) {

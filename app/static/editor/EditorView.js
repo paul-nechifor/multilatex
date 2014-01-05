@@ -23,7 +23,14 @@ EditorView.prototype.realign = function (pos) {
   s.width = pos.vertPaneRealWidth[1] + 'px';
 };
 
+EditorView.prototype.setWholeText = function (file) {
+  this.editor.getSession().setValue(file);
+};
+
 EditorView.prototype.setupEditor = function () {
-  this.editor.setTheme("ace/theme/eclipse");
-  this.editor.getSession().setMode("ace/mode/latex");
+  this.editor.setTheme('ace/theme/eclipse');
+  this.editor.getSession().setMode('ace/mode/latex');
+  this.editor.getSession().on('change', function (e) {
+    console.log(e);
+  });
 };
