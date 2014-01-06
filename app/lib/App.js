@@ -2,6 +2,7 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 var MongoStore = require('connect-mongo')(express);
+var sharejs = require('share');
 
 var Database = require('./Database');
 var WebSocketServer = require('./WebSocketServer');
@@ -15,6 +16,7 @@ function App(config) {
   this.cookieParser = null;
   this.server = null;
   this.webSocketServer = new WebSocketServer(this);
+  this.shareJs = null;
 }
 
 App.prototype.start = function () {
@@ -51,12 +53,21 @@ App.prototype.configure = function () {
   this.express.use('/s', require('stylus').middleware(__dirname + '/../static'));
   this.express.use('/s', express['static'](__dirname + '/../static'));
   this.express.use('/store', express['static'](this.config.dirs.store));
+  this.configureShareJs();
   this.express.use(this.express.router);
 
   // development only
   if ('development' == this.express.get('env')) {
     this.express.use(express.errorHandler());
   }
+};
+
+App.prototype.configureShareJs = function () {
+  var shareOpt = {
+    db: {type: 'none'}
+  };
+  sharejs.server.attach(this.express, shareOpt);
+  this.shareJs = this.express.model;
 };
 
 App.prototype.registerRoutes = function () {

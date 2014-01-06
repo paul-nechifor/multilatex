@@ -32,8 +32,10 @@ EditorUser.prototype.close = function () {
   }
   this.isClosing = true;
   this.wss.unregisterUser(this);
-  
-  this.file.closeForUser(this);
+
+  if (this.file) {
+    this.file.closeForUser(this);
+  }
   
   var that = this;
   this.projectClose(function () {
@@ -115,7 +117,7 @@ EditorUser.prototype.onMessage_openFile = function (path) {
     
     that.file = file;
     
-    that.sendMsg('openFile', {data: file.getData()});
+    that.sendMsg('openFile', {});
   });
 };
 

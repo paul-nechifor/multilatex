@@ -2,6 +2,7 @@
 *~
 .*.sw[op]
 .DS_Store
+.idea
 
 # Node.
 node_modules
