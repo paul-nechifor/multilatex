@@ -28,11 +28,11 @@ exports.init = function (opts, callback) {
     // before storing into Mongo and back when reading.
     headTree: {}
   };
-  
+
   doc.contribuitors[opts.username] = doc.created;
   doc.contribuitorsIds[opts.userId.toString()] = doc.created;
-  
+
   // TODO: Validate values.
-  
+
   callback(undefined, doc);
 };

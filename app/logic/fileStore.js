@@ -11,15 +11,21 @@ exports.setApp = function (pApp) {
 exports.moveFile = function (path, callback) {
   getFileHash(path, function (err, hash) {
     if (err) return callback(err);
-    
+
     var dir = app.config.dirs.store + '/' + hash.substring(0, 3);
     var file = dir + '/' + hash.substring(3);
-    
+
     moveIfNecessary(path, dir, file, function (err) {
       if (err) return callback(err);
       callback(undefined, hash);
-    })
+    });
   });
+};
+
+exports.getPath = function (hash) {
+  var dir = app.config.dirs.store + '/' + hash.substring(0, 3);
+  var file = dir + '/' + hash.substring(3);
+  return file;
 };
 
 function getFileHash(path, callback) {
@@ -27,21 +33,21 @@ function getFileHash(path, callback) {
   var hash = crypto.createHash('sha1');
   hash.setEncoding('hex');
 
-  fd.on('end', function() {
-      hash.end();
-      callback(undefined, hash.read());
+  fd.on('end', function () {
+    hash.end();
+    callback(undefined, hash.read());
   });
 
   fd.pipe(hash);
 }
-  
+
 function moveIfNecessary(path, dir, file, callback) {
   fs.exists(file, function (exists) {
-    if (exists) return callback(); 
-    
+    if (exists) return callback();
+
     fs.mkdir(dir, function (err) {
       if (err) return callback(err);
-      
+
       fs.rename(path, file, function (err) {
         if (err) return callback(err);
         callback();

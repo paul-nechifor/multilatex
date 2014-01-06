@@ -5,26 +5,26 @@ exports.die = function (string) {
   console.trace();
   console.error(string);
   process.exit(1);
-}
+};
 
 exports.logErr = function (err) {
   console.error('Error:');
   console.error(err);
   console.trace();
-}
+};
 
 var BASE36 = '0123456789abcdefghijklmnopqrstuvwxyz';
 
 exports.randomBase36 = function (length) {
-    var ret = '';
-    var index;
+  var ret = '';
+  var index;
 
-    for (var i = 0; i < length; i++) {
-        index = (Math.random() * BASE36.length) | 0;
-        ret += BASE36[index];
-    }
+  for (var i = 0; i < length; i++) {
+    index = (Math.random() * BASE36.length) | 0;
+    ret += BASE36[index];
+  }
 
-    return ret;
+  return ret;
 };
 
 exports.sha1Sum = function (string) {
@@ -76,7 +76,7 @@ exports.copyFile = function (source, target, callback) {
       callbackUsed = true;
       callback(err);
     }
-  }
+  };
 
   var rs = fs.createReadStream(source);
   rs.on('error', checkError);
@@ -91,4 +91,10 @@ exports.copyFile = function (source, target, callback) {
     }
   });
   rs.pipe(ws);
-}
+};
+
+exports.pipeFile = function (file, res) {
+  // TODO: set the size.
+  var rs = fs.createReadStream(file);
+  rs.pipe(res);
+};

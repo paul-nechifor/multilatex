@@ -121,6 +121,17 @@ EditorUser.prototype.onMessage_openFile = function (path) {
   });
 };
 
+EditorUser.prototype.onMessage_buildProject = function () {
+  // If the project isn't open, kick.
+  if (!this.project) return this.close();
+
+  var that = this;
+  this.project.build(function (err) {
+    if (err) return that.sendMsg('openFile', {error: err});
+    that.sendMsg('buildProject', {});
+  });
+};
+
 EditorUser.prototype.onSocketClose = function (event) {
   this.close();
 };

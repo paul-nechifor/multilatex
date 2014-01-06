@@ -3,9 +3,9 @@ function Gui(app, opts) {
   this.menu = new Menu(app, opts);
   this.pos = new Positioning({
   });
-  this.project = new ProjectView();
-  this.editor = new EditorView();
-  this.output = new OutputView();
+  this.project = new ProjectView(app);
+  this.editor = new EditorView(app);
+  this.output = new OutputView(app);
   this.vert3PaneView = new Vert3PaneView(app, opts,
     [this.project, this.editor, this.output]);
 }

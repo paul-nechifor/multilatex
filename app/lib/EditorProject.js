@@ -15,7 +15,7 @@ EditorProject.prototype.openForUser = function (user, callback) {
     this.openForUser2(user, callback);
     return;
   }
-  
+
   var that = this;
   this.loadDoc(function (err) {
     if (err) {
@@ -23,7 +23,7 @@ EditorProject.prototype.openForUser = function (user, callback) {
       callback(err);
       return;
     }
-    
+
     that.openForUser2(user, callback);
   });
 };
@@ -43,15 +43,15 @@ EditorProject.prototype.openForUser2 = function (user, callback) {
     this.closeForUser(user);
     return;
   }
-  
+
   this.users[user.eid] = user;
-  
+
   callback(undefined, this);
 };
 
 EditorProject.prototype.closeForUser = function (user) {
   delete this.users[user.eid];
-  
+
   // If there are no more users, close the entire project.
   if (Object.keys(this.users).length === 0) {
     this.close();
@@ -64,7 +64,7 @@ EditorProject.prototype.close = function () {
   }
   this.isClosing = true;
   this.wss.unregisterProject(this);
-  
+
   // Close all the users (and they close all their files).
   for (var eid in this.users) {
     this.closeForUser(this.users[eid]);
@@ -99,6 +99,40 @@ EditorProject.prototype.openFile = function (user, path, callback) {
 EditorProject.prototype.openFile2 = function (file, user, callback) {
   file.users[user.eid] = user;
   callback(undefined, file);
+};
+
+EditorProject.prototype.build = function (callback) {
+  var that = this;
+
+  this.saveAllFiles(function (errs) {
+    if (errs) return callback(errs);
+
+    that.wss.app.latex.build(that.doc.headPath, that.doc.headFile,
+        function (err) {
+      if (err) return callback(err);
+      callback();
+    });
+  });
+};
+
+EditorProject.prototype.saveAllFiles = function (callback) {
+  var paths = Object.keys(this.files);
+  var nReturned = 0;
+  var errs = [];
+
+  for (var i = 0, len = paths.length; i < len; i++) {
+    var file = this.files[paths[i]];
+    file.save(function (err) {
+      if (err) {
+        errs.push(err);
+      }
+
+      nReturned++;
+      if (nReturned === paths.length) {
+        callback(errs.length > 0 ? errs : undefined);
+      }
+    });
+  }
 };
 
 EditorProject.prototype.unregisterFile = function (file) {

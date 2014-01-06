@@ -39,3 +39,10 @@ Project.prototype.loadFile = function (path) {
     that.file.load();
   });
 };
+
+Project.prototype.build = function () {
+  var that = this;
+  this.app.wss.callMsg('buildProject', {}, function (msg) {
+    if (msg.error) return that.app.panic(msg.error);
+  });
+};

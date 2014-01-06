@@ -4,6 +4,7 @@ function EditorFile(path, project) {
   this.path = path;
   this.project = project;
   this.shareJsId = encodeURIComponent(project.doc._id + ' ' + path);
+  this.filePath = project.doc.headPath + '/' + path;
   this.users = {};
   this.isClosing = false;
 }
@@ -12,10 +13,21 @@ EditorFile.prototype.open = function (callback) {
   this.createShareJsDoc(callback);
 };
 
-EditorFile.prototype.createShareJsDoc = function (callback) {
-  var filePath = this.project.doc.headPath + '/' + this.path;
+EditorFile.prototype.save = function (callback) {
   var that = this;
-  fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
+  this.getShareJsDoc(function (err, doc) {
+    if (err) return callback(err);
+
+    fs.writeFile(that.filePath, doc, function (err) {
+      if (err) return callback(err);
+      callback();
+    });
+  });
+};
+
+EditorFile.prototype.createShareJsDoc = function (callback) {
+  var that = this;
+  fs.readFile(this.filePath, {encoding: 'utf-8'}, function (err, data) {
     if (err) return callback(err);
 
     var shareJs = that.project.wss.app.shareJs;
@@ -46,11 +58,17 @@ EditorFile.prototype.getShareJsDoc = function (callback) {
 };
 
 EditorFile.prototype.closeShareJsDoc = function (callback) {
+  var shareJs = this.project.wss.app.shareJs;
+
+  shareJs.delete(this.shareJsId, function (err) {
+    if (err) return callback(err);
+    callback(undefined);
+  });
 };
 
 EditorFile.prototype.closeForUser = function (user) {
   delete this.users[user.eid];
-  
+
   // If there are no more users, close the entire project.
   if (Object.keys(this.users).length === 0) {
     this.close();
@@ -63,6 +81,7 @@ EditorFile.prototype.close = function () {
   }
   this.isClosing = true;
   this.project.unregisterFile(this);
+  this.closeShareJsDoc();
 };
 
 module.exports = EditorFile;
