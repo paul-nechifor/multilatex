@@ -81,7 +81,7 @@ EditorFile.prototype.close = function () {
   }
   this.isClosing = true;
   this.project.unregisterFile(this);
-  this.closeShareJsDoc();
+  this.closeShareJsDoc(function (err) {});
 };
 
 module.exports = EditorFile;

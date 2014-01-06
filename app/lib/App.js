@@ -24,7 +24,7 @@ function App(config) {
 App.prototype.start = function () {
   this.db = new Database(this.config.mongoUrl);
   this.express = express();
-  
+
   this.db.connect(this.startStep2.bind(this));
 };
 
@@ -51,15 +51,16 @@ App.prototype.configure = function () {
     secret: this.config.cookieSecret,
     store: this.sessionStore
   }));
-  this.express.use(require('./jadeLocals.js'));
-  this.express.use('/s', require('stylus').middleware(__dirname + '/../static'));
-  this.express.use('/s', express['static'](__dirname + '/../static'));
+  this.express.use(require('../logic/jadeLocals.js'));
+  this.express.use('/s',
+     require('stylus').middleware(__dirname + '/../../static'));
+  this.express.use('/s', express['static'](__dirname + '/../../static'));
   this.express.use('/store', express['static'](this.config.dirs.store));
   this.configureShareJs();
   this.express.use(this.express.router);
 
   // development only
-  if ('development' == this.express.get('env')) {
+  if ('development' === this.express.get('env')) {
     this.express.use(express.errorHandler());
   }
 };
@@ -83,10 +84,10 @@ App.prototype.createServer = function () {
 
 App.prototype.getReqSession = function (req, callback) {
   var that = this;
-  
+
   this.cookieParser(req, null, function (err) {
     if (err) return callback(err);
-    
+
     var sessionId = req.signedCookies['connect.sid'];
     that.sessionStore.get(sessionId, function (err, session) {
       if (err) return callback(err);
