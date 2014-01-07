@@ -37,6 +37,9 @@ html(lang='en')
             li
               a(href='#') ...
       ul.nav.navbar-nav.navbar-right
+        li
+          a.dropdown-toggle(href='#', data-toggle='dropdown')#fullscreen
+            <i class="glyphicon glyphicon-fullscreen"></i>
         li.dropdown
           a.dropdown-toggle(href='#', data-toggle='dropdown')
             i.glyphicon.glyphicon-user.white
@@ -77,6 +80,7 @@ html(lang='en')
     script.
       var menus = [
         ['#project-menu', 'Project'],
+        ['#fullscreen', 'Fullscreen'],
         ['#editor-menu', 'Editor']
       ];
       for (var i = 0, len = menus.length; i < len; i++) {

@@ -14,4 +14,17 @@ function main(projectId) {
   app.load();
 }
 
+require('./fullscreen-api-polyfill');
+
+var isFullScreen = false;
+$('#fullscreen').click(function (e) {
+  e.preventDefault();
+  isFullScreen = !isFullScreen;
+  if (isFullScreen) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+});
+
 window.main = main;
