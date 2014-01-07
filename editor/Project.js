@@ -1,3 +1,5 @@
+var ActiveFile = require('./ActiveFile');
+
 function Project(app, projectId) {
   this.app = app;
   this.projectId = projectId;
@@ -46,3 +48,5 @@ Project.prototype.build = function () {
     if (msg.error) return that.app.panic(msg.error);
   });
 };
+
+module.exports = Project;

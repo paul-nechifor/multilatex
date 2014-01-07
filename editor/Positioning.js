@@ -12,18 +12,18 @@ function Positioning(opts) {
 Positioning.prototype.realign = function (width, height) {
   this.width = width;
   this.height = height;
-  
+
   this.vertPaneHeight = height - this.menuSize;
-  
+
   this.realignPanes(width);
 };
 
 Positioning.prototype.realignPanes = function (width) {
   var total = width - 2 * this.sepSize;
-  
+
   // Cloning the ratios.
   var weight = this.vertPaneRatios.slice(0);
-  
+
   // Eliminating the collapsed from the weights.
   if (this.sepCollapsed[0]) {
     weight[1] += weight[0];
@@ -33,11 +33,11 @@ Positioning.prototype.realignPanes = function (width) {
     weight[1] += weight[2];
     weight[2] = 0;
   }
-  
+
   // Transforming weights to ratios.
   var totalWeight = weight.reduce(function(pv, cv) { return pv + cv; }, 0);
   weight = weight.map(function (w) { return w / totalWeight; });
-  
+
   // Transforming to pixels.
   var ws = this.vertPaneRealWidth;
   ws[0] = Math.floor(weight[0] * total);
@@ -50,10 +50,10 @@ Positioning.prototype.dragPane = function (index, ammount) {
   var realWidth = this.vertPaneRatios.map(function (w) {
     return w * total;
   });
-  
+
   realWidth[index] += ammount;
   realWidth[index + 1] -= ammount;
-  
+
   for (var i = 0; i < 3; i++) {
     if (realWidth[i] < 150) {
       return;
@@ -64,3 +64,5 @@ Positioning.prototype.dragPane = function (index, ammount) {
     return w / total;
   });
 };
+
+module.exports = Positioning;

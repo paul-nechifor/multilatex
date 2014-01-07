@@ -1,3 +1,7 @@
+var Gui = require('./Gui');
+var WebSocketServer = require('./WebSocketServer');
+var Project = require('./Project');
+
 function App(opts) {
   this.opts = opts;
   this.gui = new Gui(this, opts);
@@ -7,7 +11,7 @@ function App(opts) {
 
 App.prototype.load = function () {
   var that = this;
-  
+
   this.gui.setup();
   this.wss.setup(function () {
     that.project.load();
@@ -22,3 +26,5 @@ App.prototype.panic = function (error) {
   console.log(error);
   console.trace();
 };
+
+module.exports = App;

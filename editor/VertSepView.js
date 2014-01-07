@@ -1,3 +1,5 @@
+var util = require('./util');
+
 VertSepView.COL_CLASSES = [
   'collapser col-left',
   'collapser col-right'
@@ -13,33 +15,33 @@ function VertSepView(index) {
 }
 
 VertSepView.prototype.setup = function (parent, pos) {
-  this.elem = createElement(parent, 'div', 'separator sep-vert noselect');
+  this.elem = util.createElement(parent, 'div', 'separator sep-vert noselect');
   var s = this.elem.style;
   s.height = '100%';
   s.width = pos.sepSize + 'px';
   s.cssFloat = 'left';
-  
-  this.collapser = createElement(this.elem, 'div',
-    VertSepView.COL_CLASSES[this.colClass]);
-  createElement(this.collapser, 'div', 'arrow');
-  
+
+  this.collapser = util.createElement(this.elem, 'div',
+      VertSepView.COL_CLASSES[this.colClass]);
+  util.createElement(this.collapser, 'div', 'arrow');
+
   this.collapse(pos.sepCollapsed[this.index]);
-  
+
   this.setupListeners();
 };
 
 VertSepView.prototype.setupListeners = function () {
   var that = this;
-  
+
   this.collapser.addEventListener('click', function (e) {
     e.stopPropagation();
     that.onCollapse(that.index);
   });
-  
+
   this.elem.addEventListener('mousedown', function (e) {
     var pageX = e.pageX;
     var html = document.documentElement;
-    
+
     var onMouseMove = function (e) {
       var dx = e.pageX - pageX;
       if (!dx) {
@@ -52,7 +54,7 @@ VertSepView.prototype.setupListeners = function () {
       html.removeEventListener('mousemove', onMouseMove);
       html.removeEventListener('mouseup', onMouseUp);
     };
-    
+
     html.addEventListener('mousemove', onMouseMove);
     html.addEventListener('mouseup', onMouseUp);
   });
@@ -65,9 +67,9 @@ VertSepView.prototype.collapse = function (collapse) {
   if ((collapse && this.isCollapsed) || (!collapse && !this.isCollapsed)) {
     return;
   }
-  
+
   this.isCollapsed = collapse;
-  
+
   if (collapse) {
     this.colClass = (this.index + 1) % 2;
   } else {
@@ -76,3 +78,5 @@ VertSepView.prototype.collapse = function (collapse) {
 
   this.collapser.setAttribute('class', VertSepView.COL_CLASSES[this.colClass]);
 };
+
+module.exports = VertSepView;

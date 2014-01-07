@@ -1,3 +1,6 @@
+var util = require('./util');
+var TreeView = require('./TreeView');
+
 function ProjectView(app) {
   this.app = app;
   this.elem = null;
@@ -5,7 +8,7 @@ function ProjectView(app) {
 }
 
 ProjectView.prototype.setup = function (parent, pos) {
-  this.elem = createElement(parent, 'div', 'noselect');
+  this.elem = util.createElement(parent, 'div', 'noselect');
   this.setupView(pos);
   this.tree.setup(this.elem);
   this.setupTreeActions();
@@ -17,7 +20,7 @@ ProjectView.prototype.setupView = function (pos) {
   s.height = '100%';
   s.cssFloat = 'left';
   this.realign(pos);
-}
+};
 
 ProjectView.prototype.realign = function (pos) {
   var s = this.elem.style;
@@ -80,3 +83,5 @@ ProjectView.prototype.onNewFolder = function (parentItem) {
 
 ProjectView.prototype.onUploadHere = function (parentItem) {
 };
+
+module.exports = ProjectView;

@@ -7,7 +7,13 @@
 # Node.
 node_modules
 
-# Project specific.
+# Blog generated stuff.
 /app/data/blog
+/static/blog
+
+# Things which are compiled there.
+/static/js/editor.js
+/static/css
+
 # Use your own secret.
 /config/secret.json

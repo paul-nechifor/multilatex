@@ -64,3 +64,5 @@ WebSocketServer.prototype.callMsg = function (type, msg, callback) {
   
   this.sendMsg(type, msg);
 };
+
+module.exports = WebSocketServer;

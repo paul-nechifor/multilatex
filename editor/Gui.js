@@ -1,3 +1,10 @@
+var Menu = require('./Menu');
+var Positioning = require('./Positioning');
+var ProjectView = require('./ProjectView');
+var EditorView = require('./EditorView');
+var OutputView = require('./OutputView');
+var Vert3PaneView = require('./Vert3PaneView');
+
 function Gui(app, opts) {
   this.app = app;
   this.menu = new Menu(app, opts);
@@ -12,11 +19,11 @@ function Gui(app, opts) {
 
 Gui.prototype.setup = function () {
   this.menu.setup();
-  
+
   var jWindow = $(window);
   this.pos.realign(jWindow.width(), jWindow.height());
   this.vert3PaneView.setup(this.pos);
-  
+
   var that = this;
   window.onresize = function () {
     that.realign();
@@ -28,3 +35,5 @@ Gui.prototype.realign = function () {
   this.pos.realign(jWindow.width(), jWindow.height());
   this.vert3PaneView.realign(this.pos);
 };
+
+module.exports = Gui;

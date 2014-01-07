@@ -1,10 +1,12 @@
+var util = require('./util');
+
 function OutputView(app) {
   this.app = app;
   this.elem = null;
 }
 
 OutputView.prototype.setup = function (parent, pos) {
-  this.elem = createElement(parent);
+  this.elem = util.createElement(parent);
 
   var s = this.elem.style;
   s.height = '100%';
@@ -26,3 +28,5 @@ OutputView.prototype.realign = function (pos) {
 OutputView.prototype.onBuildClicked = function () {
   this.app.project.build();
 };
+
+module.exports = OutputView;

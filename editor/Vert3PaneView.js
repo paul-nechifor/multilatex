@@ -1,3 +1,5 @@
+var VertSepView = require('./VertSepView');
+
 function Vert3PaneView(app, opts, threePanes) {
   this.app = app;
   this.elem = opts.workspaceElem;
@@ -17,7 +19,7 @@ Vert3PaneView.prototype.setup = function (pos) {
   s.position = 'fixed';
   s.width = '100%';
   s.height = '100%';
-  
+
   for (var i = 0, len = this.order.length; i < len; i++) {
     this.order[i].setup(this.elem, pos);
   }
@@ -50,3 +52,5 @@ Vert3PaneView.prototype.realign = function (pos) {
     this.order[i].realign(pos);
   }
 };
+
+module.exports = Vert3PaneView;

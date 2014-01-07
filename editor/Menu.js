@@ -4,5 +4,6 @@ function Menu(app, opts) {
 }
 
 Menu.prototype.setup = function () {
-  
 };
+
+module.exports = Menu;

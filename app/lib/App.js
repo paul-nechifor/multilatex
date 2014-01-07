@@ -52,8 +52,6 @@ App.prototype.configure = function () {
     store: this.sessionStore
   }));
   this.express.use(require('../logic/jadeLocals.js'));
-  this.express.use('/s',
-     require('stylus').middleware(__dirname + '/../../static'));
   this.express.use('/s', express['static'](__dirname + '/../../static'));
   this.express.use('/store', express['static'](this.config.dirs.store));
   this.configureShareJs();

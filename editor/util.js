@@ -1,4 +1,4 @@
-function createElement(parent, type, classes) {
+exports.createElement = function (parent, type, classes) {
   type = type || 'div';
   var element = document.createElement(type);
   parent.appendChild(element);
@@ -6,4 +6,4 @@ function createElement(parent, type, classes) {
     element.setAttribute('class', classes);
   }
   return element;
-}
+};

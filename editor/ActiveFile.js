@@ -10,3 +10,5 @@ ActiveFile.prototype.load = function () {
 
 ActiveFile.prototype.close = function () {
 };
+
+module.exports = ActiveFile;

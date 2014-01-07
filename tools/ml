@@ -45,7 +45,7 @@ function parseConfig(val) {
 function install(env) {
   var config = getConfig(env);
   requireRoot();
-  
+
   createUser(config, function () {
     createUpstartConfig(config, function () {
     });

@@ -21,6 +21,7 @@ var config = {
     work: 'work/multilatex',
     hostname: 'ubuntu@multilatex.com'
   },
+  debug: true,
   avatarSize: 253
 };
 
@@ -32,7 +33,7 @@ function genConfig() {
   } catch (e) {
     console.warn('You should use a secret.');
   }
-  
+
   return config;
 }
 

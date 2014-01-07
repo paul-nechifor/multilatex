@@ -1,3 +1,5 @@
+var util = require('./util');
+
 function EditorView(app) {
   this.app = app;
   this.elem = null;
@@ -7,7 +9,7 @@ function EditorView(app) {
 }
 
 EditorView.prototype.setup = function (parent, pos) {
-  this.elem = createElement(parent);
+  this.elem = util.createElement(parent);
   this.editor = ace.edit(this.elem);
   this.setupElement(pos);
   this.setupEditor();
@@ -30,7 +32,7 @@ EditorView.prototype.setupEditor = function () {
   this.elem.style.fontSize = '14px';
   this.editor.setTheme('ace/theme/eclipse');
   this.editor.setReadOnly(true);
-  
+
   var session = this.editor.getSession();
   session.setMode('ace/mode/latex');
   session.setUseWrapMode(true);
@@ -54,3 +56,5 @@ EditorView.prototype.clearActiveFile = function () {
   this.editor.getSession().setValue('');
   this.editor.setReadOnly(true);
 };
+
+module.exports = EditorView;
