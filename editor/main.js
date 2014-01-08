@@ -12,6 +12,10 @@ function main(projectId) {
 
   var app = new App(opts);
   app.load();
+
+  $('#build-menu').click(function () {
+    app.project.build();
+  });
 }
 
 require('./fullscreen-api-polyfill');

@@ -15,6 +15,7 @@ Project.prototype.load = function () {
     that.doc = msg.project;
     that.loadProjectTree();
     that.loadMainFile();
+    that.app.gui.output.pdf.loadNew(that.getPdfLink());
   });
 };
 
@@ -46,7 +47,14 @@ Project.prototype.build = function () {
   var that = this;
   this.app.wss.callMsg('buildProject', {}, function (msg) {
     if (msg.error) return that.app.panic(msg.error);
+    that.app.gui.output.pdf.loadNew(that.getPdfLink());
   });
+};
+
+Project.prototype.getPdfLink = function () {
+  var main = this.doc.headFile.split('.');
+  main.pop();
+  return 'head/' + main.join('.') + '.pdf';
 };
 
 module.exports = Project;

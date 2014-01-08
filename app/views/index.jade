@@ -7,8 +7,9 @@ block content
         .col-md-8
           h1 Edit LaTeX Online
           p A collaborative online editor for LaTeX projects.
-          .col-md-8
-            img(src='/s/img/screenshot.png').img-responsive
+          .row
+            .col-md-8
+              img(src='/s/img/screenshot.png').img-responsive
         .col-md-4
           if !session.username
             form.form-pill.form-quick-register

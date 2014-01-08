@@ -127,7 +127,7 @@ EditorUser.prototype.onMessage_buildProject = function () {
 
   var that = this;
   this.project.build(function (err) {
-    if (err) return that.sendMsg('openFile', {error: err});
+    if (err) return that.sendMsg('buildProject', {error: err});
     that.sendMsg('buildProject', {});
   });
 };

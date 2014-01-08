@@ -36,6 +36,9 @@ html(lang='en')
               a(href='#') Theme
             li
               a(href='#') ...
+        li
+          a#build-menu
+            <i class="glyphicon glyphicon-play"></i>
       ul.nav.navbar-nav.navbar-right
         li
           a.dropdown-toggle(href='#', data-toggle='dropdown')#fullscreen
@@ -80,6 +83,7 @@ html(lang='en')
     script.
       var menus = [
         ['#project-menu', 'Project'],
+        ['#build-menu', 'Build'],
         ['#fullscreen', 'Fullscreen'],
         ['#editor-menu', 'Editor']
       ];

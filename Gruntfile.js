@@ -40,7 +40,10 @@ module.exports = function (grunt) {
       compile: {
         options: {},
         files: {
-          './static/css/editor.css': ['app/styles/editor.styl'],
+          './static/css/editor.css': [
+            'app/styles/editor.styl',
+            'app/styles/pdfjs.styl'
+          ],
           './static/css/style.css': ['app/styles/style.styl']
         }
       }

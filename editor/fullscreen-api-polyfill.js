@@ -1,3 +1,4 @@
+// https://github.com/neovov/Fullscreen-API-Polyfill/
 (function ( doc ) {
   // Use JavaScript script mode
   "use strict";
