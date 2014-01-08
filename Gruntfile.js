@@ -73,8 +73,17 @@ module.exports = function (grunt) {
         base: ['stop', config.username]
       },
       rsyncApp: {
-        base: ['rsync', '-a', '--del', __dirname, config.dirs.install],
+        base: ['rsync', '-a', '--del', __dirname + '/.', config.dirs.install],
         runAs: [config.username, config.username]
+      },
+      deploy: {
+        base: [
+          'bash',
+          __dirname + '/tools/templates/deploy.sh',
+          config.deploy.hostname,
+          config.deploy.work,
+          __dirname
+        ]
       }
     }
   });
@@ -102,6 +111,7 @@ module.exports = function (grunt) {
   }
 
   grunt.registerTask('setup-base', [
+    'require-root',
     'shell-spawn:useradd',
     'shell-spawn:mkdirs'
   ]);
@@ -112,14 +122,51 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('install', [
+    'require-root',
     'shell-spawn:stopService',
     'setup-base',
+    'create-upstart',
     'shell-spawn:rsyncApp'
   ]);
 
   grunt.registerTask('start', [
     'shell-spawn:startService'
   ]);
+
+  grunt.registerTask('deploy', [
+    'shell-spawn:deploy'
+  ]);
+
+  grunt.registerTask('require-root', 'Fails if not root.', function () {
+    if (!process.getuid || process.getuid() !== 0) {
+      grunt.log.error('You have to be root.');
+      return false;
+    }
+  });
+
+  grunt.registerTask('create-upstart', 'Create upstart script.', function () {
+    function replaceFileTemplate(fileName, vals) {
+      var file = fs.readFileSync(fileName).toString();
+      return replaceTemplate(file, vals);
+    }
+    function replaceTemplate(template, vals) {
+      var ret = template;
+      for (var key in vals) {
+        ret = ret.replace(new RegExp('{{' + key + '}}', 'g'), vals[key]);
+      }
+      return ret;
+    }
+
+    var confFile = __dirname + '/tools/templates/multilatex.conf';
+    var conf = replaceFileTemplate(confFile, {
+      username: config.username,
+      home: config.dirs.home,
+      install: config.dirs.install,
+      logs: config.dirs.logs
+    });
+
+    fs.writeFileSync('/etc/init/multilatex.conf', conf);
+  });
 
   grunt.registerTask('default', ['build']);
 };

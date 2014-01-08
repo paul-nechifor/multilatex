@@ -1,9 +1,10 @@
-hostname="{{hostname}}"
-work="{{work}}"
-src="{{src}}"
+hostname=$1
+work=$2
+src=$3
 
-rsync -a --del $src $hostname:$work
+rsync -a --del $src $hostname:$work/..
 
 ssh $hostname <<-END
-  sudo node $work/tools/ml install
+  grunt --gruntfile $work/Gruntfile.js build
+  sudo grunt --gruntfile $work/Gruntfile.js install start
 END
