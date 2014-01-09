@@ -13,21 +13,21 @@ var userLogic = require('../logic/user');
 
 function registerRoutes(app) {
   var e = app.express;
-  
+
   api.setApp(app);
   blog.setApp(app);
   project.setApp(app);
   user.setApp(app);
-  
+
   fileStoreLogic.setApp(app);
   headDirLogic.setApp(app);
   projectLogic.setApp(app);
   userLogic.setApp(app);
-  
+
   e.post('/api/create', api.checkAuth);
   e.get('/create', root.checkAuth);
   e.get('/:username/:location/edit', root.checkAuth);
-  
+
   e.get('/', root.index);
   e.post('/api/create', api.create);
   e.post('/api/login', api.login);
@@ -42,6 +42,7 @@ function registerRoutes(app) {
   e.get('/:username', user.username);
   e.get('/:username/:location', project.location);
   e.get('/:username/:location/edit', project.edit);
+  e.get('/:username/:location/head', project.head);
   e.get('/:username/:location/head/*', project.headFiles);
   e.get('*', root.error404);
 }

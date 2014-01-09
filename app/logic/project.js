@@ -2,6 +2,9 @@ var headDir = require('./headDir');
 var util = require('./util');
 var projectMd = require('../models/project');
 var ObjectID = require('mongodb').ObjectID;
+var exec = require('child_process').exec;
+var fs = require('fs');
+var fileStore = require('./fileStore');
 
 var app = null;
 
@@ -51,6 +54,34 @@ exports.getProjectsForUser = function (userId, callback) {
   // TODO: Use streaming and not toArray.
   app.db.projects.find({userId: userId}).toArray(callback);
 };
+
+exports.createHeadArchive = function (project, callback) {
+  var eProject = app.webSocketServer.getProjectById(project._id.toString());
+  if (eProject) {
+    eProject.saveAllFiles(function (errs) {
+      if (errs) return callback(errs);
+      createHeadArchive2(project, callback);
+    });
+    return;
+  }
+  createHeadArchive2(project, callback);
+};
+
+function createHeadArchive2(project, callback) {
+  var file = app.config.dirs.tmp + '/' + util.randomBase36(48) + '.zip';
+  var commands = 'cd ' + project.headPath + ' && zip -q -r ' + file + ' .';
+  exec(commands, function (err, out, err) {
+    if (err) return callback(err);
+    createHeadArchive3(project, file, callback);
+  });
+}
+
+function createHeadArchive3(project, zipFile, callback) {
+  fileStore.moveFile(zipFile, function (err, hash) {
+    if (err) return callback(err);
+    callback(undefined, hash);
+  });
+}
 
 // TODO: Do more advanced checks.
 // TODO: Check reserved list.

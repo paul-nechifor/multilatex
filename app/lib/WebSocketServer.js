@@ -4,7 +4,7 @@ var EditorProject = require('./EditorProject');
 
 function WebSocketServer(app) {
   this.app = app;
-  this.wss = null;  
+  this.wss = null;
   this.lastUserId = 0;
   this.users = {};
   this.projects = {};
@@ -24,12 +24,12 @@ WebSocketServer.prototype.onConnection = function (ws) {
 
 WebSocketServer.prototype.openProject = function (user, projectId, callback) {
   var project = this.projects[projectId];
-  
+
   if (!project) {
     project = new EditorProject(projectId, this);
     this.projects[project.id] = project;
   }
-  
+
   project.openForUser(user, callback);
 };
 
@@ -39,6 +39,10 @@ WebSocketServer.prototype.unregisterUser = function (user) {
 
 WebSocketServer.prototype.unregisterProject = function (project) {
   delete this.projects[project.eid];
+};
+
+WebSocketServer.prototype.getProjectById = function (id) {
+  return this.projects[id];
 };
 
 module.exports = WebSocketServer;

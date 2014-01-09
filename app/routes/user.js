@@ -14,7 +14,7 @@ var tabFuncs = {
   'overview': userOverview,
   'projects': userProjects,
   'activity': userActivity
-}
+};
 
 exports.setApp = function (pApp) {
   app = pApp;
@@ -49,18 +49,18 @@ exports.username = function (req, res) {
       if (err === 'user-not-found') {
         root.error404(req, res);
       } else {
-        root.error500(req, res);
+        root.error500(req, res, err);
       }
       return;
     }
-    
+
     var activeTab = req.query.tab in tabFuncs ? req.query.tab : 'overview';
     var data = {
       user: user,
       tabs: tabs,
       activeTab: activeTab
     };
-    
+
     tabFuncs[activeTab](req, res, data);
   });
 };

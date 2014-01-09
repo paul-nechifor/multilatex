@@ -120,18 +120,20 @@ EditorProject.prototype.saveAllFiles = function (callback) {
   var nReturned = 0;
   var errs = [];
 
+  var onReturn = function (err) {
+    if (err) {
+      errs.push(err);
+    }
+
+    nReturned++;
+    if (nReturned === paths.length) {
+      callback(errs.length > 0 ? errs : undefined);
+    }
+  };
+
   for (var i = 0, len = paths.length; i < len; i++) {
     var file = this.files[paths[i]];
-    file.save(function (err) {
-      if (err) {
-        errs.push(err);
-      }
-
-      nReturned++;
-      if (nReturned === paths.length) {
-        callback(errs.length > 0 ? errs : undefined);
-      }
-    });
+    file.save(onReturn);
   }
 };
 

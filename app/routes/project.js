@@ -43,6 +43,20 @@ exports.edit = function (req, res) {
   });
 };
 
+exports.head = function (req, res) {
+  var action = req.query.action;
+
+  getProjectDataNoErrContrib(req, res, function (user, project) {
+    if (action === 'download') {
+      downloadHead(req, res, project);
+      return;
+    }
+
+    // TODO: Implement rest.
+    root.error404(req, res);
+  });
+};
+
 exports.headFiles = function (req, res) {
   var file = req.param(0);
 
@@ -57,6 +71,15 @@ exports.headFiles = function (req, res) {
     serveHeadFile(req, res, file, project);
   });
 };
+
+function downloadHead(req, res, project) {
+  projectLogic.createHeadArchive(project, function (err, hash) {
+    if (err) return root.error500(req, res, err);
+    res.setHeader('Content-disposition', 'attachment; filename='
+        + project.location + '.zip');
+    serveStoreFile(req, res, hash);
+  });
+}
 
 function serveHeadFile(req, res, file, project) {
   util.pipeFile(project.headPath + '/' + file, res);
@@ -86,8 +109,7 @@ function getProjectDataNoErr(req, res, callback) {
       if (err === 'project-not-found') {
         root.error404(req, res);
       } else {
-        root.error500(req, res);
-        console.error(err);
+        root.error500(req, res, err);
       }
       return;
     }
