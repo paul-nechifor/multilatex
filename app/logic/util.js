@@ -84,7 +84,7 @@ exports.copyFile = function (source, target, callback) {
   var ws = fs.createWriteStream(target);
   ws.on('error', checkError);
   
-  ws.on('close', function(ex) {
+  ws.on('close', function (ex) {
     if (!callbackUsed) {
       callbackUsed = true;
       callback();
@@ -96,5 +96,8 @@ exports.copyFile = function (source, target, callback) {
 exports.pipeFile = function (file, res) {
   // TODO: set the size.
   var rs = fs.createReadStream(file);
+  rs.on('error', function (err) {
+    exports.logErr(err);
+  });
   rs.pipe(res);
 };

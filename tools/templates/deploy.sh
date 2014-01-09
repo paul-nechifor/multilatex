@@ -2,7 +2,7 @@ hostname=$1
 work=$2
 src=$3
 
-rsync -a --del $src $hostname:$work/..
+rsync -a --del --exclude .git $src $hostname:$work/..
 
 ssh $hostname <<-END
   grunt --gruntfile $work/Gruntfile.js build
