@@ -12,10 +12,10 @@ exports.setApp = function (pApp) {
 exports.create = function (opts, callback) {
   var err = checkLocationValidity(opts.location);
   if (err) return callback(err);
-  
+
   projectMd.init(opts, function (err, doc) {
     if (err) return callback(err);
-  
+
     createInDb(doc, function (err, project) {
       if (err) return callback(err);
 
@@ -58,11 +58,11 @@ function checkLocationValidity(location) {
   if (!location || location.length === 0) {
     return 'no-location-given';
   }
-  
+
   if (!/[a-zA-Z][a-zA-Z0-9.-]{3,32}/.test(location)) {
     return 'Location is invalid. Allowed characters are alphanumerics, “.”, and “-”.';
   }
-  
+
   return null;
 }
 
@@ -76,7 +76,7 @@ function createInDb(doc, callback) {
       }
       return;
     }
-    
+
     callback(undefined, project[0]);
   });
 }
@@ -86,13 +86,13 @@ function createAndInitHead(project, callback) {
     var updateDoc = {
       headPath: path
     };
-    
+
     initHead(updateDoc, function (err) {
       if (err) return callback(err);
       var query = {_id: project._id};
       updateDoc.headTree = fixHeadTreeToMongo(updateDoc.headTree);
       var update = {$set: updateDoc};
-    
+
       app.db.projects.update(query, update, {w: 1}, function (err, nUpdated) {
         if (err) return callback(err);
         callback();
@@ -102,23 +102,23 @@ function createAndInitHead(project, callback) {
 }
 
 function initHead(updateDoc, callback) {
-  var initFile = __dirname + '/../data/latex/empty.tex';
+  var initFile = __dirname + '/../../data/latex/empty.tex';
   var mainFile = updateDoc.headPath + '/main.tex';
   util.copyFile(initFile, mainFile, function (err) {
     if (err) return callback(err);
-    
+
     updateDoc.headFile = 'main.tex';
     updateDoc.headTree = {
       'main.tex': true
     };
-    
-    callback();    
+
+    callback();
   });
 }
 
 function fixHeadTreeToMongo(headTree) {
   var ret = {};
-  
+
   for (var item in headTree) {
     ret[item.replace(/\./g, '%')] = headTree[item];
   }

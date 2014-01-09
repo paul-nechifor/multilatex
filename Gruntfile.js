@@ -80,7 +80,7 @@ module.exports = function (grunt) {
       deploy: {
         base: [
           'bash',
-          __dirname + '/tools/templates/deploy.sh',
+          __dirname + '/tools/scripts/deploy.sh',
           config.deploy.hostname,
           config.deploy.work,
           __dirname
@@ -158,7 +158,7 @@ module.exports = function (grunt) {
       return ret;
     }
 
-    var confFile = __dirname + '/tools/templates/multilatex.conf';
+    var confFile = __dirname + '/data/upstart/multilatex.conf';
     var conf = replaceFileTemplate(confFile, {
       username: config.username,
       home: config.dirs.home,

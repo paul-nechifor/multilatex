@@ -8,7 +8,7 @@
 node_modules
 
 # Blog generated stuff.
-/app/data/blog
+/data/blog
 /static/blog
 
 # Things which are compiled there.
