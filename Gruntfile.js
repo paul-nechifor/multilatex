@@ -169,5 +169,22 @@ module.exports = function (grunt) {
     fs.writeFileSync('/etc/init/multilatex.conf', conf);
   });
 
+  grunt.registerTask('logs', 'Watch logs.', function () {
+    this.async(); // Never ending.
+
+    var files = fs.readdirSync(config.dirs.logs);
+    if (files.length === 0) {
+      grunt.log.writeln('No logs.');
+      return;
+    }
+
+    files.sort();
+    var lastLog = config.dirs.logs + '/' + files[files.length - 1];
+
+    var spawn = require('child_process').spawn;
+    var child = spawn('tail', ['-f', lastLog]);
+    child.stdout.pipe(process.stdout);
+  });
+
   grunt.registerTask('default', ['build']);
 };

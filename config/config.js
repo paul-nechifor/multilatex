@@ -22,7 +22,8 @@ var config = {
     hostname: 'ubuntu@multilatex.com'
   },
   debug: true,
-  avatarSize: 253
+  avatarSize: 253,
+  logger: ':date :remote-addr :method :url :status :response-time'
 };
 
 function genConfig() {

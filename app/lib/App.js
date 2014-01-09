@@ -42,7 +42,14 @@ App.prototype.configure = function () {
   this.express.set('views', __dirname + '/../views');
   this.express.set('view engine', 'jade');
   this.express.use(express.compress());
-  this.express.use(express.logger('dev'));
+
+  if (this.config.logger) {
+    express.logger.token('date', function () {
+      return new Date().toISOString();
+    });
+    this.express.use(express.logger(this.config.logger));
+  }
+
   this.express.use(express.json());
   this.express.use(express.urlencoded());
   this.express.use(express.methodOverride());
@@ -76,8 +83,11 @@ App.prototype.registerRoutes = function () {
 };
 
 App.prototype.createServer = function () {
+  var port = this.config.port;
   this.server = http.createServer(this.express);
-  this.server.listen(this.config.port);
+  this.server.listen(port, function () {
+    console.log('Express server listening on port ' + port + '.');
+  });
 };
 
 App.prototype.getReqSession = function (req, callback) {
