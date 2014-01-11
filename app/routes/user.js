@@ -40,7 +40,7 @@ exports.register = function (req, res) {
 };
 
 exports.create = function (req, res) {
-  res.render('create', {title: 'Create Project'});
+  res.render('create', {title: 'Create a project'});
 };
 
 exports.username = function (req, res) {

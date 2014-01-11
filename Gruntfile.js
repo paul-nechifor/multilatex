@@ -61,7 +61,8 @@ module.exports = function (grunt) {
           [config.dirs.heads],
           [config.dirs.store],
           [config.dirs.tmp],
-          [config.dirs.install]
+          [config.dirs.install],
+          [config.dirs.upload]
         ],
         runAs: [config.username, config.username]
       },

@@ -1,7 +1,10 @@
+var ObjectID = require('mongodb').ObjectID;
+
 exports.init = function (opts, callback) {
   var doc = {
     username: opts.username,
-    userId: opts.userId,
+    userId: typeof opts.userId === 'string'
+        ? new ObjectID(opts.userId) : opts.userId,
     location: opts.location,
     created: Date.now(),
     downloads: 0,
@@ -17,10 +20,10 @@ exports.init = function (opts, callback) {
     commits: [],
     mergeRequests: [],
     // The location of the head files.
-    headPath: null,
+    headPath: opts.headPath || null,
     // The main text file.
-    headFile: null,
-    // Dict of relative file path to value. If the value is null, the file is
+    headFile: opts.headFile || null,
+    // Dict of relative file path to value. If the value is true, the file is
     // in the head, if it is a string, that string is the hash of a file in the
     // file store.
     // TODO FIX THIS
@@ -29,10 +32,41 @@ exports.init = function (opts, callback) {
     headTree: {}
   };
 
+  console.log('opts', opts);
+
+  if (opts.headFiles) {
+    console.log('files', opts.headFiles);
+    for (var i = 0, len = opts.headFiles.length; i < len; i++) {
+      doc.headTree[opts.headFiles[i]] = true;
+    }
+  }
+
   doc.contribuitors[opts.username] = doc.created;
   doc.contribuitorsIds[opts.userId.toString()] = doc.created;
 
   // TODO: Validate values.
 
   callback(undefined, doc);
+};
+
+exports.fixToMongo = function (doc) {
+  var orig = doc.headTree;
+  var mod = {};
+
+  for (var item in orig) {
+    mod[item.replace(/\./g, '%')] = orig[item];
+  }
+
+  doc.headTree = mod;
+};
+
+exports.fixFromMongo = function (doc) {
+  var orig = doc.headTree;
+  var mod = {};
+
+  for (var item in orig) {
+    mod[item.replace(/%/g, '.')] = orig[item];
+  }
+
+  doc.headTree = mod;
 };

@@ -25,6 +25,7 @@ function registerRoutes(app) {
   userLogic.setApp(app);
 
   e.post('/api/create', api.checkAuth);
+  e.post('/api/upload', api.checkAuth);
   e.get('/create', root.checkAuth);
   e.get('/:username/:location/edit', root.checkAuth);
 
@@ -33,6 +34,7 @@ function registerRoutes(app) {
   e.post('/api/login', api.login);
   e.post('/api/logout', api.logout);
   e.post('/api/register', api.register);
+  e.post('/api/upload', api.upload);
   e.get('/blog', blog.index);
   e.get('/blog/:post', blog.post);
   e.get('/login', user.login);

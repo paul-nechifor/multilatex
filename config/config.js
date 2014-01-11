@@ -1,19 +1,23 @@
 var fs = require('fs');
 
+var name = 'multilatex';
+var home = '/home/' + name;
+
 var config = {
   cookieSecret: 'default secret',
   mongoUrl: 'mongodb://localhost:27017/multilatex',
   mongoDbName: 'multilatex',
   port: process.env.PORT || 3000,
   // The name of the user under which the node server will run.
-  username: 'multilatex',
+  username: name,
   dirs: {
-    home: '/home/multilatex',
-    install: '/home/multilatex/apps/multilatex',
-    logs: '/home/multilatex/logs',
-    store: '/home/multilatex/store',
-    heads: '/home/multilatex/heads',
-    tmp: '/home/multilatex/tmp'
+    home: home,
+    install: home + '/apps/' + name,
+    logs: home + '/logs',
+    store: home + '/store',
+    heads: home + '/heads',
+    tmp: home + '/tmp',
+    upload: home + '/upload'
   },
   // This is where the whole package is copied. After that, the install on that
   // system has to be updated.
@@ -23,7 +27,8 @@ var config = {
   },
   debug: true,
   avatarSize: 253,
-  logger: ':date :remote-addr :method :url :status :response-time'
+  logger: ':date :remote-addr :method :url :status :response-time',
+  fileLimit: 1024 * 1024
 };
 
 function genConfig() {

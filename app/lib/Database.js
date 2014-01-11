@@ -4,7 +4,7 @@ var util = require('../logic/util');
 function Database(url) {
   this.url = url;
   this.db = null;
-  
+
   this.users = null;
   this.projects = null;
 }
@@ -17,7 +17,7 @@ Database.prototype.connect = function (callback) {
     }
 
     that.db = db;
-    
+
     var errFunc = function (err) {
       if (err) {
         // TODO: Startup errors usually end up crashing here with 'MongoError:

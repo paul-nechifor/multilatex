@@ -50,8 +50,10 @@ App.prototype.configure = function () {
     this.express.use(express.logger(this.config.logger));
   }
 
-  this.express.use(express.json());
-  this.express.use(express.urlencoded());
+  this.express.use(express.bodyParser({
+    uploadDir: this.config.dirs.upload,
+    limit: this.config.fileLimit
+  }));
   this.express.use(express.methodOverride());
   this.express.use(this.cookieParser);
   this.express.use(express.session({
