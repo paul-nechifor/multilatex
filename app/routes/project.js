@@ -1,3 +1,4 @@
+var commitLogic = require('../logic/commit');
 var projectLogic = require('../logic/project');
 var userLogic = require('../logic/user');
 var fileStore = require('../logic/fileStore');
@@ -21,10 +22,11 @@ exports.setApp = function (pApp) {
 };
 
 exports.location = function (req, res) {
-  getProjectDataNoErr(req, res, function (user, project) {
+  getProjectDataNoErrCommit(req, res, function (user, project, commit) {
     var activeTab = req.query.tab in tabFuncs ? req.query.tab : 'overview';
     var data = {
       p: project,
+      c: commit,
       tabs: tabs,
       activeTab: activeTab
     };
@@ -98,6 +100,24 @@ function getProjectDataNoErrContrib(req, res, callback) {
     }
 
     callback(user, project);
+  });
+}
+
+function getProjectDataNoErrCommit(req, res, callback) {
+  getProjectDataNoErr(req, res, function (user, project) {
+    var latestCommitId = project.commits[project.commits.length - 1];
+    commitLogic.getCommitById(latestCommitId, function (err, commit) {
+      if (err) {
+        if (err === 'commit-not-found') {
+          root.error404(req, res);
+        } else {
+          root.error500(req, res, err);
+        }
+        return;
+      }
+
+      callback(user, project, commit);
+    });
   });
 }
 

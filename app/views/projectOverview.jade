@@ -4,7 +4,19 @@ extends project
 
 block content2
   .row
+    .col-md-3.project-info-column
+      .thumbnail
+        img(src='#{storeUrl(c.thumbs[0])}', alt="#{p.username} #{p.location}")
+
+        if session.userId in p.contributorsIds
+          a.btn.btn-success.btn-block(href='#{pLink}/edit')
+            <i class='glyphicon glyphicon-pencil'></i> Open in editor
+        a.btn.btn-default.btn-block(href='#{pLink}/download/pdf')
+          <i class='glyphicon glyphicon-share'></i> View PDF
+        a.btn.btn-default.btn-block(href='#{pLink}/fork')
+          <i class='glyphicon glyphicon-random'></i> Fork
+        a.btn.btn-default.btn-block(href='#{pLink}/download/zip')
+          <i class='glyphicon glyphicon-cloud-download'></i> Download ZIP
+
     .col-md-9
       p TODO
-
-    .col-md-3

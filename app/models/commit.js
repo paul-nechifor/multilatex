@@ -3,6 +3,7 @@ exports.init = function (project, callback) {
     userId: project.userId,
     projectId: project._id,
     created: Date.now(),
+    order: project.commits.length,
 
     files: project.headFiles,
 
@@ -13,7 +14,10 @@ exports.init = function (project, callback) {
     changes: project.changes,
 
     // Null if not generated, hash otherwise.
-    pdfFile: null
+    pdfFile: null,
+
+    // List of the hashes of the thumbnails.
+    thumbs: []
   };
 
   callback(undefined, doc);

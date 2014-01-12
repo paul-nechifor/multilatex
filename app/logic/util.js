@@ -1,6 +1,12 @@
 var crypto = require('crypto');
 var fs = require('fs');
 
+var app = null;
+
+exports.setApp = function (pApp) {
+  app = pApp;
+};
+
 exports.die = function (string) {
   console.trace();
   console.error(string);
@@ -33,9 +39,10 @@ exports.sha1Sum = function (string) {
   return hash.digest('hex');
 };
 
+// TODO: make this funciton quit after a few times.
 exports.getRandomDir = function (parent, callback) {
   var next = function () {
-    var path = parent + '/' + exports.randomBase36(8);
+    var path = parent + '/' + exports.randomBase36(16);
     fs.mkdir(path, function (err) {
       if (err) return next();
       callback(path);
@@ -43,6 +50,12 @@ exports.getRandomDir = function (parent, callback) {
   };
   
   next();
+};
+
+exports.getTmpDir = function (callback) {
+  exports.getRandomDir(app.config.dirs.tmp, function (path) {
+    callback(undefined, path);
+  });
 };
 
 exports.getRandomFile = function (parent, callback) {

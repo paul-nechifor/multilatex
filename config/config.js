@@ -28,7 +28,8 @@ var config = {
   debug: true,
   avatarSize: 253,
   logger: ':date :remote-addr :method :url :status :response-time',
-  fileLimit: 1024 * 1024
+  fileLimit: 1024 * 1024,
+  thumbSize: 253
 };
 
 function genConfig() {

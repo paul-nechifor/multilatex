@@ -15,21 +15,4 @@ block content
           li
             a(href='#{ tab[2] ? tab[2] : "/"+p.username+"/"+p.location }')= tab[1]
       
-      .navbar-right
-        a.btn.btn-success(href='#{pLink}/edit')
-          i.glyphicon.glyphicon-pencil
-          |  Open in editor
-        |  
-        a.btn.btn-default(href='#{pLink}/download/pdf')
-          i.glyphicon.glyphicon-share
-          |  View PDF
-        |  
-        a.btn.btn-default(href='#{pLink}/fork')
-          i.glyphicon.glyphicon-random
-          |  Fork
-        |  
-        a.btn.btn-default(href='#{pLink}/download/zip')
-          i.glyphicon.glyphicon-cloud-download
-          |  Download ZIP
-      
     block content2

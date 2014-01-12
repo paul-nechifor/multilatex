@@ -55,7 +55,6 @@ exports.getProject = function (userId, location, callback) {
   app.db.projects.findOne(query, function (err, project) {
     if (err) return callback(err);
     if (!project) return callback('project-not-found');
-    console.log(project);
     callback(undefined, project);
   });
 };
