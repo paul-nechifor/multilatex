@@ -16,6 +16,10 @@ function main(projectId) {
   $('#build-menu').click(function () {
     app.project.build();
   });
+
+  $('#commit-menu').click(function () {
+    app.project.commit();
+  });
 }
 
 require('./fullscreen-api-polyfill');

@@ -38,7 +38,7 @@ EditorProject.prototype.loadDoc = function (callback) {
 };
 
 EditorProject.prototype.openForUser2 = function (user, callback) {
-  if (this.doc.contribuitorsIds[user.userId] === undefined) {
+  if (this.doc.contributorsIds[user.userId] === undefined) {
     callback('not-a-project-contribuitor');
     this.closeForUser(user);
     return;
@@ -112,6 +112,16 @@ EditorProject.prototype.build = function (callback) {
       if (err) return callback(err);
       callback();
     });
+  });
+};
+
+EditorProject.prototype.commit = function (callback) {
+  var that = this;
+
+  this.saveAllFiles(function (errs) {
+    if (errs) return callback(errs);
+
+    projectLogic.commit();
   });
 };
 

@@ -10,9 +10,10 @@ exports.init = function (opts, callback) {
     downloads: 0,
     views: 0,
     // User ID to time added to project.
-    contribuitorsIds: {},
+    contributorsIds: {},
     // Username to time added to project.
-    contribuitors: {},
+    contributors: {},
+    headContributors: {},
     // Project ID to date (timestamp).
     forksIds: {},
     // List of [username, projectLocation, timestamp].
@@ -29,10 +30,14 @@ exports.init = function (opts, callback) {
     // TODO FIX THIS
     // Note that keys cannot have '.' in them so they are all replaced with '%'
     // before storing into Mongo and back when reading.
-    headTree: {}
+    headTree: {},
+    // Changes made from last commit. Array of array.
+    // ['add', path, userId]
+    // ['mod', path, userId]
+    // ['del', path, userId]
+    // ['move', src, dst, userId]
+    changes: []
   };
-
-  console.log('opts', opts);
 
   if (opts.headFiles) {
     console.log('files', opts.headFiles);
@@ -41,8 +46,8 @@ exports.init = function (opts, callback) {
     }
   }
 
-  doc.contribuitors[opts.username] = doc.created;
-  doc.contribuitorsIds[opts.userId.toString()] = doc.created;
+  doc.contributors[opts.username] = doc.created;
+  doc.contributorsIds[opts.userId.toString()] = doc.created;
 
   // TODO: Validate values.
 

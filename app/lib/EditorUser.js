@@ -14,14 +14,14 @@ function EditorUser(eid, wss, ws) {
 
 EditorUser.prototype.open = function () {
   var that = this;
-  
+
   this.establishSession(function (err) {
     if (err) {
       util.logErr(err);
       that.close();
       return;
     }
-  
+
     that.connSetup();
   });
 };
@@ -36,7 +36,7 @@ EditorUser.prototype.close = function () {
   if (this.file) {
     this.file.closeForUser(this);
   }
-  
+
   var that = this;
   this.projectClose(function () {
     that.connClose();
@@ -45,14 +45,14 @@ EditorUser.prototype.close = function () {
 
 EditorUser.prototype.establishSession = function (callback) {
   var that = this;
-  
+
   this.wss.app.getReqSession(this.ws.upgradeReq, function (err, session) {
     if (err) return callback(err);
     if (typeof session.userId !== 'string') return callback('no-id-set');
-    
+
     that.username = session.username;
     that.userId = session.userId;
-    
+
     callback();
   });
 };
@@ -129,6 +129,17 @@ EditorUser.prototype.onMessage_buildProject = function () {
   this.project.build(function (err) {
     if (err) return that.sendMsg('buildProject', {error: err});
     that.sendMsg('buildProject', {});
+  });
+};
+
+EditorUser.prototype.onMessage_commitProject = function () {
+  // If the project isn't open, kick.
+  if (!this.project) return this.close();
+
+  var that = this;
+  this.project.commit(function (err) {
+    if (err) return that.sendMsg('commitProject', {error: err});
+    that.sendMsg('commitProject', {});
   });
 };
 

@@ -88,6 +88,19 @@ exports.createHeadArchive = function (project, callback) {
   createHeadArchive2(project, callback);
 };
 
+exports.updateOnCommit = function (commit, callback) {
+  var query = {_id: commit.projectId};
+  projectMd.fixToMongo(commit);
+  var update = {
+    $set: {hashTree: commit.hashTree},
+    $push: {commits: commit._id}
+  };
+  app.db.projects.update(query, update, {w: 1}, function (err, nUpdated) {
+    if (err) return callback(err);
+    callback();
+  });
+};
+
 function createHeadArchive2(project, callback) {
   var file = app.config.dirs.tmp + '/' + util.randomBase36(48) + '.zip';
   var commands = 'cd ' + project.headPath + ' && zip -q -r ' + file + ' .' +
@@ -113,7 +126,7 @@ function checkLocationValidity(location) {
   }
 
   if (!/[a-zA-Z][a-zA-Z0-9.-]{3,32}/.test(location)) {
-    return 'Location is invalid. Allowed characters are alphanumerics, “.”, and “-”.';
+    return 'invalid-location';
   }
 
   return null;

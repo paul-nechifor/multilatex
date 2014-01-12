@@ -51,6 +51,13 @@ Project.prototype.build = function () {
   });
 };
 
+Project.prototype.commit = function () {
+  var that = this;
+  this.app.wss.callMsg('commitProject', {}, function (msg) {
+    if (msg.error) return that.app.panic(msg.error);
+  });
+};
+
 Project.prototype.getPdfLink = function () {
   var main = this.doc.headFile.split('.');
   main.pop();

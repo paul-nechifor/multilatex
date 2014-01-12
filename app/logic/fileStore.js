@@ -22,6 +22,24 @@ exports.moveFile = function (path, callback) {
   });
 };
 
+exports.moveFiles = function (paths, callback) {
+  var i = 0, len = paths.length;
+  var tree = {};
+
+  var next = function () {
+    if (i >= len) return callback(undefined, tree);
+
+    exports.moveFile(paths[i], function (err, hash) {
+      if (err) return callback(err);
+      tree[paths[i]] = hash;
+      i++;
+      next();
+    });
+  };
+
+  next();
+};
+
 exports.getPath = function (hash) {
   var dir = app.config.dirs.store + '/' + hash.substring(0, 3);
   var file = dir + '/' + hash.substring(3);

@@ -92,7 +92,7 @@ function serveStoreFile(req, res, hash) {
 
 function getProjectDataNoErrContrib(req, res, callback) {
   getProjectDataNoErr(req, res, function (user, project) {
-    if (!(req.session.userId in project.contribuitorsIds)) {
+    if (!(req.session.userId in project.contributorsIds)) {
       root.error403(req, res, 'not-a-contribuitor');
       return;
     }
