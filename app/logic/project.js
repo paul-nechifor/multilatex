@@ -5,6 +5,7 @@ var ObjectID = require('mongodb').ObjectID;
 var exec = require('child_process').exec;
 var fs = require('fs');
 var fileStore = require('./fileStore');
+var commitLogic = require('./commit');
 
 var app = null;
 
@@ -42,8 +43,6 @@ exports.createFrom = function (username, userId, puh, callback) {
 
   projectMd.init(opts, function (err, doc) {
     if (err) return callback(err);
-    projectMd.fixToMongo(doc);
-
     createInDb(doc, true, function (err, project) {
       if (err) return callback(err);
       callback(undefined, project);
@@ -56,7 +55,7 @@ exports.getProject = function (userId, location, callback) {
   app.db.projects.findOne(query, function (err, project) {
     if (err) return callback(err);
     if (!project) return callback('project-not-found');
-    projectMd.fixFromMongo(project);
+    console.log(project);
     callback(undefined, project);
   });
 };
@@ -66,7 +65,6 @@ exports.getProjectById = function (projectIdStr, callback) {
   app.db.projects.findOne(query, function (err, project) {
     if (err) return callback(err);
     if (!project) return callback('project-not-found');
-    projectMd.fixFromMongo(project);
     callback(undefined, project);
   });
 };
@@ -88,18 +86,33 @@ exports.createHeadArchive = function (project, callback) {
   createHeadArchive2(project, callback);
 };
 
-exports.updateOnCommit = function (commit, callback) {
-  var query = {_id: commit.projectId};
-  projectMd.fixToMongo(commit);
-  var update = {
-    $set: {hashTree: commit.hashTree},
-    $push: {commits: commit._id}
-  };
-  app.db.projects.update(query, update, {w: 1}, function (err, nUpdated) {
-    if (err) return callback(err);
-    callback();
+exports.build = function (project, callback) {
+  var main = project.headFiles[project.mainFile];
+  app.latex.build(project.headPath, main, callback);
+};
+
+exports.commit = function (project, callback) {
+  exports.build(project, function (err) {
+    if (err) util.logErr(err); // Don't return on error.
+    commitLogic.commit(project, function (err, commit) {
+      if (err) return callback(err);
+      updateOnCommit(project, commit, callback);
+    });
   });
 };
+
+function updateOnCommit(project, commit, callback) {
+  var query = {_id: commit.projectId};
+  var update = {
+    $set: {changes: []},
+    $push: {commits: commit._id}
+  };
+
+  project.changes = [];
+  project.commits.push(commit._id);
+
+  app.db.projects.update(query, update, {w: 1}, callback);
+}
 
 function createHeadArchive2(project, callback) {
   var file = app.config.dirs.tmp + '/' + util.randomBase36(48) + '.zip';
@@ -107,12 +120,12 @@ function createHeadArchive2(project, callback) {
     ' -x \\*.pdf -x \\*.aux -x \\*.log';
   exec(commands, function (err) {
     if (err) return callback(err);
-    createHeadArchive3(project, file, callback);
+    createHeadArchive3(file, callback);
   });
 }
 
-function createHeadArchive3(project, zipFile, callback) {
-  fileStore.moveFile(zipFile, function (err, hash) {
+function createHeadArchive3(zipFile, callback) {
+  fileStore.store(zipFile, true, function (err, hash) {
     if (err) return callback(err);
     callback(undefined, hash);
   });
@@ -162,35 +175,35 @@ function fixLocation(doc, callback) {
 
 function createAndInitHead(project, callback) {
   headDir.getNewDir(function (path) {
-    var updateDoc = {
-      headPath: path
-    };
-
-    initHead(updateDoc, function (err) {
+    initHead(project, path, function (err, updateDoc) {
       if (err) return callback(err);
       var query = {_id: project._id};
-      projectMd.fixToMongo(updateDoc);
       var update = {$set: updateDoc};
 
       app.db.projects.update(query, update, {w: 1}, function (err, nUpdated) {
         if (err) return callback(err);
-        callback();
+        exports.commit(project, callback);
       });
     });
   });
 }
 
-function initHead(updateDoc, callback) {
+function initHead(project, headPath, callback) {
+  var updateDoc = {};
+  updateDoc.headPath = project.headPath = headPath;
   var initFile = __dirname + '/../../data/latex/empty.tex';
-  var mainFile = updateDoc.headPath + '/main.tex';
-  util.copyFile(initFile, mainFile, function (err) {
+  var mainFile = 'main.tex';
+  var mainPath = headPath + '/' + mainFile;
+
+  util.copyFile(initFile, mainPath, function (err) {
     if (err) return callback(err);
 
-    updateDoc.headFile = 'main.tex';
-    updateDoc.headTree = {
-      'main.tex': true
-    };
+    updateDoc.headFiles = project.headFiles = [mainFile];
+    updateDoc.mainFile = project.mainFile = 0;
+    updateDoc.changes = project.changes = [
+      ['add', 0, project.userId]
+    ];
 
-    callback();
+    callback(undefined, updateDoc);
   });
 }

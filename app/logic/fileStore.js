@@ -8,30 +8,37 @@ exports.setApp = function (pApp) {
   app = pApp;
 };
 
-exports.moveFile = function (path, callback) {
+exports.store = function (path, andDelete, callback) {
   getFileHash(path, function (err, hash) {
     if (err) return callback(err);
 
     var dir = app.config.dirs.store + '/' + hash.substring(0, 3);
     var file = dir + '/' + hash.substring(3);
 
-    moveIfNecessary(path, dir, file, function (err) {
+    copyIfNecessary(path, dir, file, andDelete, function (err) {
       if (err) return callback(err);
       callback(undefined, hash);
     });
   });
 };
 
-exports.moveFiles = function (paths, callback) {
+exports.storeAll = function (paths, andDelete, callback) {
   var i = 0, len = paths.length;
-  var tree = {};
+  var hashes = [];
 
   var next = function () {
-    if (i >= len) return callback(undefined, tree);
+    if (i >= len) return callback(undefined, hashes);
 
-    exports.moveFile(paths[i], function (err, hash) {
+    if (paths[i] === null) {
+      hashes.push(null);
+      i++;
+      next();
+      return;
+    }
+
+    exports.store(paths[i], andDelete, function (err, hash) {
       if (err) return callback(err);
-      tree[paths[i]] = hash;
+      hashes.push(hash);
       i++;
       next();
     });
@@ -59,17 +66,18 @@ function getFileHash(path, callback) {
   fd.pipe(hash);
 }
 
-function moveIfNecessary(path, dir, file, callback) {
+function copyIfNecessary(path, dir, file, andDelete, callback) {
   fs.exists(file, function (exists) {
     if (exists) return callback();
 
     fs.mkdir(dir, function (err) {
-      if (err) return callback(err);
+      // Ignore this error.
 
-      fs.rename(path, file, function (err) {
-        if (err) return callback(err);
-        callback();
-      });
+      if (andDelete) {
+        fs.rename(path, file, callback);
+      } else {
+        util.copyFile(path, file, callback);
+      }
     });
   });
 }

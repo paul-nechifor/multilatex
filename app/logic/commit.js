@@ -1,5 +1,4 @@
 var commitMd = require('../models/commit');
-var projectLogic = require('../logic/project');
 var fileStore = require('../logic/fileStore');
 
 var app = null;
@@ -11,43 +10,23 @@ exports.setApp = function (pApp) {
 exports.commit = function (project, callback) {
   commitMd.init(project, function (err, doc) {
     if (err) return callback(err);
-
     moveFiles(project, doc, function (err) {
       if (err) return callback(err);
-
-      createInDb(doc, function (err, commit) {
-        if (err) return callback(err);
-
-        projectLogic.updateOnCommit(commit, function (err) {
-          if (err) return callback(err);
-          callback(undefined, commit);
-        });
-      });
+      createInDb(doc, callback);
     });
   });
 };
 
 function moveFiles(project, doc, callback) {
-  var tree = {};
-  var unstored = [];
-
-  for (var path in project.headTree) {
-    var value = project.headTree[path];
-    if (typeof value === 'string') {
-      tree[path] = value;
-    } else {
-      unstored.push(project.headPath + '/' + path);
-    }
+  var files = [];
+  for (var i = 0, len = project.headFiles.length; i < len; i++) {
+    files.push(project.headPath + '/' + project.headFiles[i]);
   }
 
-  fileStore.moveFiles(unstored, function (err, res) {
+  fileStore.storeAll(files, true, function (err, hashes) {
     if (err) return callback(err);
 
-    for (var path in res) {
-      tree[path] = res[path];
-    }
-
-    doc.headTree = tree;
+    doc.hashes = hashes;
 
     movePdf(project, function (err, hash) {
       if (!err) {
@@ -59,17 +38,18 @@ function moveFiles(project, doc, callback) {
 }
 
 function createInDb(doc, callback) {
-  app.db.projects.insert(doc, {w: 1}, function (err, commit) {
+  app.db.commits.insert(doc, {w: 1}, function (err, commit) {
     if (err) return callback(err);
     callback(undefined, commit[0]);
   });
 }
 
 function movePdf(project, callback) {
-  var path = project.headPath + '/';
-  path += project.headFile.substring(0, project.headFile.length - 4) + '.pdf';
+  var head = project.headFiles[project.mainFile];
+  var path = project.headPath + '/' +
+    head.substring(0, head.length - 4) + '.pdf';
 
-  fileStore.moveFile(path, function (err, hash) {
+  fileStore.store(path, false, function (err, hash) {
     if (err) return callback(err);
     callback(undefined, hash);
   });

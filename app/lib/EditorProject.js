@@ -103,25 +103,17 @@ EditorProject.prototype.openFile2 = function (file, user, callback) {
 
 EditorProject.prototype.build = function (callback) {
   var that = this;
-
   this.saveAllFiles(function (errs) {
     if (errs) return callback(errs);
-
-    that.wss.app.latex.build(that.doc.headPath, that.doc.headFile,
-        function (err) {
-      if (err) return callback(err);
-      callback();
-    });
+    projectLogic.build(that.doc, callback);
   });
 };
 
 EditorProject.prototype.commit = function (callback) {
   var that = this;
-
   this.saveAllFiles(function (errs) {
     if (errs) return callback(errs);
-
-    projectLogic.commit();
+    projectLogic.commit(that.doc, callback);
   });
 };
 

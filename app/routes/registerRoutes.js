@@ -20,7 +20,7 @@ function registerRoutes(app) {
   project.setApp(app);
   user.setApp(app);
 
-  commit.setApp(app);
+  commitLogic.setApp(app);
   fileStoreLogic.setApp(app);
   headDirLogic.setApp(app);
   projectLogic.setApp(app);
