@@ -44,6 +44,7 @@ exports.login = function (req, res) {
 
 exports.logout = function (req, res) {
   delete req.session.username;
+  delete req.session.userId;
   res.json({ok: true});
 };
 

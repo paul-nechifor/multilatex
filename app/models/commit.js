@@ -16,6 +16,9 @@ exports.init = function (project, callback) {
     // Null if not generated, hash otherwise.
     pdfFile: null,
 
+    // ZIP archive of the project.
+    zipFile: null,
+
     // List of the hashes of the thumbnails.
     thumbs: []
   };

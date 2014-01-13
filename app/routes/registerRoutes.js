@@ -49,6 +49,8 @@ function registerRoutes(app) {
   e.get('/:username/:location', project.location);
   e.get('/:username/:location/edit', project.edit);
   e.get('/:username/:location/head', project.head);
+  e.get('/:username/:location/pdf', project.pdf);
+  e.get('/:username/:location/zip', project.zip);
   e.get('/:username/:location/head/*', project.headFiles);
   e.get('*', root.error404);
 }

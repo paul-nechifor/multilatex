@@ -10,9 +10,10 @@ exports.setApp = function (pApp) {
   app = pApp;
 };
 
-exports.commit = function (project, callback) {
+exports.commit = function (project, zipFile, callback) {
   commitMd.init(project, function (err, doc) {
     if (err) return callback(err);
+    doc.zipFile = zipFile;
     moveFiles(project, doc, function (err) {
       if (err) return callback(err);
       createInDb(doc, callback);

@@ -59,6 +59,24 @@ exports.head = function (req, res) {
   });
 };
 
+exports.pdf = function (req, res) {
+  // TODO: Change this with get latest commit.
+  getProjectDataNoErrCommit(req, res, function (user, project, commit) {
+    if (commit.pdfFile === null) return root.error404(req, res);
+    res.setHeader('Content-Type', 'application/pdf');
+    serveStoreFile(req, res, commit.pdfFile);
+  });
+};
+
+exports.zip = function (req, res) {
+  // TODO: Change this with get latest commit.
+  getProjectDataNoErrCommit(req, res, function (user, project, commit) {
+    res.setHeader('Content-disposition', 'attachment; filename=' +
+        project.location + '.zip');
+    serveStoreFile(req, res, commit.zipFile);
+  });
+};
+
 exports.headFiles = function (req, res) {
   var file = req.param(0);
 

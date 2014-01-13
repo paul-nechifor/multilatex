@@ -73,6 +73,8 @@ exports.getProjectsForUser = function (userId, callback) {
   app.db.projects.find({userId: userId}).toArray(callback);
 };
 
+// TODO: Fix it. This is brain dead. It creates a new permanent archive on every
+// call.
 exports.createHeadArchive = function (project, callback) {
   var eProject = app.webSocketServer.getProjectById(project._id.toString());
   if (eProject) {
@@ -93,9 +95,12 @@ exports.build = function (project, callback) {
 exports.commit = function (project, callback) {
   exports.build(project, function (err) {
     if (err) util.logErr(err); // Don't return on error.
-    commitLogic.commit(project, function (err, commit) {
+    exports.createHeadArchive(project, function (err, zipFile) {
       if (err) return callback(err);
-      updateOnCommit(project, commit, callback);
+      commitLogic.commit(project, zipFile, function (err, commit) {
+        if (err) return callback(err);
+        updateOnCommit(project, commit, callback);
+      });
     });
   });
 };
