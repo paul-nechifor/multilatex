@@ -191,6 +191,19 @@ footer
   a:first-child
     margin-left: 0
 
+.thumb
+  .frame, .frame .bar
+    height: 5px
+    border-radius 2px
+  .frame
+    background: #eee
+    visibility: hidden
+    .bar
+      background: #ccc
+.thumb:hover
+  .frame
+    visibility: visible
+
 /* Blog ----------------------------------------------------------------------*/
 
 .blog-side

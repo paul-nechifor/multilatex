@@ -5,6 +5,10 @@ extends project
 block content2
   .row
     .col-md-4.project-info-column
-      .thumbnail
-        img(src='#{storeUrl(c.thumbs[0])}', alt="#{p.username} #{p.location}")
+      .thumbnail.thumb
+        img(src='#{storeUrl(c.thumbs[0])}', alt="#{p.username} #{p.location}",
+          data-thumbs='#{c.thumbs.join(" ")}')
     .col-md-8
+
+block scripts
+  script(src='/s/js/thumbs.js')
