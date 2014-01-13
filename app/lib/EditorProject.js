@@ -32,6 +32,7 @@ EditorProject.prototype.loadDoc = function (callback) {
   var that = this;
   projectLogic.getProjectById(this.id, function (err, project) {
     if (err) return callback(err);
+    if (!project) return callback('not-found');
     that.doc = project;
     callback();
   });

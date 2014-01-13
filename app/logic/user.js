@@ -30,11 +30,7 @@ exports.login = function (username, password, callback) {
 };
 
 exports.getUser = function (username, callback) {
-  app.db.users.findOne({username: username}, function (err, item) {
-    if (err) return callback(err);
-    if (!item) return callback('user-not-found');
-    callback(undefined, item);
-  });
+  app.db.users.findOne({username: username}, callback);
 };
 
 function registerInDb(opts, doc, callback) {

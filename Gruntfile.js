@@ -52,7 +52,7 @@ module.exports = function (grunt) {
     'shell-spawn': {
       useradd: {
         options: {failOnError: false},
-        base: ['useradd', '-m', '-d', config.dirs.home, config.username],
+        base: ['useradd', '-m', '-d', config.dirs.home, config.username]
       },
       mkdirs: {
         base: ['mkdir', '-p'],
@@ -85,6 +85,22 @@ module.exports = function (grunt) {
           config.deploy.hostname,
           config.deploy.work,
           __dirname
+        ]
+      },
+      userdel: {
+        options: {failOnError: false},
+        base: ['userdel', '-r', config.username]
+      },
+      removeDirs: {
+        base: ['rm', '-fr'],
+        multi: [
+          [config.dirs.logs],
+          [config.dirs.heads],
+          [config.dirs.store],
+          [config.dirs.tmp],
+          [config.dirs.install],
+          [config.dirs.upload],
+          [config.dirs.home]
         ]
       }
     }
@@ -186,6 +202,29 @@ module.exports = function (grunt) {
     var child = spawn('tail', ['-f', lastLog]);
     child.stdout.pipe(process.stdout);
   });
+
+  grunt.registerTask('clear-db', 'Remove all from the DB.', function () {
+    var done = this.async();
+    var Database = require('./app/lib/Database');
+    var db = new Database(config.mongoUrl);
+    db.connect(function () {
+      db.db.dropDatabase(function (err, result) {
+        if (err) grunt.log.error(err);
+        db.disconnect(function (err) {
+          if (err) grunt.log.error(err);
+          done();
+        });
+      });
+    });
+  });
+
+  grunt.registerTask('wipe-everything', [
+    'require-root',
+    'shell-spawn:stopService',
+    'shell-spawn:userdel',
+    'shell-spawn:removeDirs',
+    'clear-db'
+  ]);
 
   grunt.registerTask('default', ['build']);
 };

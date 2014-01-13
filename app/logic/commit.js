@@ -22,11 +22,7 @@ exports.commit = function (project, zipFile, callback) {
 };
 
 exports.getCommitById = function (commitId, callback) {
-  app.db.commits.findOne({_id: commitId}, function (err, commit) {
-    if (err) return callback(err);
-    if (!commit) return callback('commit-not-found');
-    callback(undefined, commit);
-  });
+  app.db.commits.findOne({_id: commitId}, callback);
 };
 
 function moveFiles(project, doc, callback) {

@@ -45,14 +45,8 @@ exports.create = function (req, res) {
 
 exports.username = function (req, res) {
   userLogic.getUser(req.params.username, function (err, user) {
-    if (err) {
-      if (err === 'user-not-found') {
-        root.error404(req, res);
-      } else {
-        root.error500(req, res, err);
-      }
-      return;
-    }
+    if (err) return root.error500(req, res, err);
+    if (!user) return root.error404(req, res);
 
     var activeTab = req.query.tab in tabFuncs ? req.query.tab : 'overview';
     var data = {
@@ -71,6 +65,7 @@ function userOverview(req, res, data) {
 
 function userProjects(req, res, data) {
   projectLogic.getProjectsForUser(data.user._id, function (err, projects) {
+    // TODO: Why is err not used?
     data.projects = projects;
     res.render('userProjects', data);
   });

@@ -16,6 +16,7 @@ exports.checkAuth = function (req, res, next) {
 exports.create = function (req, res) {
   userLogic.getUser(req.session.username, function (err, user) {
     if (err) return respond(res, err);
+    if (!user) return respond(res, 'user-not-found');
 
     var opts = {
       username: req.session.username,
@@ -43,8 +44,7 @@ exports.login = function (req, res) {
 };
 
 exports.logout = function (req, res) {
-  delete req.session.username;
-  delete req.session.userId;
+  req.session.destroy();
   res.json({ok: true});
 };
 

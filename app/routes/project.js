@@ -125,15 +125,8 @@ function getProjectDataNoErrCommit(req, res, callback) {
   getProjectDataNoErr(req, res, function (user, project) {
     var latestCommitId = project.commits[project.commits.length - 1];
     commitLogic.getCommitById(latestCommitId, function (err, commit) {
-      if (err) {
-        if (err === 'commit-not-found') {
-          root.error404(req, res);
-        } else {
-          root.error500(req, res, err);
-        }
-        return;
-      }
-
+      if (err) return root.error500(req, res, err);
+      if (!commit) return root.error404(req, res);
       callback(user, project, commit);
     });
   });
@@ -143,15 +136,8 @@ function getProjectDataNoErr(req, res, callback) {
   var username = req.params.username;
   var location = req.params.location;
   getProjectData(username, location, function (err, user, project) {
-    if (err) {
-      if (err === 'project-not-found') {
-        root.error404(req, res);
-      } else {
-        root.error500(req, res, err);
-      }
-      return;
-    }
-
+    if (err) return root.error500(req, res, err);
+    if (!project) return root.error404(req, res);
     callback(user, project);
   });
 }
@@ -159,9 +145,11 @@ function getProjectDataNoErr(req, res, callback) {
 function getProjectData(username, projectLocation, callback) {
   userLogic.getUser(username, function (err, user) {
     if (err) return callback(err);
+    if (!user) return callback(undefined, null);
 
     projectLogic.getProject(user._id, projectLocation, function (err, project) {
       if (err) return callback(err);
+      if (!project) return callback(undefined, null);
       callback(undefined, user, project);
     });
   });

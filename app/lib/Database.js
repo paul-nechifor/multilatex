@@ -30,6 +30,10 @@ Database.prototype.connect = function (callback) {
   });
 };
 
+Database.prototype.disconnect = function (callback) {
+  this.db.close(callback);
+};
+
 function ensureIndices(what, callback) {
   var i = 0;
 

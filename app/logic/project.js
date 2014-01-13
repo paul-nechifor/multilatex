@@ -51,21 +51,11 @@ exports.createFrom = function (username, userId, puh, callback) {
 };
 
 exports.getProject = function (userId, location, callback) {
-  var query = {userId: userId, location: location};
-  app.db.projects.findOne(query, function (err, project) {
-    if (err) return callback(err);
-    if (!project) return callback('project-not-found');
-    callback(undefined, project);
-  });
+  app.db.projects.findOne({userId: userId, location: location}, callback);
 };
 
 exports.getProjectById = function (projectIdStr, callback) {
-  var query = {_id: new ObjectID(projectIdStr)};
-  app.db.projects.findOne(query, function (err, project) {
-    if (err) return callback(err);
-    if (!project) return callback('project-not-found');
-    callback(undefined, project);
-  });
+  app.db.projects.findOne({_id: new ObjectID(projectIdStr)}, callback);
 };
 
 exports.getProjectsForUser = function (userId, callback) {
