@@ -8,7 +8,6 @@ var user = require('../routes/user');
 
 var commitLogic = require('../logic/commit');
 var fileStoreLogic = require('../logic/fileStore');
-var headDirLogic = require('../logic/headDir');
 var projectLogic = require('../logic/project');
 var userLogic = require('../logic/user');
 var util = require('../logic/util');
@@ -23,7 +22,6 @@ function registerRoutes(app) {
 
   commitLogic.setApp(app);
   fileStoreLogic.setApp(app);
-  headDirLogic.setApp(app);
   projectLogic.setApp(app);
   userLogic.setApp(app);
   util.setApp(app);

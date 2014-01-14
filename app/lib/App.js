@@ -21,18 +21,28 @@ function App(config) {
   this.latex = new Latex(this);
 }
 
-App.prototype.start = function () {
+App.prototype.load = function (callback) {
   this.db = new Database(this.config.mongoUrl);
   this.express = express();
 
-  this.db.connect(this.startStep2.bind(this));
+  var that = this;
+  this.db.connect(function () {
+    that.configure();
+    that.registerRoutes();
+    callback();
+  });
 };
 
-App.prototype.startStep2 = function () {
-  this.configure();
-  this.registerRoutes();
+App.prototype.start = function () {
   this.createServer();
   this.webSocketServer.setup();
+};
+
+// TODO: Close all the rest.
+App.prototype.stop = function (callback) {
+  this.db.disconnect(function () {
+    callback();
+  });
 };
 
 App.prototype.configure = function () {

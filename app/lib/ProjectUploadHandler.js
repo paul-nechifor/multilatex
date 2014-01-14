@@ -1,4 +1,3 @@
-var headDir = require('../logic/headDir');
 var util = require('../logic/util');
 var exec = require('child_process').exec;
 
@@ -8,42 +7,72 @@ var MAIN_NAMES = {
   'doc.tex': true
 };
 
-function ProjectUploadHandler(files) {
+function ProjectUploadHandler(files, dir) {
   this.files = files;
-  this.name = null;
+  this.dir = dir;
   this.callback = null;
+  this.texFiles = null;
+  this.name = 'untitled';
   this.headPath = null;
   this.headFiles = null;
-  this.texFiles = null;
-  this.mainFile = null;
+  this.mainFile = -1;
 }
 
 ProjectUploadHandler.prototype.convert = function (callback) {
   this.callback = callback;
 
+  var that = this;
+  util.getNewHeadDir(function (err, path) {
+    if (err) return that.fail(err);
+    that.headPath = path;
+    that.stepSplit();
+  });
+};
+
+ProjectUploadHandler.prototype.stepSplit = function () {
+  if (this.dir) return this.stepCopyDir();
+
   if (this.files[0].type === 'application/zip') {
     if (this.files.length > 1) return callback('too-many-zip-files');
     this.stepUnzip();
   } else {
-    return callback('not-implemented');
+    this.stepCopy();
   }
+};
+
+ProjectUploadHandler.prototype.stepCopyDir = function () {
+  var that = this;
+  // TODO: Use spawn, not exec.
+  var commands = 'cd ' + that.headPath + ' && cp -r ' + this.dir + '/* .';
+
+  exec(commands, function (err) {
+    if (err) return that.fail(err);
+    that.stepUnsplit();
+  });
 };
 
 ProjectUploadHandler.prototype.stepUnzip = function () {
   var file = this.files[0];
   this.name = basename(file.name);
+
   var that = this;
-  headDir.getNewDir(function (path) {
-    that.headPath = path;
-    var commands = 'cd ' + path + ' && unzip ' + file.path;
-    exec(commands, function (err) {
-      if (err) return that.fail(err);
-      that.deleteUploaded(function () {
-        if (err) return that.fail(err);
-        that.files = null;
-        that.stepIndexFiles();
-      });
-    });
+  var commands = 'cd ' + that.headPath + ' && unzip ' + file.path;
+
+  exec(commands, function (err) {
+    if (err) return that.fail(err);
+    that.stepUnsplit();
+  });
+};
+
+ProjectUploadHandler.prototype.stepCopy = function () {
+  this.fail('not-implemented');
+};
+
+ProjectUploadHandler.prototype.stepUnsplit = function () {
+  var that = this;
+  that.deleteUploaded(function () {
+    that.files = null;
+    that.stepIndexFiles();
   });
 };
 
@@ -59,8 +88,8 @@ ProjectUploadHandler.prototype.stepIndexFiles = function () {
 };
 
 ProjectUploadHandler.prototype.stepMainFile = function () {
-  this.mainFile = getMainFileByName(this.texFiles);
-  if (this.mainFile) return this.done();
+  this.mainFile = getMainFileByName(this.headFiles);
+  if (this.mainFile >= 0) return this.done();
   // TODO: Search in files for '\documentclass'.
   this.fail('no-main-tex-file');
 };
@@ -77,17 +106,20 @@ ProjectUploadHandler.prototype.done = function (err) {
 };
 
 ProjectUploadHandler.prototype.deleteUploaded = function (callback) {
+  if (this.dir) return callback(); // Only uploaded files can be deleted.
+
+  // TODO: Actually delete them.
   callback();
 };
 
 function getMainFileByName(files) {
   for (var i = 0, len = files.length; i < len; i++) {
     if (MAIN_NAMES[files[i].toLowerCase().trim()]) {
-      return files[i];
+      return i;
     }
   }
 
-  return null;
+  return -1;
 }
 
 function getTexFilesExt(files) {

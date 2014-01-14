@@ -32,7 +32,7 @@ exports.init = function (opts, callback) {
     headFiles: opts.headFiles || [],
 
     // Index of the main file.
-    mainFile: opts.mainFile || -1,
+    mainFile: opts.mainFile >= 0 ? opts.mainFile : -1,
 
     // Changes made from last commit. Array of array.
     // ['add', fileId, userId]

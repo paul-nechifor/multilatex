@@ -1,4 +1,3 @@
-var headDir = require('./headDir');
 var util = require('./util');
 var projectMd = require('../models/project');
 var ObjectID = require('mongodb').ObjectID;
@@ -37,15 +36,20 @@ exports.createFrom = function (username, userId, puh, callback) {
     userId: userId,
     location: puh.name,
     headPath: puh.headPath,
-    headFile: puh.mainFile,
-    headFiles: puh.headFiles
+    headFiles: puh.headFiles,
+    mainFile: puh.mainFile
   };
 
   projectMd.init(opts, function (err, doc) {
     if (err) return callback(err);
+
     createInDb(doc, true, function (err, project) {
       if (err) return callback(err);
-      callback(undefined, project);
+
+      exports.commit(project, function (err) {
+        if (err) return callback(err);
+        callback(undefined, project);
+      });
     });
   });
 };
@@ -110,8 +114,9 @@ function updateOnCommit(project, commit, callback) {
 
 function createHeadArchive2(project, callback) {
   var file = app.config.dirs.tmp + '/' + util.randomBase36(48) + '.zip';
+  // TODO: Archive only the files in headFiles.
   var commands = 'cd ' + project.headPath + ' && zip -q -r ' + file + ' .' +
-    ' -x \\*.pdf -x \\*.aux -x \\*.log';
+    ' -x -x \\*.aux -x \\*.log';
   exec(commands, function (err) {
     if (err) return callback(err);
     createHeadArchive3(file, callback);
@@ -168,7 +173,8 @@ function fixLocation(doc, callback) {
 }
 
 function createAndInitHead(project, callback) {
-  headDir.getNewDir(function (path) {
+  util.getNewHeadDir(function (err, path) {
+    if (err) return callback(err);
     initHead(project, path, function (err, updateDoc) {
       if (err) return callback(err);
       var query = {_id: project._id};

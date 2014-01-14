@@ -102,6 +102,10 @@ module.exports = function (grunt) {
           [config.dirs.upload],
           [config.dirs.home]
         ]
+      },
+      templates: {
+        base: ['grunt', 'templates-as-multilatex'],
+        runAs: [config.username, config.username]
       }
     }
   });
@@ -203,6 +207,19 @@ module.exports = function (grunt) {
     child.stdout.pipe(process.stdout);
   });
 
+  grunt.registerTask('templates-as-multilatex', 'Add templates.', function () {
+    var done = this.async();
+    var templates = require('./app/logic/templates');
+    templates.recreate(config, function (err) {
+      if (err) {
+        grunt.log.error(err);
+        done(false);
+        return;
+      }
+      done();
+    });
+  });
+
   grunt.registerTask('clear-db', 'Remove all from the DB.', function () {
     var done = this.async();
     var Database = require('./app/lib/Database');
@@ -224,6 +241,11 @@ module.exports = function (grunt) {
     'shell-spawn:userdel',
     'shell-spawn:removeDirs',
     'clear-db'
+  ]);
+
+  grunt.registerTask('templates', [
+    'require-root',
+    'shell-spawn:templates'
   ]);
 
   grunt.registerTask('default', ['build']);
