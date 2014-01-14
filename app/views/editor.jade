@@ -1,23 +1,42 @@
-extends editorLayout
-
-block head
-  link(rel='stylesheet', href='/s/css/editor.css')
-
-block content
-  div#workspace
-
-block scripts
-  script(src='/s/ace/ace.js')
-  script(src='/s/share/bcsocket.js')
-  script(src='/s/share/share.uncompressed.js')
-  script(src='/s/share/share-ace.js')
-
-  script(src='/s/pdfjs/pdf.js')
-  script(src='/s/pdfjs/pdf_find_bar.js')
-  script(src='/s/pdfjs/pdf_find_controller.js')
-  script(src='/s/pdfjs/ui_utils.js')
-  script(src='/s/pdfjs/text_layer_builder.js')
-
-  script(src='/s/js/editor.js')
-  script.
-    main(!{JSON.stringify(project._id)});
+doctype 5
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    title= project.location
+    link(rel='stylesheet', href='/s/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/s/css/style.css')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(rel='shortcut icon', href='/s/favicon.ico', type='image/x-icon')
+    link(rel='apple-touch-icon', sizes='57x57', href='/s/favicon57.png')
+    link(rel='apple-touch-icon', sizes='152x152', href='/s/favicon152.png')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700')
+    link(rel='stylesheet', href='/s/css/editor.css')
+  body
+    .navbar.navbar-inverse.navbar-fixed-top#menu
+      a.navbar-brand.editor(href='/') <i class='si-ml-square'></i>
+    div#workspace
+    script(src='//code.jquery.com/jquery-1.10.2.min.js')
+    script(src='/s/bootstrap/js/bootstrap.min.js')
+    script(src='/s/js/generalLoggedUser.js')
+    script(src='/s/ace/ace.js')
+    script(src='/s/share/bcsocket.js')
+    script(src='/s/share/share.uncompressed.js')
+    script(src='/s/share/share-ace.js')
+    script(src='/s/pdfjs/pdf.js')
+    script(src='/s/pdfjs/pdf_find_bar.js')
+    script(src='/s/pdfjs/pdf_find_controller.js')
+    script(src='/s/pdfjs/ui_utils.js')
+    script(src='/s/pdfjs/text_layer_builder.js')
+    script(src='/s/js/editor.js')
+    script.
+      main(!{JSON.stringify(project._id)});
+    script.
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-46315341-1']);
+      _gaq.push(['_setDomainName', 'multilatex.com']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();

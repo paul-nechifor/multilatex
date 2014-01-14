@@ -12,27 +12,6 @@ function main(projectId) {
 
   var app = new App(opts);
   app.load();
-
-  $('#build-menu').click(function () {
-    app.project.build();
-  });
-
-  $('#commit-menu').click(function () {
-    app.project.commit();
-  });
 }
-
-require('./fullscreen-api-polyfill');
-
-var isFullScreen = false;
-$('#fullscreen').click(function (e) {
-  e.preventDefault();
-  isFullScreen = !isFullScreen;
-  if (isFullScreen) {
-    document.documentElement.requestFullscreen();
-  } else {
-    document.exitFullscreen();
-  }
-});
 
 window.main = main;

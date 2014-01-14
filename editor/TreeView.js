@@ -166,7 +166,7 @@ TreeViewItem.prototype.setup = function (elem) {
   }
 
   this.label = util.createElement(this.item, 'span');
-  this.label.innerText = this.name;
+  this.label.textContent = this.name;
 
   if (this.isDir) {
     this.container = new TreeViewContainer(this.tv);
@@ -229,7 +229,7 @@ TreeViewItem.prototype.collapse = function (state) {
 
 TreeViewItem.prototype.changeName = function (name) {
   this.name = name;
-  this.label.innerText = this.name;
+  this.label.textContent = this.name;
 };
 
 module.exports = TreeView;
