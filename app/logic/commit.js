@@ -35,7 +35,7 @@ function moveFiles(project, doc, callback) {
   var pdfFile = project.headPath + '/' +
     head.substring(0, head.length - 4) + '.pdf';
 
-  fileStore.storeAll(files, true, function (err, hashes) {
+  fileStore.storeAll(files, false, function (err, hashes) {
     if (err) return callback(err);
 
     doc.hashes = hashes;

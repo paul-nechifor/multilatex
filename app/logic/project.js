@@ -2,6 +2,7 @@ var util = require('./util');
 var projectMd = require('../models/project');
 var ObjectID = require('mongodb').ObjectID;
 var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 var fs = require('fs');
 var fileStore = require('./fileStore');
 var commitLogic = require('./commit');
@@ -114,11 +115,16 @@ function updateOnCommit(project, commit, callback) {
 
 function createHeadArchive2(project, callback) {
   var file = app.config.dirs.tmp + '/' + util.randomBase36(48) + '.zip';
-  // TODO: Archive only the files in headFiles.
-  var commands = 'cd ' + project.headPath + ' && zip -q -r ' + file + ' .' +
-    ' -x -x \\*.aux -x \\*.log';
-  exec(commands, function (err) {
-    if (err) return callback(err);
+  var paths = project.headFiles.filter(function (p) { return p !== null; });
+  try {
+    process.chdir(project.headPath);
+  } catch (err) {
+    callback(err);
+  }
+  var child = spawn('zip', [file, '-@']);
+  child.stdin.end(paths.join('\n') + '\n');
+  child.on('close', function (code) {
+    if (code !== 0) return callback('zip-code-' + code);
     createHeadArchive3(file, callback);
   });
 }
