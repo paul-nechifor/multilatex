@@ -2,7 +2,6 @@ var util = require('./util');
 
 function Pdf(app) {
   this.app = app;
-  this.scale = 0.75;
   this.elem = null;
   this.doc = null;
 }
@@ -12,11 +11,16 @@ Pdf.prototype.setup = function (parent) {
 };
 
 Pdf.prototype.loadNew = function (pdfPath) {
-  if (this.doc !== null) {
-    $(this.elem).empty();
-  }
   this.doc = PDFJS.getDocument(pdfPath);
+  this.redraw();
+};
 
+Pdf.prototype.redraw = function () {
+  if (this.doc === null) {
+    return;
+  }
+
+  $(this.elem).empty();
   var renderPage = this.renderPage.bind(this);
   this.doc.then(function (pdf) {
     var numPages = pdf.numPages;
@@ -27,67 +31,58 @@ Pdf.prototype.loadNew = function (pdfPath) {
 };
 
 Pdf.prototype.renderPage = function (page) {
-  var viewport = page.getViewport(this.scale);
-  var $canvas = $("<canvas></canvas>");
+  var realWidth = page.pageInfo.view[2];
+  var panelWidth = this.app.gui.output.getWidth();
+  var viewport = page.getViewport(panelWidth / realWidth);
 
-  //Set the canvas height and width to the height and width of the viewport
-  var canvas = $canvas.get(0);
-  var context = canvas.getContext("2d");
+  var pageContainer = util.createElement(this.elem, 'div', 'page-container');
+  var pageStyle = pageContainer.style;
+  pageStyle.width = viewport.width + 'px';
+  pageStyle.height = viewport.height + 'px';
+
+  var canvas = util.createElement(pageContainer, 'canvas');
+  var ctx = canvas.getContext('2d');
   canvas.height = viewport.height;
   canvas.width = viewport.width;
 
-  //Append the canvas to the pdf container div
-  var pageContainer = $('<div class="page-container"></div>');
-  pageContainer.appendTo($(this.elem));
-  pageContainer.css("height", canvas.height + "px").css("width", canvas.width + "px");
-  pageContainer.append($canvas);
+  var textLayer = util.createElement(pageContainer, 'div', 'textLayer');
+  var textStyle = textLayer.style;
+  textStyle.width = viewport.width + 'px';
+  textStyle.height = viewport.height + 'px';
 
-  var canvasOffset = $canvas.offset();
-  var $textLayerDiv = $("<div />")
-      .addClass("textLayer")
-      .css("height", viewport.height + "px")
-      .css("width", viewport.width + "px")
-      .offset({top: canvasOffset.top, left: canvasOffset.left});
-
-  // The following few lines of code set up scaling on the context if we are on
-  // a HiDPI display
-  var outputScale = getOutputScale(context);
+  // Scaling for HiDPI displays.
+  var outputScale = getOutputScale(ctx);
   if (outputScale.scaled) {
     var cssScale = 'scale(' + (1 / outputScale.sx) + ', ' +
-        (1 / outputScale.sy) + ')';
+      (1 / outputScale.sy) + ')';
     CustomStyle.setProp('transform', canvas, cssScale);
     CustomStyle.setProp('transformOrigin', canvas, '0% 0%');
 
-    if ($textLayerDiv.get(0)) {
-      CustomStyle.setProp('transform', $textLayerDiv.get(0), cssScale);
-      CustomStyle.setProp('transformOrigin', $textLayerDiv.get(0), '0% 0%');
+    if (textLayer) {
+      CustomStyle.setProp('transform', textLayer, cssScale);
+      CustomStyle.setProp('transformOrigin', textLayer, '0% 0%');
     }
   }
 
-  context._scaleX = outputScale.sx;
-  context._scaleY = outputScale.sy;
+  ctx._scaleX = outputScale.sx;
+  ctx._scaleY = outputScale.sy;
   if (outputScale.scaled) {
-    context.scale(outputScale.sx, outputScale.sy);
+    ctx.scale(outputScale.sx, outputScale.sy);
   }
 
-  pageContainer.append($textLayerDiv);
-
   page.getTextContent().then(function (textContent) {
-
-    var textLayer = new TextLayerBuilder({
-      textLayerDiv: $textLayerDiv.get(0),
+    var textLayerBuilder = new TextLayerBuilder({
+      textLayerDiv: textLayer,
       pageIndex: 0
     });
 
-    textLayer.setTextContent(textContent);
+    textLayerBuilder.setTextContent(textContent);
 
-    var renderContext = {
-      canvasContext: context,
+    page.render({
+      canvasContext: ctx,
       viewport: viewport,
-      textLayer: textLayer
-    };
-
-    page.render(renderContext);
+      textLayer: textLayerBuilder
+    });
   });
 };
 

@@ -10,7 +10,7 @@ function Vert3PaneView(app, opts, threePanes) {
     this.seps[0],
     this.panes[1],
     this.seps[1],
-    this.panes[2],
+    this.panes[2]
   ];
 }
 
@@ -41,10 +41,15 @@ Vert3PaneView.prototype.setupListeners = function (pos) {
     that.app.gui.realign();
   };
   
-  for (var i = 0; i < 2; i++) {
+  for (var i = 0; i < this.seps.length; i++) {
     this.seps[i].onCollapse = onCollapse;
     this.seps[i].onDrag = onDrag;
   }
+
+  // TODO: This sort of breaks the abstraction.
+  this.seps[1].onStopDrag = function () {
+    that.panes[2].onStopDrag();
+  };
 };
 
 Vert3PaneView.prototype.realign = function (pos) {

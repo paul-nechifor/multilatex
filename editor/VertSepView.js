@@ -12,6 +12,7 @@ function VertSepView(index) {
   this.isCollapsed = false;
   this.onCollapse = function () {};
   this.onDrag = function () {};
+  this.onStopDrag = function () {};
 }
 
 VertSepView.prototype.setup = function (parent, pos) {
@@ -53,6 +54,7 @@ VertSepView.prototype.setupListeners = function () {
     var onMouseUp = function (e) {
       html.removeEventListener('mousemove', onMouseMove);
       html.removeEventListener('mouseup', onMouseUp);
+      that.onStopDrag(that.index);
     };
 
     html.addEventListener('mousemove', onMouseMove);

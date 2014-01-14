@@ -33,4 +33,12 @@ OutputView.prototype.realign = function (pos) {
   }
 };
 
+OutputView.prototype.getWidth = function () {
+  return parseFloat(this.elem.style.width);
+};
+
+OutputView.prototype.onStopDrag = function () {
+  this.pdf.redraw();
+};
+
 module.exports = OutputView;
