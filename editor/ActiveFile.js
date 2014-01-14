@@ -1,7 +1,7 @@
-function ActiveFile(project, path) {
+function ActiveFile(project, fid) {
   this.project = project;
-  this.path = path;
-  this.shareJsId = encodeURIComponent(project.doc._id + ' ' + path);
+  this.fid = fid;
+  this.shareJsId = encodeURIComponent(project.doc._id + ' ' + fid);
 }
 
 ActiveFile.prototype.load = function () {

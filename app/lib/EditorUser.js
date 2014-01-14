@@ -1,4 +1,5 @@
 var projectLogic = require('../logic/project');
+var projectMd = require('../models/project');
 var util = require('../logic/util');
 
 function EditorUser(eid, wss, ws) {
@@ -98,11 +99,11 @@ EditorUser.prototype.onMessage_openProject = function (projectId) {
       return;
     }
     that.project = project;
-    that.sendMsg('openProject', {project: project.doc});
+    that.sendMsg('openProject', {project: projectMd.getPublic(project.doc)});
   });
 };
 
-EditorUser.prototype.onMessage_openFile = function (path) {
+EditorUser.prototype.onMessage_openFile = function (fid) {
   // If the project isn't open, kick.
   if (!this.project) return this.close();
   
@@ -112,7 +113,7 @@ EditorUser.prototype.onMessage_openFile = function (path) {
   }
   
   var that = this;
-  this.project.openFile(this, path, function (err, file) {
+  this.project.openFile(this, fid, function (err, file) {
     if (err) return that.sendMsg('openFile', {error: err});
     
     that.file = file;

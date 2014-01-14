@@ -72,8 +72,8 @@ EditorProject.prototype.close = function () {
   }
 };
 
-EditorProject.prototype.openFile = function (user, path, callback) {
-  var file = this.files[path];
+EditorProject.prototype.openFile = function (user, fid, callback) {
+  var file = this.files[fid];
   if (file) {
     if (user.eid in file.users) {
       callback('you-have-it-open'); // This shouldn't happen now.
@@ -82,13 +82,14 @@ EditorProject.prototype.openFile = function (user, path, callback) {
     }
     return;
   }
-  
-  if (!(path in this.doc.headTree)) {
+
+  var headFiles = this.doc.headFiles;
+  if (fid >= headFiles || fid < 0 || headFiles[fid] === null) {
     return callback('no-such-file');
   }
   
-  file = new EditorFile(path, this);
-  this.files[file.path] = file;
+  file = new EditorFile(fid, this);
+  this.files[file.fid] = file;
   
   var that = this;
   file.open(function (err) {
@@ -119,7 +120,7 @@ EditorProject.prototype.commit = function (callback) {
 };
 
 EditorProject.prototype.saveAllFiles = function (callback) {
-  var paths = Object.keys(this.files);
+  var fids = Object.keys(this.files);
   var nReturned = 0;
   var errs = [];
 
@@ -129,19 +130,19 @@ EditorProject.prototype.saveAllFiles = function (callback) {
     }
 
     nReturned++;
-    if (nReturned === paths.length) {
+    if (nReturned === fids.length) {
       callback(errs.length > 0 ? errs : undefined);
     }
   };
 
-  for (var i = 0, len = paths.length; i < len; i++) {
-    var file = this.files[paths[i]];
+  for (var i = 0, len = fids.length; i < len; i++) {
+    var file = this.files[fids[i]];
     file.save(onReturn);
   }
 };
 
 EditorProject.prototype.unregisterFile = function (file) {
-  delete this.files[file.path];
+  delete this.files[file.fid];
 };
 
 module.exports = EditorProject;

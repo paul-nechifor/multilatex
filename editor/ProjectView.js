@@ -24,7 +24,7 @@ ProjectView.prototype.setupView = function (pos) {
 
 ProjectView.prototype.realign = function (pos) {
   var s = this.elem.style;
-  
+
   if (pos.sepCollapsed[0]) {
     s.display = 'none';
   } else {
@@ -39,12 +39,12 @@ ProjectView.prototype.setupTreeActions = function () {
   var newFile = this.onNewFile.bind(this);
   var newFolder = this.onNewFolder.bind(this);
   var upload = this.onUploadHere.bind(this);
-  
+
   var common = [
     {name: 'Rename', icon: 'glyphicon glyphicon-pencil', func: rename},
     {name: 'Delete', icon: 'glyphicon glyphicon-trash', func: delete_}
   ];
-  
+
   this.tree.dirActions = [
     {name: 'New file', icon: 'glyphicon glyphicon-plus-sign', func: newFile},
     {name: 'New folder', icon: 'glyphicon glyphicon-folder-close',
@@ -54,7 +54,7 @@ ProjectView.prototype.setupTreeActions = function () {
     common[0],
     common[1]
   ];
-  
+
   this.tree.fileActions = [common[0], common[1]];
 };
 

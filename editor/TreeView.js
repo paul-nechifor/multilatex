@@ -6,6 +6,7 @@ function TreeView() {
   this.selectedItem = null;
   this.dirActions = null;
   this.fileActions = null;
+  this.items = {};
 
   this.onClick = function (item) {};
 }
@@ -26,7 +27,7 @@ TreeView.prototype.setupRoot = function () {
   });
 };
 
-TreeView.prototype.addItem = function (path) {
+TreeView.prototype.addItem = function (id, path) {
   var parts = path.split('/');
   var item;
   var container = this.root.container;
@@ -36,10 +37,12 @@ TreeView.prototype.addItem = function (path) {
     if (!(name in container.names)) {
       isDir = i < len - 1;
       item = container.add({
+        id: id,
         name: name,
         isDir: isDir,
         actions: isDir ? this.dirActions : this.fileActions
       });
+      this.items[id] = item;
       container = item.container;
     } else {
       container = container.names[name].container;
@@ -47,28 +50,24 @@ TreeView.prototype.addItem = function (path) {
   }
 };
 
-TreeView.prototype.getItem = function (path) {
-  var parts = path.split('/');
-  var item;
-  var container = this.root.container;
-  for (var i = 0, len = parts.length; i < len; i++) {
-    item = container.names[parts[i]];
-    if (!item) {
-      return null;
-    }
-    container = item.container;
-  }
-  return item;
-};
+TreeView.prototype.fillWith = function (headFiles, main) {
+  var list = [], i, len;
 
-TreeView.prototype.fillWith = function (pathSet, main) {
-  var list = Object.keys(pathSet);
-  list.sort();
-  for (var i = 0, len = list.length; i < len; i++) {
-    this.addItem(list[i]);
+  for (i = 0, len = headFiles.length; i < len; i++) {
+    var item = headFiles[i];
+    if (item !== null) {
+      list.push([item, i]);
+    }
   }
-  
-  var mainItem = this.getItem(main);
+
+  list.sort();
+
+  for (i = 0, len = list.length; i < len; i++) {
+    var l = list[i];
+    this.addItem(l[1], l[0]);
+  }
+
+  var mainItem = this.items[main];
   $(mainItem.elem).addClass('main');
 };
 

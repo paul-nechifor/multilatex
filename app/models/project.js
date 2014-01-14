@@ -49,3 +49,15 @@ exports.init = function (opts, callback) {
 
   callback(undefined, doc);
 };
+
+exports.getPublic = function (doc) {
+  var ret = {};
+
+  for (var key in doc) {
+    ret[key] = doc[key];
+  }
+
+  delete ret.headPath;
+
+  return ret;
+};

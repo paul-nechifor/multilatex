@@ -77,26 +77,33 @@ exports.zip = function (req, res) {
   });
 };
 
+exports.headPdf = function (req, res) {
+  getProjectDataNoErrContrib(req, res, function (user, project) {
+    var file = project.headFiles[project.mainFile];
+    file = file.substring(0, file.length - 4) + '.pdf';
+    serveHeadFile(req, res, file, project);
+  });
+};
+
 exports.headFiles = function (req, res) {
   var file = req.param(0);
 
   getProjectDataNoErrContrib(req, res, function (user, project) {
-    var value = project.headTree[file];
-
-    if (typeof value === 'string') {
-      serveStoreFile(req, res, value);
-      return;
+    // TODO: This might need to be optimized.
+    var list = project.headFiles;
+    for (var i = 0, len = list.length; i < len; i++) {
+      if (list[i] === file) return serveHeadFile(req, res, file, project);
     }
 
-    serveHeadFile(req, res, file, project);
+    root.error404(req, res);
   });
 };
 
 function downloadHead(req, res, project) {
   projectLogic.createHeadArchive(project, function (err, hash) {
     if (err) return root.error500(req, res, err);
-    res.setHeader('Content-disposition', 'attachment; filename='
-        + project.location + '.zip');
+    res.setHeader('Content-disposition', 'attachment; filename=' +
+        project.location + '.zip');
     serveStoreFile(req, res, hash);
   });
 }

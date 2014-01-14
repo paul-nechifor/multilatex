@@ -1,10 +1,10 @@
 var fs = require('fs');
 
-function EditorFile(path, project) {
-  this.path = path;
+function EditorFile(fid, project) {
+  this.fid = fid;
   this.project = project;
-  this.shareJsId = encodeURIComponent(project.doc._id + ' ' + path);
-  this.filePath = project.doc.headPath + '/' + path;
+  this.shareJsId = encodeURIComponent(project.doc._id + ' ' + fid);
+  this.filePath = project.doc.headPath + '/' + project.doc.headFiles[fid];
   this.users = {};
   this.isClosing = false;
 }
