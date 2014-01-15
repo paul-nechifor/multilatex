@@ -58,9 +58,18 @@ function getFileHash(path, callback) {
   var hash = crypto.createHash('sha1');
   hash.setEncoding('hex');
 
+  var returned = false;
+
+  fd.on('error', function (err) {
+    callback(err);
+    returned = true;
+  });
+
   fd.on('end', function () {
     hash.end();
-    callback(undefined, hash.read());
+    if (!returned) {
+      callback(undefined, hash.read());
+    }
   });
 
   fd.pipe(hash);
@@ -68,7 +77,14 @@ function getFileHash(path, callback) {
 
 function copyIfNecessary(path, dir, file, andDelete, callback) {
   fs.exists(file, function (exists) {
-    if (exists) return callback();
+    if (exists) {
+      if (andDelete) {
+        fs.unlink(path, callback);
+      } else {
+        callback();
+      }
+      return;
+    }
 
     fs.mkdir(dir, function (err) {
       // Ignore this error.

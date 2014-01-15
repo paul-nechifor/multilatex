@@ -10,6 +10,12 @@ Latex.prototype.build = function (dir, file, callback) {
   args.push('-output-directory', dir);
   args.push(file);
 
+  try {
+    process.chdir(dir);
+  } catch (err) {
+    return callback(err);
+  }
+
   var pdflatex = spawn('pdflatex', args);
   pdflatex.on('close', function (code) {
     callback(code);

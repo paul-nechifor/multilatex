@@ -119,7 +119,7 @@ function createHeadArchive2(project, callback) {
   try {
     process.chdir(project.headPath);
   } catch (err) {
-    callback(err);
+    return callback(err);
   }
   var child = spawn('zip', [file, '-@']);
   child.stdin.end(paths.join('\n') + '\n');
