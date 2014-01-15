@@ -21,7 +21,10 @@ function wrapThumb(thumb) {
       p = 1;
     }
     var page = Math.min(Math.floor(p * pages.length), pages.length - 1);
-    img.attr('src', storeUrl(pages[page]));
+    var url = storeUrl(pages[page]);
+    if (img.attr('src') !== url) {
+      img.attr('src', url);
+    }
     bar.css('width', (((page + 1) / pages.length) * 100) + '%');
   });
 }

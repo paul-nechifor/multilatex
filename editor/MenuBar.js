@@ -14,7 +14,9 @@ var MENU = [
     group: 0,
     title: 'Editor',
     glyph: 'align-left',
-    subs: []
+    subs: [
+      {title: 'Settings', action: 'editorSettings'}
+    ]
   },
   {
     group: 1,
@@ -151,6 +153,14 @@ MenuSub.prototype.setup = function (parent) {
   var a = util.createElement(this.elem, 'a');
   a.textContent = this.opts.title;
   a.setAttribute('href', this.opts.href || 'javascript:void(0)');
+
+  if (this.opts.action) {
+    var actions = this.item.group.bar.app.actions;
+    var action = this.opts.action;
+    a.addEventListener('click', function () {
+      actions[action]();
+    });
+  }
 };
 
 module.exports = MenuBar;

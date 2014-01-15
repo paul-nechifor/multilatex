@@ -57,4 +57,8 @@ EditorView.prototype.clearActiveFile = function () {
   this.editor.setReadOnly(true);
 };
 
+EditorView.prototype.showGutter = function (checked) {
+  this.editor.renderer.setShowGutter(checked);
+};
+
 module.exports = EditorView;

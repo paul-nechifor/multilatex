@@ -2,6 +2,7 @@ var express = require('express');
 
 var api = require('../routes/api');
 var blog = require('../routes/blog');
+var explore = require('../routes/explore');
 var project = require('../routes/project');
 var root = require('../routes/root');
 var user = require('../routes/user');
@@ -17,6 +18,7 @@ function registerRoutes(app) {
 
   api.setApp(app);
   blog.setApp(app);
+  explore.setApp(app);
   project.setApp(app);
   user.setApp(app);
 
@@ -39,6 +41,7 @@ function registerRoutes(app) {
   e.post('/api/upload', api.upload);
   e.get('/blog', blog.index);
   e.get('/blog/:post', blog.post);
+  e.get('/explore', explore.index);
   e.get('/login', user.login);
   e.get('/password', user.password);
   e.get('/create', user.create);
