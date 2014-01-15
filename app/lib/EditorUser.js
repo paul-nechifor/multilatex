@@ -1,5 +1,5 @@
-var projectLogic = require('../logic/project');
 var projectMd = require('../models/project');
+var userLogic = require('../logic/user');
 var util = require('../logic/util');
 
 function EditorUser(eid, wss, ws) {
@@ -9,6 +9,7 @@ function EditorUser(eid, wss, ws) {
   this.isClosing = false;
   this.username = null;
   this.userId = null;
+  this.userDoc = null;
   this.project = null;
   this.file = null;
 }
@@ -23,7 +24,15 @@ EditorUser.prototype.open = function () {
       return;
     }
 
-    that.connSetup();
+    that.getUserDoc(function (err) {
+      if (err) {
+        util.logErr(err);
+        that.close();
+        return;
+      }
+
+      that.connSetup();
+    });
   });
 };
 
@@ -58,6 +67,19 @@ EditorUser.prototype.establishSession = function (callback) {
   });
 };
 
+EditorUser.prototype.getUserDoc = function (callback) {
+  var that = this;
+
+  userLogic.getUserById(this.userId, function (err, user) {
+    if (err) return callback(err);
+    if (!user) return callback('no-such-user');
+
+    that.userDoc = user;
+
+    callback();
+  });
+};
+
 EditorUser.prototype.connSetup = function () {
   this.setupListeners();
 };
@@ -84,6 +106,10 @@ EditorUser.prototype.setupListeners = function () {
   };
 
   this.ws.onclose = this.onSocketClose.bind(this);
+};
+
+EditorUser.prototype.onMessage_getUserDoc = function () {
+  this.sendMsg('getUserDoc', {userDoc: this.userDoc});
 };
 
 EditorUser.prototype.onMessage_openProject = function (projectId) {
@@ -141,6 +167,14 @@ EditorUser.prototype.onMessage_commitProject = function () {
   this.project.commit(function (err) {
     if (err) return that.sendMsg('commitProject', {error: err});
     that.sendMsg('commitProject', {});
+  });
+};
+
+EditorUser.prototype.onMessage_savePrefs = function (prefs) {
+  var that = this;
+  userLogic.savePrefs(this.userId, prefs, function (err) {
+    if (err) return that.sendMsg('savePrefs', {error: err});
+    that.sendMsg('savePrefs', {});
   });
 };
 

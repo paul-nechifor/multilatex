@@ -1,10 +1,10 @@
-function Positioning(opts) {
+function Positioning(prefs) {
   this.width = -1;
   this.height = -1;
   this.sepSize = 7;
   this.menuSize = 40;
-  this.vertPaneRatios = opts.vertPanes || [0.2, 0.45, 0.35];
-  this.sepCollapsed = opts.sepCollapsed || [false, false];
+  this.vertPaneRatios = prefs.vals.vertPaneRatios;
+  this.sepCollapsed = prefs.vals.sepCollapsed;
   this.vertPaneHeight = -1;
   this.vertPaneRealWidth = [-1, -1, -1];
 }

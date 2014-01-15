@@ -9,8 +9,7 @@ require('./fullscreen-api-polyfill');
 function Gui(app, opts) {
   this.app = app;
   this.menuBar = new MenuBar(app, opts);
-  this.pos = new Positioning({
-  });
+  this.pos = new Positioning(app.prefs);
   this.project = new ProjectView(app);
   this.editor = new EditorView(app);
   this.output = new OutputView(app);

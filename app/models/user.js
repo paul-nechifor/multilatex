@@ -1,9 +1,9 @@
 exports.init = function (opts, callback) {
   var err = checkValidity(opts);
   if (err) return callback(err);
-  
+
   // TODO: Check if name is on a forbidden list.
-  
+
   var doc = {
     username: opts.username,
     registered: Date.now(),
@@ -13,29 +13,35 @@ exports.init = function (opts, callback) {
     // Small version.
     avatarHashS: null,
     // Extra small version.
-    avatarHashXs: null
+    avatarHashXs: null,
+    prefs: {
+      editorFontSize: 14,
+      editorShowLines: true,
+      vertPaneRatios: [0.2, 0.45, 0.35],
+      sepCollapsed: [false, false]
+    }
   };
-  
+
   if (opts.email) {
     doc.email = opts.email;
   }
-  
+
   callback(undefined, doc);
 };
 
 function checkValidity(doc) {
   var err;
-  
+
   err = checkUsernameValidity(doc.username);
   if (err) {
     return err;
   }
-  
+
   err = checkPasswordValidity(doc.password);
   if (err) {
     return err;
   }
-  
+
   return null;
 }
 
@@ -45,11 +51,11 @@ function checkUsernameValidity(username) {
   if (!username || username.length === 0) {
     return 'no-username-given';
   }
-  
-  if (!/[a-zA-Z][a-zA-Z0-9.-]{3,32}/.test(username)) {
-    return 'Username is invalid. Allowed characters are alphanumerics, “.”, and “-”.';
+
+  if (!/[a-zA-Z][a-zA-Z0-9.-]{0,32}/.test(username)) {
+    return 'invalid-username';
   }
-  
+
   return null;
 }
 
@@ -58,6 +64,6 @@ function checkPasswordValidity(password) {
   if (typeof password !== 'string') {
     return 'No password';
   }
-  
+
   return null;
 }

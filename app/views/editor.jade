@@ -53,24 +53,29 @@ html(lang='en')
             <div class="modal-body"></div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default close-btn" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-primary save-btn" data-dismiss="modal">Save changes</button>
             </div>
           </div>
         </div>
       </div>
-
     script(type='text/template', id='editor-modal-template').
       <form class="form-horizontal" role="form">
         <div class="form-group">
           <label class="col-sm-4 control-label" for='show-lines'>Show line numbers</label>
           <div class="col-sm-8">
-            <input type="checkbox" id='show-lines' <%= showLines ? 'checked' : ''%>>
+            <input type="checkbox" id='show-lines' <%= editorShowLines ? 'checked' : ''%>>
           </div>
         </div>
         <div class="form-group">
           <label for="font-size" class="col-sm-4 control-label">Font size</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" id='font-size' value='<%- fontSize %>'>
+            <div class="input-group">
+              <input type="text" class="form-control" id='font-size' value='<%- editorFontSize %>'>
+              <span class="input-group-btn">
+                <button class="btn btn-default less-btn" type="button"><i class='glyphicon glyphicon-minus'></i></button>
+                <button class="btn btn-default more-btn" type="button"><i class='glyphicon glyphicon-plus'></i></button>
+              </span>
+            </div>
           </div>
         </div>
       </form>

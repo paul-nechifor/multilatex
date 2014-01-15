@@ -1,6 +1,6 @@
 var identicon = require('identicon');
 var fs = require('fs');
-
+var ObjectID = require('mongodb').ObjectID;
 var fileStore = require('./fileStore');
 var util = require('./util');
 var userMd = require('../models/user');
@@ -31,6 +31,23 @@ exports.login = function (username, password, callback) {
 
 exports.getUser = function (username, callback) {
   app.db.users.findOne({username: username}, callback);
+};
+
+exports.getUserById = function (userIdStr, callback) {
+  app.db.users.findOne({_id: new ObjectID(userIdStr)}, callback);
+};
+
+exports.savePrefs = function (userIdStr, prefs, callback) {
+  var query = {_id: new ObjectID(userIdStr)};
+
+  var longPrefs = {};
+  for (var key in prefs) {
+    longPrefs['prefs.' + key] = prefs[key];
+  }
+
+  var update = {$set: longPrefs};
+
+  app.db.users.update(query, update, {w: 1}, callback);
 };
 
 function registerInDb(opts, doc, callback) {
