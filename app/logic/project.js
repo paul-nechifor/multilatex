@@ -68,6 +68,17 @@ exports.getProjectsForUser = function (userId, callback) {
   app.db.projects.find({userId: userId}).toArray(callback);
 };
 
+exports.getLatestProjectsForUser = function (userId, callback) {
+  // TODO: Use streaming and not toArray.
+  app.db.projects.find({userId: userId})
+      .sort({_id: 1}).limit(5).toArray(callback);
+};
+
+exports.getExplore = function (query, sort, callback) {
+  // TODO: Use streaming and not toArray.
+  app.db.projects.find(query).sort(sort).limit(16).toArray(callback);
+};
+
 // TODO: Fix it. This is brain dead. It creates a new permanent archive on every
 // call.
 exports.createHeadArchive = function (project, callback) {
@@ -103,7 +114,7 @@ exports.commit = function (project, callback) {
 function updateOnCommit(project, commit, callback) {
   var query = {_id: commit.projectId};
   var update = {
-    $set: {changes: []},
+    $set: {changes: [], commitTime: commit.created},
     $push: {commits: commit._id}
   };
 
@@ -143,7 +154,7 @@ function checkLocationValidity(location) {
     return 'no-location-given';
   }
 
-  if (!/[a-zA-Z][a-zA-Z0-9.-]{3,32}/.test(location)) {
+  if (!/[a-zA-Z][a-zA-Z0-9.-]{0,32}/.test(location)) {
     return 'invalid-location';
   }
 

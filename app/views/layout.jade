@@ -26,9 +26,9 @@ html(lang='en')
             <span class='multi'>Multi</span><span class='latex'>latex</span>
         .navbar-collapse.collapse
           ul.nav.navbar-nav
-            li
+            li(class='#{exploreActive ? "active" : ""}')
               a(href='/explore') Explore
-            li
+            li(class='#{blogActive ? "active" : ""}')
               a(href='/blog') Blog
           if session.username
             ul.nav.navbar-nav.navbar-right.tight

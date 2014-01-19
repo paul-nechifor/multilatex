@@ -5,17 +5,22 @@ extends username
 block content2
   .row
     .col-md-6
-      .panel.panel-default
+      .panel.panel-default.latest-projects
         .panel-heading
           p
             i.glyphicon.glyphicon-plus-sign
             | 
-            | Popular projects
+            | Latest projects
         .panel-body
-          p ...
+          if projects.length === 0
+            p ...
+          else
+            for project in projects
+              p
+                a(href='/#{project.username}/#{project.location}')= project.location
 
     .col-md-6
-      .panel.panel-default
+      .panel.panel-default.recent-activity
         .panel-heading
           p
             i.glyphicon.glyphicon-inbox

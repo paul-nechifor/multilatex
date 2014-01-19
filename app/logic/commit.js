@@ -25,6 +25,11 @@ exports.getCommitById = function (commitId, callback) {
   app.db.commits.findOne({_id: commitId}, callback);
 };
 
+exports.getInList = function (commitIds, callback) {
+  var query = {_id: {$in: commitIds}};
+  app.db.commits.find(query).toArray(callback);
+};
+
 function moveFiles(project, doc, callback) {
   var files = [];
   for (var i = 0, len = project.headFiles.length; i < len; i++) {

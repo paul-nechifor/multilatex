@@ -60,12 +60,17 @@ exports.username = function (req, res) {
 };
 
 function userOverview(req, res, data) {
-  res.render('userOverview', data);
+  var userId = data.user._id;
+  projectLogic.getLatestProjectsForUser(userId, function (err, projects) {
+    if (err) return root.error500(req, res, err);
+    data.projects = projects;
+    res.render('userOverview', data);
+  });
 }
 
 function userProjects(req, res, data) {
   projectLogic.getProjectsForUser(data.user._id, function (err, projects) {
-    // TODO: Why is err not used?
+    if (err) return root.error500(req, res, err);
     data.projects = projects;
     res.render('userProjects', data);
   });

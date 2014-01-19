@@ -31,6 +31,10 @@ footer
 .navbar-inverse
   .navbar-nav>.open>a, .navbar-nav>.open>a:hover, .navbar-nav>.open>a:focus
     background-color: #22c5ac
+  .navbar-nav li.active
+    a, a:hover
+      font-weight: bold
+      background-color: #22c5ac
 
 .navbar
   min-height: 40px
@@ -182,6 +186,16 @@ footer
       max-width: 253px
       margin: 0 auto
 
+.latest-projects, .recent-activity
+  .panel-body
+    padding: 0
+    p
+      border-bottom: 1px solid #ddd
+      margin: 0
+      padding: 8px 15px
+    p:last-child
+      border-bottom: 0
+
 /* Project -------------------------------------------------------------------*/
 
 .project-urls
@@ -250,3 +264,14 @@ footer
     p, li
       font-size: 16px
       max-width: 600px
+
+/* Blog ----------------------------------------------------------------------*/
+.explore-thumb
+  padding: 0
+  .top
+    background: #f4f4f4;
+    padding: 3px 6px
+    font-size: 18px
+    border-bottom: 1px solid #ddd
+  .inner
+    padding: 4px

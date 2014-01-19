@@ -10,6 +10,9 @@ exports.init = function (opts, callback) {
     downloads: 0,
     views: 0,
 
+    // The time of the last commit.
+    commitTime: -1,
+
     // User ID to time added to project.
     contributorsIds: {},
 

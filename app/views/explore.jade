@@ -1,5 +1,34 @@
 extends layout
 block content
   .container
-    h2 Explore
+    p.margin-top-15.margin-bottom-15
+      if projects.length > 0
+        nextLink = '/explore?after=' + projects[projects.length - 1]._id
+        a.btn.btn-default(href='#{nextLink}') Next
+
+    - for (var i = 0; i < projects.length; i += 3) {
+      .row
+        - for (var j = 0; j < 3 && i + j < projects.length; j++) {
+          .col-md-4
+            .thumbnail.thumb.explore-thumb
+              p = projects[i + j]
+              c = p.commit
+                p.top
+                  | <a href='/#{p.username}'>#{p.username}</a> /
+                  | <a href='/#{p.username}/#{p.location}'>#{p.location}</a>
+                .inner
+                  if c.thumbs[0]
+                    img(src='#{storeUrl(c.thumbs[0])}',
+                    alt="#{p.username} #{p.location}",
+                    data-thumbs='#{c.thumbs.join(" ")}')
+                  else
+                    p Invalid commit.
+        - }
+    - }
+
+    if nextLink
+      p
+        a.btn.btn-default(href='#{nextLink}') Next
+
 block scripts
+  script(src='/s/js/thumbs.js')

@@ -26,7 +26,8 @@ function render(req, res, file) {
       res.render('blog', {
         title: 'Multilatex Blog',
         side: side,
-        data: data
+        data: data,
+        blogActive: true
       });
     });
   });
