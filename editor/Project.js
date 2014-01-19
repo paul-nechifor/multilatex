@@ -30,13 +30,13 @@ Project.prototype.loadMainFile = function () {
 };
 
 Project.prototype.loadFile = function (fid) {
+  if (this.file) {
+    this.file.close();
+  }
+
   var that = this;
   this.app.wss.callMsg('openFile', fid, function (msg) {
     if (msg.error) return that.app.panic(msg.error);
-
-    if (that.file) {
-      that.file.close();
-    }
 
     that.file = new ActiveFile(that, fid);
     that.file.load();

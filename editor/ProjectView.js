@@ -1,6 +1,16 @@
 var util = require('./util');
 var TreeView = require('./TreeView');
 
+var editableFiles = {
+  'ind': true,
+  'bbl': true,
+  'bib': true,
+  'tex': true,
+  'toc': true,
+  'cls': true,
+  'def': true
+};
+
 function ProjectView(app) {
   this.app = app;
   this.elem = null;
@@ -63,10 +73,22 @@ ProjectView.prototype.setupTree = function () {
 };
 
 ProjectView.prototype.itemClicked = function (item) {
-  item.setSelected(true);
   if (item.isDir) {
     item.collapse((item.collapsedState + 1) % 2);
   }
+
+  var fileId = item.opts.id;
+  if (fileId === undefined) {
+    return;
+  }
+
+  var ext = item.name.split('.');
+  if (!editableFiles[ext[ext.length - 1].toLowerCase()]) {
+    return;
+  }
+
+  this.app.project.loadFile(fileId);
+  this.removeSelection();
 };
 
 ProjectView.prototype.onRenameItem = function (item) {
@@ -83,5 +105,18 @@ ProjectView.prototype.onNewFolder = function (parentItem) {
 
 ProjectView.prototype.onUploadHere = function (parentItem) {
 };
+
+ProjectView.prototype.setSelected = function (fileId) {
+  var item = this.tree.items[fileId];
+  item.setSelected(true);
+};
+
+ProjectView.prototype.removeSelection = function () {
+  if (this.tree.selectedItem) {
+    this.tree.selectedItem.setSelected(false);
+  }
+};
+
+
 
 module.exports = ProjectView;

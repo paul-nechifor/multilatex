@@ -6,7 +6,9 @@ function TreeView() {
   this.selectedItem = null;
   this.dirActions = null;
   this.fileActions = null;
+  // Files are referenced by their real ID, all other by negative fake ids.
   this.items = {};
+  this.lastFakeId = -1;
 
   this.onClick = function (item) {};
 }
@@ -31,13 +33,14 @@ TreeView.prototype.addItem = function (id, path) {
   var parts = path.split('/');
   var item;
   var container = this.root.container;
-  var i, len, name, isDir;
+  var i, len, name, isDir, thisId;
   for (i = 0, len = parts.length; i < len; i++) {
     name = parts[i];
     if (!(name in container.names)) {
       isDir = i < len - 1;
+      thisId = isDir ? this.lastFakeId-- : id;
       item = container.add({
-        id: id,
+        id: thisId,
         name: name,
         isDir: isDir,
         actions: isDir ? this.dirActions : this.fileActions
@@ -159,7 +162,7 @@ TreeViewItem.prototype.setup = function (elem) {
   } else {
     if (this.isDir) {
       this.icon.setAttribute('class',
-                             TreeViewItem.COLLAPSED_STATES[this.collapsedState]);
+          TreeViewItem.COLLAPSED_STATES[this.collapsedState]);
     } else {
       this.icon.setAttribute('class', 'glyphicon glyphicon-file');
     }
@@ -184,17 +187,19 @@ TreeViewItem.prototype.setupActions = function () {
   var actionSet = util.createElement(this.item, 'span', 'actions');
   var that = this;
 
+  var actionCall = function (action) {
+    return function (e) {
+      e.stopPropagation();
+      action.func(that);
+    };
+  };
+
   for (var i = 0, len = this.opts.actions.length; i < len; i++) {
     var action = this.opts.actions[i];
     var a = util.createElement(actionSet, 'a');
     util.createElement(a, 'i', action.icon);
     $(a).tooltip({title: action.name, placement: 'bottom'});
-    a.addEventListener('click', (function (action) {
-      return function (e) {
-        e.stopPropagation();
-        action.func(that);
-      };
-    })(action));
+    a.addEventListener('click', actionCall(action));
   }
 };
 

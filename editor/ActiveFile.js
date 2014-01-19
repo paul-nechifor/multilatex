@@ -6,9 +6,11 @@ function ActiveFile(project, fid) {
 
 ActiveFile.prototype.load = function () {
   this.project.app.gui.editor.setActiveFile(this);
+  this.project.app.gui.project.setSelected(this.fid);
 };
 
 ActiveFile.prototype.close = function () {
+  this.project.app.gui.editor.clearActiveFile();
 };
 
 module.exports = ActiveFile;

@@ -75,8 +75,7 @@ module.exports = function (grunt) {
       },
       rsyncApp: {
         base: ['rsync', '-a', '--del', '--exclude', '.git',
-            __dirname + '/.', config.dirs.install],
-        runAs: [config.username, config.username]
+            __dirname + '/.', config.dirs.install]
       },
       deploy: {
         base: [
