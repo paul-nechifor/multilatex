@@ -1,4 +1,5 @@
 var commitMd = require('../models/commit');
+var projectMd = require('../models/project');
 var fileStore = require('../logic/fileStore');
 var util = require('../logic/util');
 var spawn = require('child_process').spawn;
@@ -30,15 +31,52 @@ exports.getInList = function (commitIds, callback) {
   app.db.commits.find(query).toArray(callback);
 };
 
+exports.restoreCommit = function (doc, commit, callback) {
+  createDirStructure(doc, commit, function (err) {
+    if (err) return callback(err);
+    copyFiles(doc, commit, function (err) {
+      if (err) return callback(err);
+      copyPdfFile(doc, commit, callback);
+    });
+  });
+};
+
+function copyFiles(doc, commit, callback) {
+  var i = 0;
+  var next = function () {
+    if (i >= commit.files.length) return callback();
+
+    var file = commit.files[i];
+    if (file === null) { i++; return next(); }
+
+    var from = fileStore.getPath(commit.hashes[i]);
+    var to = doc.headPath + '/' + commit.files[i];
+    util.copyFile(from, to, function (err) {
+      if (err) return callback(err);
+      i++;
+      next();
+    });
+  };
+
+  next();
+}
+
+function copyPdfFile(doc, commit, callback) {
+  var from = fileStore.getPath(commit.pdfFile);
+  var to = projectMd.getPdfFile(doc);
+  util.copyFile(from, to, function (err) {
+    if (err) return callback(err);
+    callback();
+  });
+}
+
 function moveFiles(project, doc, callback) {
   var files = [];
   for (var i = 0, len = project.headFiles.length; i < len; i++) {
     files.push(project.headPath + '/' + project.headFiles[i]);
   }
 
-  var head = project.headFiles[project.mainFile];
-  var pdfFile = project.headPath + '/' +
-    head.substring(0, head.length - 4) + '.pdf';
+  var pdfFile = projectMd.getPdfFile(project);
 
   fileStore.storeAll(files, false, function (err, hashes) {
     if (err) return callback(err);
@@ -97,5 +135,43 @@ function createThumbs(pdfFile, callback) {
         });
       });
     });
+  });
+}
+
+function createDirStructure(doc, commit, callback) {
+  var dirs = {};
+
+  for (var i = 0, len = commit.files.length; i < len; i++) {
+    var file = commit.files[i];
+    if (file === null) {
+      continue;
+    }
+    var parts = commit.files[i].split('/');
+    parts.pop();
+    var dir = parts.join('/');
+    if (dir === '') {
+      continue;
+    }
+    dirs[dir] = true;
+  }
+
+  var args = ['-p'];
+
+  for (var dir in dirs) {
+    args.push(dir);
+  }
+
+  // No dirs to create.
+  if (args.length === 1) return callback();
+
+  try {
+    process.chdir(doc.headPath);
+  } catch (err) {
+    return callback(err);
+  }
+
+  var child = spawn('mkdir', args);
+  child.on('close', function (code) {
+    if (code !== 0) return callback('mkdir-code-' + code);
   });
 }

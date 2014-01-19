@@ -24,6 +24,7 @@ exports.init = function (opts, callback) {
 
     // List of [username, projectLocation, timestamp].
     forks: [],
+
     commits: [],
     mergeRequests: [],
 
@@ -63,4 +64,13 @@ exports.getPublic = function (doc) {
   delete ret.headPath;
 
   return ret;
+};
+
+exports.getPdfFileHead = function (doc) {
+  var head = doc.headFiles[doc.mainFile];
+  return head.substring(0, head.length - 4) + '.pdf';
+};
+
+exports.getPdfFile = function (doc) {
+  return doc.headPath + '/' + exports.getPdfFileHead(doc);
 };

@@ -3,6 +3,7 @@ var projectLogic = require('../logic/project');
 var userLogic = require('../logic/user');
 var fileStore = require('../logic/fileStore');
 var util = require('../logic/util');
+var projectMd = require('../models/project');
 var root = require('./root');
 
 var app = null;
@@ -45,6 +46,17 @@ exports.edit = function (req, res) {
   });
 };
 
+exports.fork = function (req, res) {
+  getProjectDataNoErrCommit(req, res, function (user, project, commit) {
+    var uid = req.session.userId;
+    var name = req.session.username;
+    projectLogic.fork(uid, name, user, project, commit, function (err, p) {
+      if (err) return root.error500(req, res, err);
+      res.redirect('/' + p.username + '/' + p.location);
+    });
+  });
+};
+
 exports.head = function (req, res) {
   var action = req.query.action;
 
@@ -79,9 +91,7 @@ exports.zip = function (req, res) {
 
 exports.headPdf = function (req, res) {
   getProjectDataNoErrContrib(req, res, function (user, project) {
-    var file = project.headFiles[project.mainFile];
-    file = file.substring(0, file.length - 4) + '.pdf';
-    serveHeadFile(req, res, file, project);
+    serveHeadFile(req, res, projectMd.getPdfFileHead(project), project);
   });
 };
 
@@ -152,11 +162,11 @@ function getProjectDataNoErr(req, res, callback) {
 function getProjectData(username, projectLocation, callback) {
   userLogic.getUser(username, function (err, user) {
     if (err) return callback(err);
-    if (!user) return callback(undefined, null);
+    if (!user) return callback(undefined, null, null);
 
     projectLogic.getProject(user._id, projectLocation, function (err, project) {
       if (err) return callback(err);
-      if (!project) return callback(undefined, null);
+      if (!project) return callback(undefined, null, null);
       callback(undefined, user, project);
     });
   });

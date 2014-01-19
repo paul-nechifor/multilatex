@@ -28,7 +28,7 @@ function getExplore(req, res, callback) {
   }
 
   if (req.query.after) {
-    query._id = {$gt: new ObjectID(req.query.after)};
+    query._id = {$lt: new ObjectID(req.query.after)};
   }
 
   projectLogic.getExplore(query, sort, function (err, projects) {
@@ -57,8 +57,15 @@ function addCommits(req, res, projects, callback) {
       mapping[commit.projectId].project.commit = commit;
     }
 
-    // TODO: Maybe clean up projects in mapping without successful commits.
+    var ret = [];
 
-    callback(projects);
+    for (var id in mapping) {
+      var project = mapping[id].project;
+      if (project.commit && project.commit.pdfFile !== null) {
+        ret.push(project);
+      }
+    }
+
+    callback(ret);
   });
 }

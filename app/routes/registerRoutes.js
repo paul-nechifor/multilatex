@@ -32,6 +32,7 @@ function registerRoutes(app) {
   e.post('/api/upload', api.checkAuth);
   e.get('/create', root.checkAuth);
   e.get('/:username/:location/edit', root.checkAuth);
+  e.get('/:username/:location/fork', root.checkAuth);
 
   e.get('/', root.index);
   e.post('/api/create', api.create);
@@ -49,6 +50,7 @@ function registerRoutes(app) {
   e.get('/:username', user.username);
   e.get('/:username/:location', project.location);
   e.get('/:username/:location/edit', project.edit);
+  e.get('/:username/:location/fork', project.fork);
   e.get('/:username/:location/head', project.head);
   e.get('/:username/:location/head/pdf', project.headPdf);
   e.get('/:username/:location/head/*', project.headFiles);
