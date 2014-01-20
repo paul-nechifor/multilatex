@@ -53,9 +53,9 @@ html(lang='en')
                 | Create
           else
             ul.nav.navbar-nav.navbar-right
-              li
+              li(class='#{registerActive ? "active" : ""}')
                 a(href='/register') Register
-              li
+              li(class='#{loginActive ? "active" : ""}')
                 a(href='/login') Login
             
     .full-container

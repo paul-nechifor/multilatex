@@ -21,7 +21,7 @@ exports.setApp = function (pApp) {
 };
 
 exports.login = function (req, res) {
-  var data = {title: 'Login'};
+  var data = {title: 'Login', loginActive: true};
   if (req.session.cameFrom) {
     data.globalData = {
       cameFrom: req.session.cameFrom
@@ -36,7 +36,7 @@ exports.password = function (req, res) {
 };
 
 exports.register = function (req, res) {
-  res.render('register', {title: 'Register'});
+  res.render('register', {title: 'Register', registerActive: true});
 };
 
 exports.create = function (req, res) {
