@@ -12,7 +12,7 @@ node_modules
 /static/blog
 
 # Exclude templates
-/data/templates
+/data/templates/*
 !/data/templates/stylish-article
 
 # Things which are compiled there.
