@@ -93,7 +93,7 @@ exports.getLatestProjectsForUser = function (userId, callback) {
 
 exports.getExplore = function (query, sort, callback) {
   // TODO: Use streaming and not toArray.
-  app.db.projects.find(query).sort(sort).limit(16).toArray(callback);
+  app.db.projects.find(query).sort(sort).limit(9).toArray(callback);
 };
 
 // TODO: Fix it. This is brain dead. It creates a new permanent archive on every

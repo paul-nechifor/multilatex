@@ -6,7 +6,7 @@ var MENU = [
     title: 'Project',
     glyph: 'folder-open',
     subs: [
-      {title: 'Commit'},
+      {title: 'Commit', action: 'commit'},
       {title: 'Download project', href: 'head?action=download'}
     ]
   },

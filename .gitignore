@@ -11,6 +11,10 @@ node_modules
 /data/blog
 /static/blog
 
+# Exclude templates
+/data/templates
+!/data/templates/stylish-article
+
 # Things which are compiled there.
 /static/js/editor.js
 /static/css
