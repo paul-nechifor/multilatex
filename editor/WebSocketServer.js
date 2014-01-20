@@ -23,6 +23,7 @@ WebSocketServer.prototype.setup = function (callback) {
     var json = JSON.parse(event.data);
     var type = json[0];
     var msg = json[1];
+
     var func = messageFuncs[type];
     if (func) {
       func(msg);
@@ -37,7 +38,11 @@ WebSocketServer.prototype.setup = function (callback) {
 
   this.ws.onerror = this.onError.bind(this);
   this.ws.onclose = this.onClose.bind(this);
-  this.ws.onopen = callback;
+  this.ws.onopen = function () {
+    // TODO: Find out why not waiting a while makes this not work. If I don't
+    // wait, I can't really send messages all the time.
+    setTimeout(callback, 100);
+  };
 };
 
 WebSocketServer.prototype.sendMsg = function (type, msg) {
