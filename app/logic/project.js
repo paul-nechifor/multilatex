@@ -128,14 +128,36 @@ exports.commit = function (project, callback) {
   });
 };
 
+exports.addModer = function (projectId, userId, callback) {
+  var update = {$set: {}};
+  update.$set['modders.' + userId] = true;
+
+  app.db.projects.update({_id: projectId}, update, {w: 1}, callback);
+};
+
+exports.deleteFile = function (projectId, fid, filePath, userId, callback) {
+  var update = {$set: {}};
+  update.$set['modders.' + userId] = true;
+  update.$set['headFiles.' + fid] = true;
+
+  app.db.projects.update({_id: projectId}, update, {w: 1}, function (err) {
+    if (err) return callback(err);
+    deleteFromHead(filePath, callback);
+  });
+};
+
+function deleteFromHead(filePath, callback) {
+  callback();
+}
+
 function updateOnCommit(project, commit, callback) {
   var query = {_id: commit.projectId};
   var update = {
-    $set: {changes: [], commitTime: commit.created},
+    $set: {modders: {}, commitTime: commit.created},
     $push: {commits: commit._id}
   };
 
-  project.changes = [];
+  project.modders = {};
   project.commits.push(commit._id);
 
   app.db.projects.update(query, update, {w: 1}, callback);
@@ -234,9 +256,6 @@ function initHead(project, headPath, callback) {
 
     updateDoc.headFiles = project.headFiles = [mainFile];
     updateDoc.mainFile = project.mainFile = 0;
-    updateDoc.changes = project.changes = [
-      ['add', 0, project.userId]
-    ];
 
     callback(undefined, updateDoc);
   });

@@ -7,7 +7,7 @@ block content
       .col-md-6
         h1.project-urls
           | <a href='/#{p.username}'>#{p.username}</a> /
-          | <a href='#{pLink}'>#{p.location}</a>
+          | <a class='project-name' href='#{pLink}'>#{p.location}</a>
       .col-md-6.project-btns
         if session.userId in p.contributorsIds
           a.btn.btn-success(href='#{pLink}/edit')

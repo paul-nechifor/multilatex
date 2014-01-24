@@ -58,4 +58,9 @@ Project.prototype.commit = function () {
   });
 };
 
+Project.prototype.iDeleteFile = function (item) {
+  item.remove();
+  this.app.wss.sendMsg('deleteFile', item.opts.id);
+};
+
 module.exports = Project;

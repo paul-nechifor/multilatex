@@ -1,8 +1,11 @@
 var projectLogic = require('../logic/project');
 var EditorFile = require('./EditorFile');
+var ObjectID = require('mongodb').ObjectID;
+var util = require('../logic/util');
 
 function EditorProject(id, wss) {
   this.id = id;
+  this.idObj = new ObjectID(id);
   this.wss = wss;
   this.doc = null;
   this.isClosing = false;
@@ -53,6 +56,9 @@ EditorProject.prototype.openForUser2 = function (user, callback) {
 EditorProject.prototype.closeForUser = function (user) {
   delete this.users[user.eid];
 
+  // TODO: Shouldn't the user be notified that he can't access this project
+  // anymore?
+
   // If there are no more users, close the entire project.
   if (Object.keys(this.users).length === 0) {
     this.close();
@@ -70,6 +76,10 @@ EditorProject.prototype.close = function () {
   for (var eid in this.users) {
     this.closeForUser(this.users[eid]);
   }
+
+  this.saveAllFiles(function (errs) {
+    if (errs) util.logErr(errs);
+  });
 };
 
 EditorProject.prototype.openFile = function (user, fid, callback) {
@@ -117,6 +127,39 @@ EditorProject.prototype.commit = function (callback) {
     if (errs) return callback(errs);
     projectLogic.commit(that.doc, callback);
   });
+};
+
+EditorProject.prototype.modFile = function (user, fid, callback) {
+  // Return if this user was added to the modders.
+  if (this.doc.modders[user.userId]) {
+    return callback();
+  }
+
+  this.doc.modders[user.userId] = true;
+
+  projectLogic.addModer(this.idObj, user.userId, callback);
+
+  // TODO: Add the file to the messages.
+};
+
+EditorProject.prototype.deleteFile = function (user, fid, callback) {
+  // Return if the file was deleted.
+  if (!this.doc.headFiles[fid]) {
+    return callback();
+  }
+
+  var filePath = this.doc.headFiles[fid];
+  this.doc.headFiles[fid] = null;
+
+  // If such a file is open, close it.
+  var file = this.files[fid];
+  if (file) {
+    file.close();
+  }
+
+  projectLogic.deleteFile(this.idObj, fid, filePath, user.userId, callback);
+
+  // TODO: Add to the messages.
 };
 
 EditorProject.prototype.saveAllFiles = function (callback) {

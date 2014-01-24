@@ -21,7 +21,7 @@ TreeView.prototype.setup = function (parent) {
 };
 
 TreeView.prototype.setupRoot = function () {
-  var rootContainer = new TreeViewContainer(this);
+  var rootContainer = new TreeViewContainer(this, null);
   rootContainer.setup(this.elem);
   this.root = rootContainer.add({
     name: 'project-name',
@@ -53,6 +53,13 @@ TreeView.prototype.addItem = function (id, path) {
   }
 };
 
+TreeView.prototype.removeItem = function (item) {
+  delete this.items[item.opts.id];
+  item.parentContainer.removeChild(item);
+};
+
+
+
 TreeView.prototype.fillWith = function (headFiles, main) {
   var list = [], i, len;
 
@@ -74,8 +81,9 @@ TreeView.prototype.fillWith = function (headFiles, main) {
   $(mainItem.elem).addClass('main');
 };
 
-function TreeViewContainer(tv) {
+function TreeViewContainer(tv, parentItem) {
   this.tv = tv;
+  this.parentItem = parentItem;
   this.elem = null;
   this.dirs = [];
   this.files = [];
@@ -91,11 +99,12 @@ TreeViewContainer.prototype.add = function (opts) {
     throw new Error("That name exists.");
   }
 
-  var item = new TreeViewItem(this.tv, opts);
+  var item = new TreeViewItem(this.tv, this, opts);
 
   var li = document.createElement('li');
   var typeList = item.isDir ? this.dirs : this.files;
   var index = this.getIndex(typeList, opts.name);
+  item.index = index;
 
   if (index > 0 && index < typeList.length) {
     typeList.splice(index, 0, item);
@@ -116,6 +125,13 @@ TreeViewContainer.prototype.add = function (opts) {
   return item;
 };
 
+TreeViewContainer.prototype.removeChild = function (item) {
+  $(item.elem).remove();
+  delete this.names[item.name];
+  var typeList = item.isDir ? this.dirs : this.files;
+  typeList.splice(item.index, 1);
+};
+
 TreeViewContainer.prototype.getIndex = function (typeList, newName) {
   var i = 0;
   var len = typeList.length;
@@ -132,13 +148,15 @@ TreeViewItem.COLLAPSED_STATES = [
   'glyphicon glyphicon-folder-open'
 ];
 
-function TreeViewItem(tv, opts) {
+function TreeViewItem(tv, parentContainer, opts) {
   this.tv = tv;
+  this.parentContainer = parentContainer;
   this.isDir = opts.isDir || false;
   this.isSelected = false;
   this.collapsedState = 1;
   this.name = opts.name;
   this.opts = opts;
+  this.index = -1;
 
   this.elem = null;
   this.item = null;
@@ -172,7 +190,7 @@ TreeViewItem.prototype.setup = function (elem) {
   this.label.textContent = this.name;
 
   if (this.isDir) {
-    this.container = new TreeViewContainer(this.tv);
+    this.container = new TreeViewContainer(this.tv, this);
     this.container.setup(this.elem);
   }
 
@@ -232,9 +250,14 @@ TreeViewItem.prototype.collapse = function (state) {
   this.container.elem.style.display = (state === 0) ? 'none' : 'block';
 };
 
+// TODO: Remove this. They should be immutable.
 TreeViewItem.prototype.changeName = function (name) {
   this.name = name;
   this.label.textContent = this.name;
+};
+
+TreeViewItem.prototype.remove = function () {
+  this.tv.removeItem(this);
 };
 
 module.exports = TreeView;

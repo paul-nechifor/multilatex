@@ -3,4 +3,39 @@ block variables
 extends project
 
 block content2
-  p TODO
+  for cm in commits
+    .panel.panel-success.panel-commit
+      url = p.location + '/commit/' + cm.order
+      urlPrev = p.location + '/commit/' + (cm.order - 1)
+      .panel-heading
+        a(href='#{url}') Commit #{cm.order}
+        | &nbsp;
+        if cm.pdfFile !== null
+          span
+            | (
+            a(href='#{url}/pdf') PDF
+            | ,&nbsp;
+            a(href='#{url}/zip') ZIP
+            | )
+        else
+          span (errors)
+        span.date= prettyDate(cm.created)
+      .panel-body
+        for mod in cm.mods
+          path = cm.files[mod[0]]
+          pathPrev = mod[2]
+          case mod[1]
+            when 'a'
+              p added <a href='#{url}/view/#{path}'>#{path}</a>
+            when 'd'
+              p deleted <a href='#{urlPrev}/view/#{pathPrev}'>#{pathPrev}</a>
+            when 'c'
+              p changed <a href='#{url}/view/#{path}'>#{path}</a>
+                if cm.order > 0
+                  &nbsp;<a href='#{p.location}/diff?a=commit/#{cm.order - 1}/#{path}&b=commit/#{cm.order}/#{path}'>(diff)</a>
+            when 'm'
+              p moved <a href='#{urlPrev}/view/#{pathPrev}'>#{pathPrev}</a> to <a href='#{url}/view/#{path}'>#{path}</a>
+            when 'cm'
+              p changed <a href='#{urlPrev}/view/#{pathPrev}'>#{pathPrev}</a> to <a href='#{url}/view/#{path}'>#{path}</a>
+                if cm.order > 0
+                  &nbsp;<a href='#{p.location}/diff?a=#{cm.order - 1}/#{pathPrev}&b=#{cm.order}/#{path}'>(diff)</a>

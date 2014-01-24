@@ -38,16 +38,13 @@ exports.init = function (opts, callback) {
     // Index of the main file.
     mainFile: opts.mainFile >= 0 ? opts.mainFile : -1,
 
-    // Changes made from last commit. Array of array.
-    // ['add', fileId, userId]
-    // ['mod', path, userId]
-    // ['del', path, userId]
-    // ['move', src, dst, userId]
-    changes: []
+    // People who modified the state since the last commit.
+    modders: {}
   };
 
   doc.contributors[opts.username] = doc.created;
   doc.contributorsIds[opts.userId.toString()] = doc.created;
+  doc.modders[opts.userId.toString()] = true;
 
   // TODO: Validate values.
 

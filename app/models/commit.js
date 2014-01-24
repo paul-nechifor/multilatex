@@ -11,7 +11,12 @@ exports.init = function (project, callback) {
     hashes: null,
 
     mainFile: project.mainFile,
-    changes: project.changes,
+    modders: project.modders,
+
+    // Array of modifications of type: [fid, type, ...].
+    // a=added, d=deleted, m=moved, c=changed, cm=changedAndMoved
+    // if d, m or cm, then the old path is also included in the array.
+    mods: [],
 
     // Null if not generated, hash otherwise.
     pdfFile: null,

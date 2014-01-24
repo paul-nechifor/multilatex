@@ -177,5 +177,9 @@ function projectOverview(req, res, data) {
 }
 
 function projectHistory(req, res, data) {
-  res.render('projectHistory', data);
+  commitLogic.getHistory(data.p.commits, function (err, commits) {
+    if (err) return root.error500(req, res, err);
+    data.commits = commits;
+    res.render('projectHistory', data);
+  });
 }

@@ -178,6 +178,29 @@ EditorUser.prototype.onMessage_savePrefs = function (prefs) {
   });
 };
 
+EditorUser.prototype.onMessage_modFile = function (fid) {
+  // If the project isn't open, kick.
+  if (!this.project) return this.close();
+
+  this.project.modFile(this, fid, function (err) {
+    if (err) util.logErr(err);
+  });
+};
+
+EditorUser.prototype.onMessage_deleteFile = function (fid) {
+  // If the project isn't open, kick.
+  if (!this.project) return this.close();
+
+  this.project.deleteFile(this, fid, function (err) {
+    if (err) util.logErr(err);
+  });
+
+  console.log(fid);
+};
+
+EditorUser.prototype.onMessage_moveFile = function (fid) {
+};
+
 EditorUser.prototype.onSocketClose = function (event) {
   this.close();
 };

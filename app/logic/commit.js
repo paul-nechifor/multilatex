@@ -17,7 +17,10 @@ exports.commit = function (project, zipFile, callback) {
     doc.zipFile = zipFile;
     moveFiles(project, doc, function (err) {
       if (err) return callback(err);
-      createInDb(doc, callback);
+      checkFileDiffs(project, doc, function (err) {
+        if (err) return callback(err);
+        createInDb(doc, callback);
+      });
     });
   });
 };
@@ -29,6 +32,11 @@ exports.getCommitById = function (commitId, callback) {
 exports.getInList = function (commitIds, callback) {
   var query = {_id: {$in: commitIds}};
   app.db.commits.find(query).toArray(callback);
+};
+
+exports.getHistory = function (commitIds, callback) {
+  var query = {_id: {$in: commitIds}};
+  app.db.commits.find(query).sort({_id: -1}).toArray(callback);
 };
 
 exports.restoreCommit = function (doc, commit, callback) {
@@ -71,9 +79,12 @@ function copyPdfFile(doc, commit, callback) {
 }
 
 function moveFiles(project, doc, callback) {
-  var files = [];
+  var files = [], file;
   for (var i = 0, len = project.headFiles.length; i < len; i++) {
-    files.push(project.headPath + '/' + project.headFiles[i]);
+    file = project.headFiles[i];
+    if (file !== null) {
+      files.push(project.headPath + '/' + file);
+    }
   }
 
   var pdfFile = projectMd.getPdfFile(project);
@@ -94,6 +105,75 @@ function moveFiles(project, doc, callback) {
         callback();
       });
     });
+  });
+}
+
+function checkFileDiffs(project, doc, callback) {
+  if (doc.order === 0) {
+    diffFirstCommit(project, doc, callback);
+  } else {
+    diffOtherCommit(project, doc, callback);
+  }
+}
+
+function diffFirstCommit(project, doc, callback) {
+  var mods = [];
+
+  for (var i = 0, len = doc.files.length; i < len; i++) {
+    mods.push([doc.files[i], i, 'a']);
+  }
+
+  mods.sort();
+  doc.mods = mods.map(function (e) {e.shift(); return e;});
+
+  callback();
+}
+
+function diffOtherCommit(project, doc, callback) {
+  var prevId = project.commits[doc.order - 1];
+
+  exports.getCommitById(prevId, function (err, prev) {
+    if (err) return callback(err);
+    if (!prev) return callback('no-commit');
+
+    var files0 = prev.files;
+    var files1 = doc.files;
+    var hashes0 = prev.hashes;
+    var hashes1 = doc.hashes;
+
+    var mods = [];
+
+    var i, len, len2, changed, moved;
+
+    for (i = 0, len = files0.length; i < len; i++) {
+      var name0 = files0[i];
+      if (name0 === null) continue;
+      var name1 = files1[i];
+      if (name1 === null) {
+        mods.push([name0, i, 'd', name0]);
+        continue;
+      }
+
+      changed = hashes0[i] !== hashes1[i];
+      moved = name0 !== name1;
+
+      if (changed && moved) {
+        mods.push([name1, i, 'cm', name0]);
+      } else if (changed) {
+        mods.push([name1, i, 'c']);
+      } else if (moved) {
+        mods.push([name1, i, 'm', name0]);
+      }
+    }
+
+    for (i = len, len2 = files1.length; i < len2; i++) {
+      mods.push([files1[i], i, 'a']);
+    }
+
+    mods.sort();
+    doc.mods = mods.map(function (e) {e.shift(); return e;});
+
+    callback();
   });
 }
 

@@ -95,6 +95,9 @@ ProjectView.prototype.onRenameItem = function (item) {
 };
 
 ProjectView.prototype.onDeleteItem = function (item) {
+  if (item.opts.id >= 0) {
+    this.app.project.iDeleteFile(item);
+  }
 };
 
 ProjectView.prototype.onNewFile = function (parentItem) {

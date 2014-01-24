@@ -201,6 +201,9 @@ footer
 .project-urls
   margin-top: 10px
   margin-bottom: 10px
+  font-size: 26px
+  .project-name
+    font-weight: bold
 .project-btns
   margin-top: 10px
   text-align: right
@@ -208,6 +211,12 @@ footer
     margin-left: 10px
   a:first-child
     margin-left: 0
+
+@media (max-width: 991px)
+  .project-btns
+    text-align: left
+    a
+      margin-bottom: 10px
 
 .thumb
   .frame, .frame .bar
@@ -221,6 +230,20 @@ footer
 .thumb:hover
   .frame
     visibility: visible
+
+.panel-commit
+  .panel-heading
+    padding: 5px 10px
+    .date
+      float: right
+  .panel-body
+    padding: 0
+    p
+      border-bottom: 1px solid #ddd
+      padding: 5px 10px
+      margin: 0
+    p:last-child
+      border-bottom: 0
 
 /* Blog ----------------------------------------------------------------------*/
 
