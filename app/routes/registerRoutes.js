@@ -31,6 +31,7 @@ function registerRoutes(app) {
   e.post('/api/create', api.checkAuth);
   e.post('/api/upload', api.checkAuth);
   e.get('/create', root.checkAuth);
+  e.get('/:username/:location/commit/:n/fork', root.checkAuth);
   e.get('/:username/:location/edit', root.checkAuth);
   e.get('/:username/:location/fork', root.checkAuth);
 
@@ -49,12 +50,18 @@ function registerRoutes(app) {
   e.get('/register', user.register);
   e.get('/:username', user.username);
   e.get('/:username/:location', project.location);
+  e.get('/:username/:location/commit/:n', project.commit);
+  e.get('/:username/:location/commit/:n/fork', project.commitFork);
+  e.get('/:username/:location/commit/:n/pdf', project.commitPdf);
+  e.get('/:username/:location/commit/:n/view/*', project.commitView);
+  e.get('/:username/:location/commit/:n/zip', project.commitZip);
   e.get('/:username/:location/edit', project.edit);
   e.get('/:username/:location/fork', project.fork);
   e.get('/:username/:location/head', project.head);
   e.get('/:username/:location/head/pdf', project.headPdf);
   e.get('/:username/:location/head/*', project.headFiles);
   e.get('/:username/:location/pdf', project.pdf);
+  e.get('/:username/:location/view/*', project.view);
   e.get('/:username/:location/zip', project.zip);
   e.get('*', root.error404);
 }

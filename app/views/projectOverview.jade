@@ -1,16 +1,12 @@
 block variables
-  title = p.username + '/' + p.location
+  title = p.location
+
 extends project
 
 block content2
   .row
-    .col-md-4.project-info-column
-      .thumbnail.thumb
-        if c.thumbs[0]
-          img(src='#{storeUrl(c.thumbs[0])}', alt="#{p.username} #{p.location}",
-            data-thumbs='#{c.thumbs.join(" ")}')
-        else
-          p Invalid commit.
+    .col-md-4
+      +projectThumb(p, c)
     .col-md-8
 
 block scripts

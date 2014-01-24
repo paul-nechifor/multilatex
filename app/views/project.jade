@@ -1,30 +1,15 @@
+include mixins/project
+
 extends layout
 
 block content
   .container
-    - var pLink = '/' + p.username + '/' + p.location
-    .row
-      .col-md-6
-        h1.project-urls
-          | <a href='/#{p.username}'>#{p.username}</a> /
-          | <a class='project-name' href='#{pLink}'>#{p.location}</a>
-      .col-md-6.project-btns
-        if session.userId in p.contributorsIds
-          a.btn.btn-success(href='#{pLink}/edit')
-            <i class='glyphicon glyphicon-pencil'></i> Edit
-        a.btn.btn-default(href='#{pLink}/pdf')
-          <i class='glyphicon glyphicon-share'></i> View PDF
-        a.btn.btn-default(href='#{pLink}/fork')
-          <i class='glyphicon glyphicon-random'></i> Fork
-        a.btn.btn-default(href='#{pLink}/zip')
-          <i class='glyphicon glyphicon-cloud-download'></i> Download ZIP
+    +projectNav(p)
+
     .nav.nav-tabs.margin-bottom-15
       for tab in tabs
-        if tab[0] === activeTab
-          li.active
-            a= tab[1]
-        else
-          li
-            a(href='#{ tab[2] ? tab[2] : "/"+p.username+"/"+p.location }')= tab[1]
+        li(class='#{tab[0] === activeTab ? "active" : ""}')
+          a(href='#{ tab[2] ? tab[2] : "/"+p.username+"/"+p.location }')
+            <i class='glyphicon glyphicon-#{tab[3]}'></i> #{tab[1]}
       
     block content2

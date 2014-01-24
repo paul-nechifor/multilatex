@@ -1,0 +1,31 @@
+mixin projectNav(p, c)
+  pLink = '/' + p.username + '/' + p.location
+  resUrl = c ? (pLink + '/commit/' + c.order) : pLink
+  .row
+    .col-md-7
+      h1.project-urls
+        a(href=p.username)= p.username
+        = ' / '
+        a(class='project-name', href=pLink)= p.location
+        if c
+          = ' / '
+          a(href=resUrl) commit / #{c.order}
+    .col-md-5.project-btns
+      if !c && session.userId in p.contributorsIds
+        a.btn.btn-success(href=resUrl + '/edit')
+          i(class='glyphicon glyphicon-pencil')  Edit
+      a.btn.btn-default(href=resUrl + '/pdf')
+        i(class='glyphicon glyphicon-share')  View PDF
+      a.btn.btn-default(href=resUrl + '/fork')
+        i(class='glyphicon glyphicon-random')  Fork
+      a.btn.btn-default(href=resUrl + '/zip')
+        i(class='glyphicon glyphicon-cloud-download')  Download ZIP
+
+mixin projectThumb(p, c)
+  if c.thumbs[0]
+    .thumbnail.thumb
+      img(src=storeUrl(c.thumbs[0]), alt=p.username + ' ' + p.location,
+          data-thumbs=c.thumbs.join(' '))
+  else
+    .alert.alert-danger
+      p Invalid commit.

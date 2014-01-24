@@ -13,11 +13,8 @@ block content
       .col-md-9
         .nav.nav-tabs.margin-bottom-15
           for tab in tabs
-            if tab[0] === activeTab
-              li.active
-                a= tab[1]
-            else
-              li
-                a(href='#{ tab[2] ? tab[2] : user.username }')= tab[1]
+            li(class='#{tab[0] === activeTab ? "active" : ""}')
+              a(href='#{ tab[2] ? tab[2] : user.username }')
+                <i class='glyphicon glyphicon-#{tab[3]}'></i> #{tab[1]}
         block content2
 

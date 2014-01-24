@@ -5,9 +5,9 @@ var root = require('./root');
 var app = null;
 
 var tabs = [
-  ['overview', 'Overview', null],
-  ['projects', 'Projects', '?tab=projects'],
-  ['activity', 'Activity', '?tab=activity']
+  ['overview', 'Overview', null, 'film'],
+  ['projects', 'Projects', '?tab=projects', 'folder-open'],
+  ['activity', 'Activity', '?tab=activity', 'bullhorn']
 ];
 
 var tabFuncs = {

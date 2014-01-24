@@ -9,8 +9,8 @@ var root = require('./root');
 var app = null;
 
 var tabs = [
-  ['overview', 'Overview', null],
-  ['history', 'History', '?tab=history']
+  ['overview', 'Overview', null, 'film'],
+  ['history', 'History', '?tab=history', 'time']
 ];
 
 var tabFuncs = {
@@ -23,17 +23,41 @@ exports.setApp = function (pApp) {
 };
 
 exports.location = function (req, res) {
-  getProjectDataNoErrCommit(req, res, function (user, project, commit) {
-    var activeTab = req.query.tab in tabFuncs ? req.query.tab : 'overview';
+  getProjectDataNoErr(req, res, function (user, project) {
+    var activeTab =  tabFuncs[req.query.tab] ? req.query.tab : 'overview';
     var data = {
       p: project,
-      c: commit,
       tabs: tabs,
       activeTab: activeTab
     };
 
     tabFuncs[activeTab](req, res, data);
   });
+};
+
+exports.commit = function (req, res) {
+  var n = parseInt(req.params.n, 10);
+  if (isNaN(n)) return root.error404(req, res);
+
+  getProjectDataNoErrCommit(req, res, n, function (user, project, commit) {
+    res.render('commit', {p: project, c: commit});
+  });
+};
+
+exports.commitFork = function (req, res) {
+  root.error404(req, res);
+};
+
+exports.commitPdf = function (req, res) {
+  root.error404(req, res);
+};
+
+exports.commitView = function (req, res) {
+  root.error404(req, res);
+};
+
+exports.commitZip = function (req, res) {
+  root.error404(req, res);
 };
 
 exports.edit = function (req, res) {
@@ -47,7 +71,7 @@ exports.edit = function (req, res) {
 };
 
 exports.fork = function (req, res) {
-  getProjectDataNoErrCommit(req, res, function (user, project, commit) {
+  getProjectDataNoErrCommit(req, res, -1, function (user, project, commit) {
     var uid = req.session.userId;
     var name = req.session.username;
     projectLogic.fork(uid, name, user, project, commit, function (err, p) {
@@ -71,24 +95,6 @@ exports.head = function (req, res) {
   });
 };
 
-exports.pdf = function (req, res) {
-  // TODO: Change this with get latest commit.
-  getProjectDataNoErrCommit(req, res, function (user, project, commit) {
-    if (commit.pdfFile === null) return root.error404(req, res);
-    res.setHeader('Content-Type', 'application/pdf');
-    serveStoreFile(req, res, commit.pdfFile);
-  });
-};
-
-exports.zip = function (req, res) {
-  // TODO: Change this with get latest commit.
-  getProjectDataNoErrCommit(req, res, function (user, project, commit) {
-    res.setHeader('Content-disposition', 'attachment; filename=' +
-        project.location + '.zip');
-    serveStoreFile(req, res, commit.zipFile);
-  });
-};
-
 exports.headPdf = function (req, res) {
   getProjectDataNoErrContrib(req, res, function (user, project) {
     serveHeadFile(req, res, projectMd.getPdfFileHead(project), project);
@@ -106,6 +112,28 @@ exports.headFiles = function (req, res) {
     }
 
     root.error404(req, res);
+  });
+};
+
+exports.pdf = function (req, res) {
+  // TODO: Change this with get latest commit.
+  getProjectDataNoErrCommit(req, res, -1, function (user, project, commit) {
+    if (commit.pdfFile === null) return root.error404(req, res);
+    res.setHeader('Content-Type', 'application/pdf');
+    serveStoreFile(req, res, commit.pdfFile);
+  });
+};
+
+exports.view = function (req, res) {
+  root.error404(req, res);
+};
+
+exports.zip = function (req, res) {
+  // TODO: Change this with get latest commit.
+  getProjectDataNoErrCommit(req, res, -1, function (user, project, commit) {
+    res.setHeader('Content-disposition', 'attachment; filename=' +
+        project.location + '.zip');
+    serveStoreFile(req, res, commit.zipFile);
   });
 };
 
@@ -138,14 +166,21 @@ function getProjectDataNoErrContrib(req, res, callback) {
   });
 }
 
-function getProjectDataNoErrCommit(req, res, callback) {
+function getProjectDataNoErrCommit(req, res, n, callback) {
   getProjectDataNoErr(req, res, function (user, project) {
-    var latestCommitId = project.commits[project.commits.length - 1];
-    commitLogic.getCommitById(latestCommitId, function (err, commit) {
-      if (err) return root.error500(req, res, err);
-      if (!commit) return root.error404(req, res);
+    getCommitNoErr(req, res, project, n, function (commit) {
       callback(user, project, commit);
     });
+  });
+}
+
+function getCommitNoErr(req, res, project, n, callback) {
+  var commitIndex = n >= 0 ? n : (project.commits.length - 1);
+  var commitId = project.commits[commitIndex];
+  commitLogic.getCommitById(commitId, function (err, commit) {
+    if (err) return root.error500(req, res, err);
+    if (!commit) return root.error404(req, res);
+    callback(commit);
   });
 }
 
@@ -173,7 +208,10 @@ function getProjectData(username, projectLocation, callback) {
 }
 
 function projectOverview(req, res, data) {
-  res.render('projectOverview', data);
+  getCommitNoErr(req, res, data.p, -1, function (commit) {
+    data.c = commit;
+    res.render('projectOverview', data);
+  });
 }
 
 function projectHistory(req, res, data) {

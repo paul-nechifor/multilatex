@@ -1,0 +1,20 @@
+include mixins/project
+
+block variables
+  title = p.location + ' (commit ' + c.order + ')'
+
+extends layout
+
+block content
+  .container
+    +projectNav(p, c)
+
+    hr(style='margin-top: 7px')
+
+    .row
+      .col-md-4
+        +projectThumb(p, c)
+      .col-md-8
+
+block scripts
+  script(src='/s/js/thumbs.js')
