@@ -7,7 +7,7 @@ exports.init = function (project, callback) {
 
     files: project.headFiles,
 
-    // The hash of every file above, or null if null
+    // The hash of every file above, or null for every file which is null.
     hashes: null,
 
     mainFile: project.mainFile,

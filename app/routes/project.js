@@ -53,7 +53,26 @@ exports.commitPdf = function (req, res) {
 };
 
 exports.commitView = function (req, res) {
-  root.error404(req, res);
+  var n = parseInt(req.params.n, 10);
+  if (isNaN(n)) return root.error404(req, res);
+
+  getProjectDataNoErrCommit(req, res, n, function (user, project, commit) {
+    var file = req.param(0);
+    var id = getPathId(commit.files, file);
+    if (id === -1) return root.error404(req, res);
+    var hash = commit.hashes[id];
+
+    fileStore.getTextFile(hash, file, function (err, fileType, fileData) {
+      if (err) root.error500(req, res, err);
+      res.render('view', {
+        p: project,
+        c: commit,
+        fileId: id,
+        fileType: fileType,
+        fileData: fileData
+      });
+    });
+  });
 };
 
 exports.commitZip = function (req, res) {
@@ -220,4 +239,13 @@ function projectHistory(req, res, data) {
     data.commits = commits;
     res.render('projectHistory', data);
   });
+}
+
+function getPathId(files, file) {
+  for (var i = 0, len = files.length; i < len; i++) {
+    if (files[i] === file) {
+      return i;
+    }
+  }
+  return -1;
 }

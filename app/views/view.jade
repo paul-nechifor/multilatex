@@ -1,0 +1,25 @@
+include mixins/project
+
+block variables
+  title = p.location + ' (commit ' + c.order + ')'
+
+extends layout
+
+block content
+  .container
+    +projectNav(p, c)
+
+    .panel.panel-info.panel-file-data.margin-top-10
+      .panel-heading
+        p= c.files[fileId]
+      .panel-body
+        case fileType
+          when 'text'
+            pre= fileData
+          when 'image'
+            img(src=storeUrl(c.hashes[fileId]))
+          when 'pdf'
+            object(data=storeUrl(c.hashes[fileId]), type='application/pdf')
+          default
+            .alert.alert-warning
+              p Not a text or recognized image file.

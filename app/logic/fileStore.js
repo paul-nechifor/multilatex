@@ -2,6 +2,21 @@ var crypto = require('crypto');
 var fs = require('fs');
 var util = require('./util');
 
+var fileTypes = {
+  'jpg': 'image',
+  'jpeg': 'image',
+  'png': 'image',
+  'pdf': 'pdf',
+  'eps': 'eps',
+  'ind': 'text',
+  'bbl': 'text',
+  'bib': 'text',
+  'tex': 'text',
+  'toc': 'text',
+  'cls': 'text',
+  'def': 'text'
+};
+
 var app = null;
 
 exports.setApp = function (pApp) {
@@ -51,6 +66,25 @@ exports.getPath = function (hash) {
   var dir = app.config.dirs.store + '/' + hash.substring(0, 3);
   var file = dir + '/' + hash.substring(3);
   return file;
+};
+
+exports.getTextFile = function (hash, pathName, callback) {
+  var parts = pathName.split('.');
+  var ext = parts[parts.length - 1].toLowerCase();
+  var fileType = fileTypes[ext];
+  if (fileType === null) {
+    fileType = 'binary';
+  }
+  if (fileType !== 'text') return callback(undefined, fileType);
+
+  var path = exports.getPath(hash);
+
+  // TODO: Check if the file is too big.
+
+  fs.readFile(path, 'utf-8', function (err, data) {
+    if (err) return callback(err);
+    callback(undefined, fileType, data);
+  });
 };
 
 function getFileHash(path, callback) {
