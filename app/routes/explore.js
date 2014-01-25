@@ -11,9 +11,26 @@ exports.setApp = function (pApp) {
 
 exports.index = function (req, res) {
   getExplore(req, res, function (projects) {
+    var nextPage = null;
+    if (projects.length > 0) {
+      nextPage = '/explore?after=' + projects[projects.length - 1]._id;
+    }
+
+    // If the referer starts with '/explore', use it for the back button.
+    var prevPage = null;
+    if (req.headers.referer) {
+      var parts = req.headers.referer.split('/');
+      var orig = parts[3];
+      if (orig.indexOf('explore') === 0) {
+        prevPage = orig;
+      }
+    }
+
     res.render('explore', {
       title: 'Explore',
       projects: projects,
+      prevPage: prevPage,
+      nextPage: nextPage,
       exploreActive: true
     });
   });
