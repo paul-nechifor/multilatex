@@ -30,3 +30,15 @@ mixin projectThumb(p, c)
   else
     .alert.alert-danger
       p Invalid commit.
+
+mixin projectFiles(p, c, projRel)
+  - var files = c.files.filter(function (e) { return e !== null; }).sort();
+  baseUrl = (projRel ? p.location : c.order) + '/view/'
+
+  .panel.panel-info.panel-simple-list.panel-files
+    .panel-heading
+      p Files
+    .panel-body
+      for file in files
+        p
+          a(href=baseUrl + file)= file

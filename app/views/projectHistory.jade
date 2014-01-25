@@ -4,7 +4,7 @@ extends project
 
 block content2
   for cm in commits
-    .panel.panel-success.panel-commit
+    .panel.panel-success.panel-simple-list.panel-commit
       url = p.location + '/commit/' + cm.order
       urlPrev = p.location + '/commit/' + (cm.order - 1)
       .panel-heading
