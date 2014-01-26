@@ -1,14 +1,14 @@
 .page-container
-  margin-top: 15px
-  margin-right: auto
-  margin-left: auto
-  position: relative
+  margin-top 15px
+  margin-right auto
+  margin-left auto
+  position relative
 
 .page-container:first-child
-  margin-top: 0
+  margin-top 0
 
 .page-container:last-child
-  margin-bottom: 25px // TODO: Is this because of the nav height?
+  margin-bottom 25px // TODO: Is this because of the nav height?
 
 /* CSS classes used by TextLayerBuilder to style the text layer divs */
 
@@ -17,37 +17,37 @@
 ::-moz-selection { background:rgba(0,0,255,0.3); }
 
 .textLayer
-  position: absolute
-  left: 0
-  top: 0
-  right: 0
-  bottom: 0
-  color: #000
-  font-family: sans-serif
-  overflow: hidden
+  position absolute
+  left 0
+  top 0
+  right 0
+  bottom 0
+  color #000
+  font-family sans-serif
+  overflow hidden
 
 .textLayer > div
-  color: transparent
-  position: absolute
-  line-height: 1
-  white-space: pre
-  cursor: text
+  color transparent
+  position absolute
+  line-height 1
+  white-space pre
+  cursor text
 
 .textLayer .highlight
-  margin: -1px
-  padding: 1px
+  margin -1px
+  padding 1px
 
-  background-color: rgba(180, 0, 170, 0.2)
-  border-radius: 4px
+  background-color rgba(180, 0, 170, 0.2)
+  border-radius 4px
 
 .textLayer .highlight.begin
-  border-radius: 4px 0 0 4px
+  border-radius 4px 0 0 4px
 
 .textLayer .highlight.end
-  border-radius: 0 4px 4px 0
+  border-radius 0 4px 4px 0
 
 .textLayer .highlight.middle
-  border-radius: 0
+  border-radius 0
 
 .textLayer .highlight.selected
-  background-color: rgba(0, 100, 0, 0.2)
+  background-color rgba(0, 100, 0, 0.2)
