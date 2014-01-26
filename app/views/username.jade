@@ -2,19 +2,10 @@ extends layout
 
 block content
   .container.margin-top-15
-    .row
-      .col-md-3.user-info-column
-        .thumbnail
-          img(src='#{storeUrl(user.avatarHash)}', alt="#{user.username}' avatar")
-          h3= user.username
-          p Member since #{prettyDate(user.registered)}
-          if session.username === user.username
-            button.btn.btn-default.btn-block(type='button') Edit profile
-      .col-md-9
-        .nav.nav-tabs.margin-bottom-15
-          for tab in tabs
-            li(class='#{tab[0] === activeTab ? "active" : ""}')
-              a(href='#{ tab[2] ? tab[2] : user.username }')
-                <i class='glyphicon glyphicon-#{tab[3]}'></i> #{tab[1]}
-        block content2
+    .nav.nav-tabs.margin-bottom-15
+      for tab in tabs
+        li(class='#{tab[0] === activeTab ? "active" : ""}')
+          a(href='#{ tab[2] ? tab[2] : user.username }')
+            <i class='glyphicon glyphicon-#{tab[3]}'></i> #{tab[1]}
+    block content2
 

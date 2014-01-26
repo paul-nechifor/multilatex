@@ -24,6 +24,7 @@ exports.index = function (req, res) {
       if (orig.indexOf('explore') === 0) {
         prevPage = orig;
       }
+      // TODO: Not if page is '/explore'
     }
 
     res.render('explore', {
@@ -40,49 +41,15 @@ function getExplore(req, res, callback) {
   var sort = {commitTime: -1};
   var query = {};
 
-  if (req.query.user) {
-    query.username = req.query.user;
-  }
-
   if (req.query.after) {
     query._id = {$lt: new ObjectID(req.query.after)};
   }
 
   projectLogic.getExplore(query, sort, function (err, projects) {
     if (err) return root.error500(req, res, err);
-    addCommits(req, res, projects, callback);
-  });
-}
-
-function addCommits(req, res, projects, callback) {
-  var mapping = {};
-  var ids = [];
-
-  for (var i = 0, len = projects.length; i < len; i++) {
-    var p = projects[i];
-    mapping[p._id] = {
-      project: p
-    };
-    ids.push(p.commits[p.commits.length - 1]);
-  }
-
-  commitLogic.getInList(ids, function (err, commits) {
-    if (err) return root.error500(req, res, err);
-
-    for (var i = 0, len = commits.length; i < len; i++) {
-      var commit = commits[i];
-      mapping[commit.projectId].project.commit = commit;
-    }
-
-    var ret = [];
-
-    for (var id in mapping) {
-      var project = mapping[id].project;
-      if (project.commit && project.commit.pdfFile !== null) {
-        ret.push(project);
-      }
-    }
-
-    callback(ret);
+    commitLogic.getForProjects(projects, true, function (err, projects) {
+      if (err) return root.error500(req, res, err);
+      callback(projects);
+    });
   });
 }

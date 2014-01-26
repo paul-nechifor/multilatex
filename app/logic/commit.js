@@ -49,6 +49,42 @@ exports.restoreCommit = function (doc, commit, callback) {
   });
 };
 
+exports.getForProjects = function (projects, onlyValid, callback) {
+  var mapping = {};
+  var ids = [];
+
+  for (var i = 0, len = projects.length; i < len; i++) {
+    var p = projects[i];
+    mapping[p._id] = { project: p };
+    ids.push(p.commits[p.commits.length - 1]);
+  }
+
+  exports.getInList(ids, function (err, commits) {
+    if (err) return callback(err);
+
+    for (var i = 0, len = commits.length; i < len; i++) {
+      var commit = commits[i];
+      mapping[commit.projectId].project.commit = commit;
+    }
+
+    var ret = onlyValid ? trimInvalidProjects(mapping) : projects;
+    callback(undefined, ret);
+  });
+};
+
+function trimInvalidProjects(mapping) {
+  var ret = [];
+
+  for (var id in mapping) {
+    var project = mapping[id].project;
+    if (project.commit && project.commit.pdfFile !== null) {
+      ret.push(project);
+    }
+  }
+
+  return ret;
+}
+
 function copyFiles(doc, commit, callback) {
   var i = 0;
   var next = function () {

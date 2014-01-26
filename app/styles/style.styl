@@ -207,6 +207,19 @@ footer
     p:last-child
       border-bottom: 0
 
+.user-short-info
+  // Make it look like more of an alert than a well.
+  box-shadow: none
+  -webkit-box-shadow: none
+  padding: 5px
+
+  img
+    width: 48px
+    height: 48px
+    margin-right: 10px
+  h3
+    margin: 0
+
 /* Project -------------------------------------------------------------------*/
 
 .project-urls
@@ -312,6 +325,9 @@ footer
     padding: 3px 6px
     font-size: 18px
     border-bottom: 1px solid #ddd
+  .flip-book
+    float: right
+    visibility: hidden
   .inner
     padding: 4px
     img
@@ -320,6 +336,9 @@ footer
       max-width: 100%
       margin-right: auto
       margin-left: auto
+.explore-thumb:hover
+  .flip-book
+    visibility: visible
 
 /* First page ----------------------------------------------------------------*/
 

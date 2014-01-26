@@ -31,6 +31,33 @@ mixin projectThumb(p, c)
     .alert.alert-danger
       p Invalid commit.
 
+mixin listProjects(projects, showUser)
+  - for (var i = 0; i < projects.length; i += 3) {
+    .row
+      - for (var j = 0; j < 3 && i + j < projects.length; j++) {
+        .col-md-4
+          p = projects[i + j]
+          c = p.commit
+          .thumbnail.thumb.explore-thumb
+            p.top
+              if showUser
+                a(href='/' + p.username)= p.username
+                = ' / '
+              a(href='/' + p.username + '/' + p.location)= p.location
+              a(href='javascript:void(0)').flip-book
+                i(class='glyphicon glyphicon-book')
+            .inner
+              if c.thumbs[0]
+                a(href='/#{p.username}/#{p.location}/pdf')
+                  img(src='#{storeUrl(c.thumbs[0])}',
+                  alt="#{p.username} #{p.location}",
+                  data-thumbs='#{c.thumbs.join(" ")}')
+              else
+                .alert.alert-danger
+                  p Invalid commit.
+      - }
+  - }
+
 mixin projectFiles(p, c, projRel)
   - var files = c.files.filter(function (e) { return e !== null; }).sort();
   baseUrl = (projRel ? p.location : c.order) + '/view/'

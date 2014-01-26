@@ -1,9 +1,15 @@
+include mixins/project
+include mixins/user
+
 block variables
   title = user.username + "'s projects"
+
 extends username
 
 block content2
-  for project in projects
-    h3
-      a(href='/#{project.username}/#{project.location}')= project.location
-    hr
+  +userShortInfo(user)
+
+  +listProjects(projects, false)
+
+block scripts
+  script(src='/s/js/thumbs.js')

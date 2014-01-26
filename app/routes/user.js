@@ -1,3 +1,4 @@
+var commitLogic = require('../logic/commit');
 var userLogic = require('../logic/user');
 var projectLogic = require('../logic/project');
 var root = require('./root');
@@ -71,8 +72,13 @@ function userOverview(req, res, data) {
 function userProjects(req, res, data) {
   projectLogic.getProjectsForUser(data.user._id, function (err, projects) {
     if (err) return root.error500(req, res, err);
-    data.projects = projects;
-    res.render('userProjects', data);
+
+    commitLogic.getForProjects(projects, false, function (err, projects) {
+      if (err) return root.error500(req, res, err);
+
+      data.projects = projects;
+      res.render('userProjects', data);
+    });
   });
 }
 
