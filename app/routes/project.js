@@ -49,7 +49,10 @@ exports.commitFork = function (req, res) {
 };
 
 exports.commitPdf = function (req, res) {
-  root.error404(req, res);
+  var n = parseInt(req.params.n, 10);
+  if (isNaN(n)) return root.error404(req, res);
+
+  servePdf(req, res, n);
 };
 
 exports.commitView = function (req, res) {
@@ -76,7 +79,10 @@ exports.commitView = function (req, res) {
 };
 
 exports.commitZip = function (req, res) {
-  root.error404(req, res);
+  var n = parseInt(req.params.n, 10);
+  if (isNaN(n)) return root.error404(req, res);
+
+  serveZip(req, res, n);
 };
 
 exports.edit = function (req, res) {
@@ -135,21 +141,11 @@ exports.headFiles = function (req, res) {
 };
 
 exports.pdf = function (req, res) {
-  // TODO: Change this with get latest commit.
-  getProjectDataNoErrCommit(req, res, -1, function (user, project, commit) {
-    if (commit.pdfFile === null) return root.error404(req, res);
-    res.setHeader('Content-Type', 'application/pdf');
-    serveStoreFile(req, res, commit.pdfFile);
-  });
+  servePdf(req, res, -1);
 };
 
 exports.zip = function (req, res) {
-  // TODO: Change this with get latest commit.
-  getProjectDataNoErrCommit(req, res, -1, function (user, project, commit) {
-    res.setHeader('Content-disposition', 'attachment; filename=' +
-        project.location + '.zip');
-    serveStoreFile(req, res, commit.zipFile);
-  });
+  serveZip(req, res, -1);
 };
 
 function downloadHead(req, res, project) {
@@ -158,6 +154,27 @@ function downloadHead(req, res, project) {
     res.setHeader('Content-disposition', 'attachment; filename=' +
         project.location + '.zip');
     serveStoreFile(req, res, hash);
+  });
+}
+
+function servePdf(req, res, order) {
+  getProjectDataNoErrCommit(req, res, order, function (user, project, commit) {
+    if (commit.pdfFile === null) return root.error404(req, res);
+    res.setHeader('Content-Type', 'application/pdf');
+    serveStoreFile(req, res, commit.pdfFile);
+  });
+}
+
+function serveZip(req, res, order) {
+  getProjectDataNoErrCommit(req, res, order, function (user, project, commit) {
+    var name = project.location;
+    if (order >= 0) {
+      name += '-commit-' + order;
+    }
+    name += '.zip';
+
+    res.setHeader('Content-disposition', 'attachment; filename=' + name);
+    serveStoreFile(req, res, commit.zipFile);
   });
 }
 

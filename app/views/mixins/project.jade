@@ -73,3 +73,18 @@ mixin projectFiles(p, c, projRel)
       for file in files
         p
           a(href=baseUrl + file)= file
+
+mixin commitOtherFiles(p, c, filePath)
+  - var files = c.files.filter(function (e) { return e !== null; }).sort();
+  baseUrl = '/' + p.username + '/' + p.location + '/commit/' + c.order + '/view/'
+
+  .panel.panel-info.panel-simple-list.panel-files
+    .panel-heading
+      p Other files
+    .panel-body
+      for file in files
+        p
+          if file === filePath
+            = file
+          else
+            a(href=baseUrl + file)= file

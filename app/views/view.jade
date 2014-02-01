@@ -9,20 +9,24 @@ block content
   .container
     +projectNav(p, c)
 
-    .panel.panel-info.panel-file-data.margin-top-10
-      .panel-heading
-        p= c.files[fileId]
-      .panel-body(class=fileType==='text' ? 'code' : undefined)
-        case fileType
-          when 'text'
-            pre.prettyprint.lang-tex.linenums= fileData
-          when 'image'
-            img(src=storeUrl(c.hashes[fileId]))
-          when 'pdf'
-            object(data=storeUrl(c.hashes[fileId]), type='application/pdf')
-          default
-            .alert.alert-warning
-              p Not a text or recognized image file.
+    .row
+      .col-lg-9
+        .panel.panel-info.panel-file-data
+          .panel-heading
+            p= c.files[fileId]
+          .panel-body(class=fileType==='text' ? 'code' : undefined)
+            case fileType
+              when 'text'
+                pre.prettyprint.lang-tex.linenums= fileData
+              when 'image'
+                img(src=storeUrl(c.hashes[fileId]))
+              when 'pdf'
+                object(data=storeUrl(c.hashes[fileId]), type='application/pdf')
+              default
+                .alert.alert-warning
+                  p Not a text or recognized image file.
+      .col-lg-3
+        +commitOtherFiles(p, c, c.files[fileId])
 
 if fileType === 'text'
   block scripts
