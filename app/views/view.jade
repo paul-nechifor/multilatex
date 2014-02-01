@@ -15,7 +15,7 @@ block content
       .panel-body(class=fileType==='text' ? 'code' : undefined)
         case fileType
           when 'text'
-            pre= fileData
+            pre.prettyprint.lang-tex.linenums= fileData
           when 'image'
             img(src=storeUrl(c.hashes[fileId]))
           when 'pdf'
@@ -23,3 +23,7 @@ block content
           default
             .alert.alert-warning
               p Not a text or recognized image file.
+
+if fileType === 'text'
+  block scripts
+    script(src='https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=tex')

@@ -41,7 +41,7 @@ html(lang='en')
                   b.caret
                 ul.dropdown-menu
                   li
-                    a(href='/' + session.username') Overview
+                    a(href='/' + session.username) Overview
                   li
                     a(href='/' + session.username + '?tab=projects') Projects
                   li.divider
@@ -49,7 +49,8 @@ html(lang='en')
                     a.clickable.btn-logout Logout
             form.navbar-form.navbar-right
               a.btn.btn-success(href='/create')
-                i.glyphicon.glyphicon-plus-sign= ' Create'
+                i.glyphicon.glyphicon-plus-sign
+                = ' Create'
           else
             ul.nav.navbar-nav.navbar-right
               li(class='#{registerActive ? "active" : ""}')
