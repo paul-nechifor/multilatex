@@ -19,12 +19,12 @@ module.exports = function (grunt) {
     },
     remove: {
       editorNonMin: {
-        fileList: ['./static/js/editor.js']
+        fileList: ['static/js/editor.js']
       }
     },
     rename: {
       editorFromMin: {
-        files: [{src: './static/js/editor.min.js', dest: './static/js/editor.js'}]
+        files: [{src: 'static/js/editor.min.js', dest: 'static/js/editor.js'}]
       }
     },
     browserify: {
@@ -33,7 +33,7 @@ module.exports = function (grunt) {
           debug: config.debug
         },
         files: {
-          './static/js/editor.js': './editor/main.js'
+          'static/js/editor.js': 'editor/main.js'
         }
       }
     },
@@ -41,11 +41,8 @@ module.exports = function (grunt) {
       compile: {
         options: {},
         files: {
-          './static/css/editor.css': [
-            'app/styles/editor.styl',
-            'app/styles/pdfjs.styl'
-          ],
-          './static/css/style.css': ['app/styles/style.styl']
+          'static/css/editor.css': ['app/styles/editor/editor.styl'],
+          'static/css/site.css': ['app/styles/site/site.styl']
         }
       }
     },

@@ -1,0 +1,50 @@
+.project-urls
+  margin-top 10px
+  margin-bottom 10px
+  font-size 23px
+  line-height 35px
+  .project-name
+    font-weight bold
+.project-btns
+  margin-top 10px
+  text-align right
+  a
+    margin-left 10px
+    word-spacing -8px
+  a:first-child
+    margin-left 0
+
+@media (max-width: 991px)
+  .project-btns
+    text-align left
+    a
+      margin-bottom 10px
+
+.thumb
+  .frame, .frame .bar
+    height 5px
+    border-radius 2px
+  .frame
+    background #eee
+    visibility hidden
+    .bar
+      background #ccc
+.thumb:hover
+  .frame
+    visibility visible
+
+.panel-simple-list
+  .panel-heading
+    padding 5px 10px
+  .panel-body
+    padding 0
+    p
+      border-bottom 1px solid #ddd
+      padding 5px 10px
+      margin 0
+    p:last-child
+      border-bottom 0
+
+.panel-commit
+  .date
+    float right

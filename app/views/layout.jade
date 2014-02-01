@@ -7,7 +7,7 @@ html(lang='en')
     title= pageTitle
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     link(rel='stylesheet', href='/s/bootstrap/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/s/css/style.css')
+    link(rel='stylesheet', href='/s/css/site.css')
     link(rel='shortcut icon', href='/s/favicon.ico', type='image/x-icon')
     link(rel='apple-touch-icon', sizes='57x57', href='/s/favicon57.png')
     link(rel='apple-touch-icon', sizes='152x152', href='/s/favicon152.png')
@@ -22,8 +22,10 @@ html(lang='en')
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href='/') <i class='si-ml-square'></i>
-            <span class='multi'>Multi</span><span class='latex'>latex</span>
+          a.navbar-brand(href='/')
+            i.si-ml-square
+            span.multi Multi
+            span.latex latex
         .navbar-collapse.collapse
           ul.nav.navbar-nav
             li(class='#{exploreActive ? "active" : ""}')
@@ -35,29 +37,26 @@ html(lang='en')
               li.dropdown
                 a.dropdown-toggle(href='#', data-toggle='dropdown')
                   i.glyphicon.glyphicon-user
-                  |  
-                  | #{session.username}
+                  = ' ' + session.username
                   b.caret
                 ul.dropdown-menu
                   li
-                    a(href='/#{session.username}') Overview
+                    a(href='/' + session.username') Overview
                   li
-                    a(href='/#{session.username}?tab=projects') Projects
+                    a(href='/' + session.username + '?tab=projects') Projects
                   li.divider
                   li
                     a.clickable.btn-logout Logout
             form.navbar-form.navbar-right
               a.btn.btn-success(href='/create')
-                i.glyphicon.glyphicon-plus-sign
-                | 
-                | Create
+                i.glyphicon.glyphicon-plus-sign= ' Create'
           else
             ul.nav.navbar-nav.navbar-right
               li(class='#{registerActive ? "active" : ""}')
                 a(href='/register') Register
               li(class='#{loginActive ? "active" : ""}')
                 a(href='/login') Login
-            
+
     .full-container
       .content-block
         block content
@@ -77,7 +76,7 @@ html(lang='en')
 
     if session.username
       script(src='/s/js/generalLoggedUser.js')
-    
+
     block scripts
 
     script.
