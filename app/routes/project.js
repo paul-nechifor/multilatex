@@ -5,6 +5,7 @@ var fileStore = require('../logic/fileStore');
 var util = require('../logic/util');
 var projectMd = require('../models/project');
 var root = require('./root');
+var ObjectID = require('mongodb').ObjectID;
 
 var app = null;
 
@@ -249,8 +250,11 @@ function projectOverview(req, res, data) {
 function projectHistory(req, res, data) {
   commitLogic.getHistory(data.p.commits, function (err, commits) {
     if (err) return root.error500(req, res, err);
-    data.commits = commits;
-    res.render('projectHistory', data);
+    decorateCommitWithAuthors(commits, function (err) {
+      if (err) return root.error500(req, res, err);
+      data.commits = commits;
+      res.render('projectHistory', data);
+    });
   });
 }
 
@@ -261,4 +265,47 @@ function getPathId(files, file) {
     }
   }
   return -1;
+}
+
+// TODO: Clean this up.
+function decorateCommitWithAuthors(commits, callback) {
+  // String id to object id.
+  var ids = {};
+  var map = function (m) { ids[m] = new ObjectID(m); };
+
+  for (var i = 0, len = commits.length; i < len; i++) {
+    Object.keys(commits[i].modders).map(map);
+  }
+
+  var idsList = [];
+  for (var id in ids) {
+    idsList.push(ids[id]);
+  }
+
+  userLogic.getUsersById(ids, function (err, users) {
+    if (err) return callback(err);
+
+    var i, j, len, len2;
+
+    var userMap = {};
+    for (i = 0, len = users.length; i < len; i++) {
+      userMap[users[i]._id] = users[i];
+    }
+
+    for (i = 0, len = commits.length; i < len; i++) {
+      var modders = Object.keys(commits[i].modders);
+      var authors = [];
+
+      for (j = 0, len2 = modders.length; j < len2; j++) {
+        var user = userMap[modders[j]];
+        if (user !== undefined) {
+          authors.push(user);
+        }
+      }
+
+      commits[i].authors = authors;
+    }
+
+    callback();
+  });
 }

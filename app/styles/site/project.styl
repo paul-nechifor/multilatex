@@ -53,5 +53,26 @@ p.forked-from
       border-bottom 0
 
 .panel-commit
+  .authors
+    display block
+    a
+      display block
+    img
+      width 20px
+      height 20px
   .date
     float right
+
+@media (min-width: 992px)
+  .panel-commit
+    .panel-heading
+      position relative
+      .authors
+        display block
+        max-width 40%
+      .commit
+        position absolute
+        left 0
+        right 0
+        top 5px
+        text-align center

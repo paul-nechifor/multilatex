@@ -4,22 +4,30 @@ extends project
 
 block content2
   for cm in commits
-    .panel.panel-success.panel-simple-list.panel-commit
+    .panel.panel-info.panel-simple-list.panel-commit
       url = p.location + '/commit/' + cm.order
       urlPrev = p.location + '/commit/' + (cm.order - 1)
       .panel-heading
-        a(href='#{url}') Commit #{cm.order}
-        | &nbsp;
-        if cm.pdfFile !== null
-          span
-            | (
-            a(href='#{url}/pdf') PDF
-            | ,&nbsp;
-            a(href='#{url}/zip') ZIP
-            | )
-        else
-          span (errors)
-        span.date= prettyDate(cm.created)
+        p
+          span.commit
+            a(href=url) Commit #{cm.order}
+            = ' '
+            if cm.pdfFile !== null
+              span
+                | (
+                a(href=url + '/pdf') PDF
+                = ', '
+                a(href=url + '/zip') ZIP
+                | )
+            else
+              span (errors)
+          span.date= prettyDate(cm.created)
+          span.authors
+            for a in cm.authors
+              a(href='/' + a.username)
+                img(src=storeUrl(a.avatarHash), alt=a.username + "'s avatar")
+                = ' ' + a.username
+              = ' '
       .panel-body
         for mod in cm.mods
           path = cm.files[mod[0]]

@@ -37,6 +37,11 @@ exports.getUserById = function (userIdStr, callback) {
   app.db.users.findOne({_id: new ObjectID(userIdStr)}, callback);
 };
 
+exports.getUsersById = function (userIds, callback) {
+  var query = {_id: {$in: userIds}};
+  app.db.users.find(query).toArray(callback);
+};
+
 exports.savePrefs = function (userIdStr, prefs, callback) {
   var query = {_id: new ObjectID(userIdStr)};
 
