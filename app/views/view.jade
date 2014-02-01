@@ -12,7 +12,7 @@ block content
     .panel.panel-info.panel-file-data.margin-top-10
       .panel-heading
         p= c.files[fileId]
-      .panel-body
+      .panel-body(class=fileType==='text' ? 'code' : undefined)
         case fileType
           when 'text'
             pre= fileData

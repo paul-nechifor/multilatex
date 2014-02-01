@@ -60,11 +60,15 @@ mixin listProjects(projects, showUser)
 
 mixin projectFiles(p, c, projRel)
   - var files = c.files.filter(function (e) { return e !== null; }).sort();
-  baseUrl = (projRel ? p.location : c.order) + '/view/'
+  baseUrl = (projRel ? p.location + '/commit/' : '') + c.order + '/view/'
 
   .panel.panel-info.panel-simple-list.panel-files
     .panel-heading
       p Files
+        if projRel
+          |  (
+          a(href=p.location + '/commit/' + c.order) Commit #{c.order}
+          | )
     .panel-body
       for file in files
         p

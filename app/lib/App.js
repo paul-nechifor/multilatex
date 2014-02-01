@@ -7,7 +7,7 @@ var sharejs = require('share');
 var Database = require('./Database');
 var Latex = require('./Latex');
 var WebSocketServer = require('./WebSocketServer');
-var registerRoutes = require('../routes/registerRoutes');
+var routes = require('../routes');
 
 function App(config) {
   this.config = config;
@@ -91,7 +91,7 @@ App.prototype.configureShareJs = function () {
 };
 
 App.prototype.registerRoutes = function () {
-  registerRoutes(this);
+  routes.registerRoutes(this);
 };
 
 App.prototype.createServer = function () {

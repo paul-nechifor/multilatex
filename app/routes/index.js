@@ -13,7 +13,7 @@ var projectLogic = require('../logic/project');
 var userLogic = require('../logic/user');
 var util = require('../logic/util');
 
-function registerRoutes(app) {
+exports.registerRoutes = function (app) {
   var e = app.express;
 
   api.setApp(app);
@@ -61,9 +61,6 @@ function registerRoutes(app) {
   e.get('/:username/:location/head/pdf', project.headPdf);
   e.get('/:username/:location/head/*', project.headFiles);
   e.get('/:username/:location/pdf', project.pdf);
-  e.get('/:username/:location/view/*', project.view);
   e.get('/:username/:location/zip', project.zip);
   e.get('*', root.error404);
-}
-
-module.exports = registerRoutes;
+};

@@ -143,10 +143,6 @@ exports.pdf = function (req, res) {
   });
 };
 
-exports.view = function (req, res) {
-  root.error404(req, res);
-};
-
 exports.zip = function (req, res) {
   // TODO: Change this with get latest commit.
   getProjectDataNoErrCommit(req, res, -1, function (user, project, commit) {
