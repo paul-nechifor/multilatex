@@ -56,7 +56,7 @@ exports.createFrom = function (username, userId, puh, callback) {
 };
 
 exports.fork = function (uid, name, oldUser, project, commit, callback) {
-  var doc = initFork(uid, name, project);
+  var doc = projectMd.initFork(uid, name, project, commit);
 
   initForkHead(doc, commit, function (err) {
     if (err) return callback(err);
@@ -259,28 +259,6 @@ function initHead(project, headPath, callback) {
 
     callback(undefined, updateDoc);
   });
-}
-
-function initFork(uid, name, project) {
-  // TODO: Maybe find a better way.
-  var doc = JSON.parse(JSON.stringify(project));
-
-  delete doc._id;
-  doc.userId = new ObjectID(uid);
-  doc.username = name;
-
-  var con = {};
-  con[doc.username] = doc.created;
-  doc.contributors = con;
-
-  var codIds = {};
-  codIds[doc.userId.toString()] = doc.created;
-  doc.contributorsIds = codIds;
-
-  // TODO: Check this doesn't have bad side effects.
-  doc.commits = project.commits;
-
-  return doc;
 }
 
 function initForkHead(doc, commit, callback) {

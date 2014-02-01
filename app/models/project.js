@@ -3,8 +3,8 @@ var ObjectID = require('mongodb').ObjectID;
 exports.init = function (opts, callback) {
   var doc = {
     username: opts.username,
-    userId: typeof opts.userId === 'string'
-        ? new ObjectID(opts.userId) : opts.userId,
+    userId: typeof opts.userId === 'string' ?
+        new ObjectID(opts.userId) : opts.userId,
     location: opts.location,
     created: Date.now(),
     downloads: 0,
@@ -19,11 +19,12 @@ exports.init = function (opts, callback) {
     // Username to time added to project.
     contributors: {},
 
-    // Project ID to date (timestamp).
-    forksIds: {},
+    // ProjectId of fork.
+    forkedFrom: null,
 
-    // List of [username, projectLocation, timestamp].
-    forks: [],
+    forkedFromOrder: -1,
+    forkedUser: null,
+    forkedLoc: '',
 
     commits: [],
     mergeRequests: [],
@@ -70,4 +71,31 @@ exports.getPdfFileHead = function (doc) {
 
 exports.getPdfFile = function (doc) {
   return doc.headPath + '/' + exports.getPdfFileHead(doc);
+};
+
+exports.initFork = function (uid, name, project, commit) {
+  // TODO: Maybe find a better way.
+  var doc = JSON.parse(JSON.stringify(project));
+
+  delete doc._id;
+  doc.userId = new ObjectID(uid);
+  doc.username = name;
+
+  var con = {};
+  con[doc.username] = doc.created;
+  doc.contributors = con;
+
+  var codIds = {};
+  codIds[doc.userId.toString()] = doc.created;
+  doc.contributorsIds = codIds;
+
+  doc.forkedFrom = project._id;
+  doc.forkedFromOrder = commit.order;
+  doc.forkedUser = project.username;
+  doc.forkedLoc = project.location;
+
+  // TODO: Check this doesn't have bad side effects.
+  doc.commits = project.commits;
+
+  return doc;
 };

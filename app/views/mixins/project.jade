@@ -10,6 +10,10 @@ mixin projectNav(p, c)
         if c
           = ' / '
           a(href=resUrl) commit / #{c.order}
+      if p.forkedFrom
+        forkedUrl = p.forkedUser + '/' + p.forkedLoc
+        p.forked-from= 'forked from: '
+          a(href='/' + forkedUrl)= forkedUrl
     .col-md-5.project-btns
       .btn-group
         if !c && session.userId in p.contributorsIds
@@ -21,6 +25,7 @@ mixin projectNav(p, c)
           i(class='glyphicon glyphicon-random')  Fork
         a.btn.btn-default(href=resUrl + '/zip')
           i(class='glyphicon glyphicon-cloud-download')  Download ZIP
+
 
 mixin projectThumb(p, c)
   if c.thumbs[0]

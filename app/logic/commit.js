@@ -55,8 +55,9 @@ exports.getForProjects = function (projects, onlyValid, callback) {
 
   for (var i = 0, len = projects.length; i < len; i++) {
     var p = projects[i];
-    mapping[p._id] = { project: p };
-    ids.push(p.commits[p.commits.length - 1]);
+    var lastCommitId = p.commits[p.commits.length - 1];
+    mapping[lastCommitId] = {project: p};
+    ids.push(lastCommitId);
   }
 
   exports.getInList(ids, function (err, commits) {
@@ -64,7 +65,7 @@ exports.getForProjects = function (projects, onlyValid, callback) {
 
     for (var i = 0, len = commits.length; i < len; i++) {
       var commit = commits[i];
-      mapping[commit.projectId].project.commit = commit;
+      mapping[commit._id].project.commit = commit;
     }
 
     var ret = onlyValid ? trimInvalidProjects(mapping) : projects;
