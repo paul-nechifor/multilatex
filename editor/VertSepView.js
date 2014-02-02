@@ -10,9 +10,9 @@ function VertSepView(index) {
   this.elem = null;
   this.colClass = this.index;
   this.isCollapsed = false;
-  this.onCollapse = function () {};
-  this.onDrag = function () {};
-  this.onStopDrag = function () {};
+  this.onCollapse = function (index) {};
+  this.onDrag = function (index, dx) {};
+  this.onStopDrag = function (index) {};
 }
 
 VertSepView.prototype.setup = function (parent, pos) {

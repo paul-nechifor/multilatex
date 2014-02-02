@@ -72,6 +72,9 @@ ProjectView.prototype.setupTree = function () {
   this.tree.onClick = this.itemClicked.bind(this);
 };
 
+ProjectView.prototype.onStopDrag = function (separatorSide) {
+};
+
 ProjectView.prototype.itemClicked = function (item) {
   if (item.isDir) {
     item.collapse((item.collapsedState + 1) % 2);

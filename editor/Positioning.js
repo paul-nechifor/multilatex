@@ -1,4 +1,5 @@
 function Positioning(prefs) {
+  this.prefs = prefs;
   this.width = -1;
   this.height = -1;
   this.sepSize = 7;
@@ -45,24 +46,35 @@ Positioning.prototype.realignPanes = function (width) {
   ws[1] = total - ws[0] - ws[2]; // The center gets the rest.
 };
 
-Positioning.prototype.dragPane = function (index, ammount) {
+Positioning.prototype.onSepCollapse = function (index, collapsed) {
+  this.sepCollapsed[index] = collapsed;
+  this.prefs.set({sepCollapsed: this.sepCollapsed});
+  this.prefs.save();
+};
+
+Positioning.prototype.onSepDrag = function (index, dx) {
   var total = this.width - 2 * this.sepSize;
   var realWidth = this.vertPaneRatios.map(function (w) {
     return w * total;
   });
 
-  realWidth[index] += ammount;
-  realWidth[index + 1] -= ammount;
+  realWidth[index] += dx;
+  realWidth[index + 1] -= dx;
 
   for (var i = 0; i < 3; i++) {
     if (realWidth[i] < 150) {
       return;
     }
   }
-  
+
   this.vertPaneRatios = realWidth.map(function (w) {
     return w / total;
   });
+};
+
+Positioning.prototype.onSepStopDrag = function () {
+  this.prefs.set({vertPaneRatios: this.vertPaneRatios});
+  this.prefs.save();
 };
 
 module.exports = Positioning;

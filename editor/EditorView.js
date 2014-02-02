@@ -53,6 +53,9 @@ EditorView.prototype.setupListeners = function () {
   });
 };
 
+EditorView.prototype.onStopDrag = function (separatorSide) {
+};
+
 EditorView.prototype.setActiveFile = function (file) {
   this.file = file;
 

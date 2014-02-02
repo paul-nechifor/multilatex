@@ -26,6 +26,7 @@ Prefs.prototype.set = function (vals) {
   }
 };
 
+// TODO: Throttle sending the save message.
 Prefs.prototype.save = function () {
   if (Object.keys(this.changed).length === 0) {
     return;

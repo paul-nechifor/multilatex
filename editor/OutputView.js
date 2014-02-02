@@ -37,7 +37,7 @@ OutputView.prototype.getWidth = function () {
   return parseFloat(this.elem.style.width);
 };
 
-OutputView.prototype.onStopDrag = function () {
+OutputView.prototype.onStopDrag = function (separatorSide) {
   this.pdf.redraw();
 };
 
