@@ -4,8 +4,7 @@ function TreeView() {
   this.elem = null;
   this.root = null;
   this.selectedItem = null;
-  this.dirActions = null;
-  this.fileActions = null;
+  this.actions = {};
   // Files are referenced by their real ID, all other by negative fake ids.
   this.items = {};
   this.lastFakeId = -1;
@@ -25,40 +24,40 @@ TreeView.prototype.setupRoot = function () {
   rootContainer.setup(this.elem);
   this.root = rootContainer.add({
     name: 'project-name',
-    isDir: true
+    type: 'root'
   });
 };
 
-TreeView.prototype.addItem = function (id, path) {
+TreeView.prototype.addFile = function (path, id) {
   var parts = path.split('/');
-  var item;
-  var container = this.root.container;
-  var i, len, name, isDir, thisId;
-  for (i = 0, len = parts.length; i < len; i++) {
-    name = parts[i];
-    if (!(name in container.names)) {
-      isDir = i < len - 1;
-      thisId = isDir ? this.lastFakeId-- : id;
-      item = container.add({
-        id: thisId,
-        name: name,
-        isDir: isDir,
-        actions: isDir ? this.dirActions : this.fileActions
-      });
-      this.items[id] = item;
-      container = item.container;
+  var item = this.root;
+  for (var i = 0, len = parts.length; i < len; i++) {
+    var name = parts[i];
+    var type = (i < len - 1) ? 'dir' : 'file';
+    var itemId = type === 'file' ? id : undefined;
+
+    if (item.container.names[name]) {
+      item = item.container.names[name];
     } else {
-      container = container.names[name].container;
+      this.addItem(item, name, type, itemId);
     }
   }
+};
+
+TreeView.prototype.addItem = function (parentItem, name, type, id) {
+  var item = parentItem.container.add({
+    id: type === 'file' ? id : this.lastFakeId--,
+    name: name,
+    type: type,
+    actions: this.actions[type]
+  });
+  this.items[item.id] = item;
 };
 
 TreeView.prototype.removeItem = function (item) {
   delete this.items[item.opts.id];
   item.parentContainer.removeChild(item);
 };
-
-
 
 TreeView.prototype.fillWith = function (headFiles, main) {
   var list = [], i, len;
@@ -74,7 +73,7 @@ TreeView.prototype.fillWith = function (headFiles, main) {
 
   for (i = 0, len = list.length; i < len; i++) {
     var l = list[i];
-    this.addItem(l[1], l[0]);
+    this.addFile(l[0], l[1]);
   }
 
   var mainItem = this.items[main];
@@ -86,7 +85,7 @@ function TreeViewContainer(tv, parentItem) {
   this.parentItem = parentItem;
   this.elem = null;
   this.dirs = [];
-  this.files = [];
+  this.nonDirs = [];
   this.names = {};
 }
 
@@ -102,7 +101,7 @@ TreeViewContainer.prototype.add = function (opts) {
   var item = new TreeViewItem(this.tv, this, opts);
 
   var li = document.createElement('li');
-  var typeList = item.isDir ? this.dirs : this.files;
+  var typeList = item.opt.type === 'dir' ? this.dirs : this.nonDirs;
   var index = this.getIndex(typeList, opts.name);
   item.index = index;
 
@@ -111,8 +110,8 @@ TreeViewContainer.prototype.add = function (opts) {
     this.elem.insertBefore(li, typeList[index].elem);
   } else {
     typeList.push(item);
-    if (item.isDir && this.files.length > 0) {
-      this.elem.insertBefore(li, this.files[0].elem);
+    if (item.opt.type === 'dir' && this.nonDirs.length > 0) {
+      this.elem.insertBefore(li, this.nonDirs[0].elem);
     } else {
       this.elem.appendChild(li);
     }
@@ -128,7 +127,7 @@ TreeViewContainer.prototype.add = function (opts) {
 TreeViewContainer.prototype.removeChild = function (item) {
   $(item.elem).remove();
   delete this.names[item.name];
-  var typeList = item.isDir ? this.dirs : this.files;
+  var typeList = item.opt.type === 'dir' ? this.dirs : this.nonDirs;
   typeList.splice(item.index, 1);
 };
 
@@ -148,14 +147,20 @@ TreeViewItem.COLLAPSED_STATES = [
   'glyphicon glyphicon-folder-open'
 ];
 
+/*
+ * The types are:
+ *  - root: for the root;
+ *  - dir: for directories (they have negative ids);
+ *  - file: for actual files (they have positive ids);
+ *  - marker: for file markers like subsection, tikzpicture and others.
+ */
 function TreeViewItem(tv, parentContainer, opts) {
   this.tv = tv;
   this.parentContainer = parentContainer;
-  this.isDir = opts.isDir || false;
-  this.isSelected = false;
-  this.collapsedState = 1;
   this.name = opts.name;
   this.opts = opts;
+  this.isSelected = false;
+  this.collapsedState = 1;
   this.index = -1;
 
   this.elem = null;
@@ -178,10 +183,10 @@ TreeViewItem.prototype.setup = function (elem) {
   if (this.opts.iconClass) {
     this.icon.setAttribute('class', this.opts.iconClass);
   } else {
-    if (this.isDir) {
+    if (this.opts.type === 'dir') {
       this.icon.setAttribute('class',
           TreeViewItem.COLLAPSED_STATES[this.collapsedState]);
-    } else {
+    } else if (this.opts.type === 'file') {
       this.icon.setAttribute('class', 'glyphicon glyphicon-file');
     }
   }
@@ -189,10 +194,8 @@ TreeViewItem.prototype.setup = function (elem) {
   this.label = util.createElement(this.item, 'span');
   this.label.textContent = this.name;
 
-  if (this.isDir) {
-    this.container = new TreeViewContainer(this.tv, this);
-    this.container.setup(this.elem);
-  }
+  this.container = new TreeViewContainer(this.tv, this);
+  this.container.setup(this.elem);
 
   this.setupActions();
 };

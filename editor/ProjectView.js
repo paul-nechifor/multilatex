@@ -55,7 +55,7 @@ ProjectView.prototype.setupTreeActions = function () {
     {name: 'Delete', icon: 'glyphicon glyphicon-trash', func: delete_}
   ];
 
-  this.tree.dirActions = [
+  this.tree.actions.dir = [
     {name: 'New file', icon: 'glyphicon glyphicon-plus-sign', func: newFile},
     {name: 'New folder', icon: 'glyphicon glyphicon-folder-close',
       func: newFolder},
@@ -65,7 +65,7 @@ ProjectView.prototype.setupTreeActions = function () {
     common[1]
   ];
 
-  this.tree.fileActions = [common[0], common[1]];
+  this.tree.actions.file = [common[0], common[1]];
 };
 
 ProjectView.prototype.setupTree = function () {
@@ -76,9 +76,7 @@ ProjectView.prototype.onStopDrag = function (separatorSide) {
 };
 
 ProjectView.prototype.itemClicked = function (item) {
-  if (item.isDir) {
-    item.collapse((item.collapsedState + 1) % 2);
-  }
+  item.collapse((item.collapsedState + 1) % 2);
 
   var fileId = item.opts.id;
   if (fileId === undefined) {
