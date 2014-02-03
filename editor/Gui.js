@@ -3,6 +3,7 @@ var Positioning = require('./Positioning');
 var ProjectView = require('./ProjectView');
 var EditorView = require('./EditorView');
 var OutputView = require('./OutputView');
+var Modal = require('./Modal');
 var Vert3PaneView = require('./Vert3PaneView');
 require('./fullscreen-api-polyfill');
 
@@ -13,6 +14,7 @@ function Gui(app, opts) {
   this.project = new ProjectView(app);
   this.editor = new EditorView(app);
   this.output = new OutputView(app);
+  this.modal = new Modal(app);
   this.vert3PaneView = new Vert3PaneView(app, opts,
     [this.project, this.editor, this.output]);
   this.isFullscreen = false;
@@ -29,6 +31,8 @@ Gui.prototype.setup = function () {
   window.onresize = function () {
     that.realign();
   };
+
+  this.modal.setup();
 };
 
 Gui.prototype.realign = function () {

@@ -4,7 +4,7 @@ html(lang='en')
     meta(charset='utf-8')
     title= project.location
     link(rel='stylesheet', href='/s/bootstrap/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/s/css/style.css')
+    link(rel='stylesheet', href='/s/css/site.css')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     link(rel='shortcut icon', href='/s/favicon.ico', type='image/x-icon')
     link(rel='apple-touch-icon', sizes='57x57', href='/s/favicon57.png')
@@ -42,7 +42,7 @@ html(lang='en')
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
-    script(type='text/template', id='modal-template').
+    script#modal-template(type='text/template').
       <div class="modal">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -58,7 +58,7 @@ html(lang='en')
           </div>
         </div>
       </div>
-    script(type='text/template', id='editor-modal-template').
+    script#editor-modal-template(type='text/template').
       <form class="form-horizontal" role="form">
         <div class="form-group">
           <label class="col-sm-4 control-label" for='show-lines'>Show line numbers</label>
@@ -79,3 +79,19 @@ html(lang='en')
           </div>
         </div>
       </form>
+    script#message-template(type='text/template').
+      <div class="modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title"><%- title %></h4>
+            </div>
+            <div class="modal-body"><%= body %></div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary btn1" data-dismiss="modal"><%- btn1Text %></button>
+              <button type="button" class="btn btn-default btn2" data-dismiss="modal"><%- btn2Text %></button>
+            </div>
+          </div>
+        </div>
+      </div>

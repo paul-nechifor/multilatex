@@ -27,6 +27,12 @@ Modal.prototype.showEditorSettings = function () {
   this.newModal(opts, onStart);
 };
 
+Modal.prototype.showMessage = function (opts) {
+  var model = new MessageModel(opts);
+  var view = new MessageView({model: model});
+  view.$el.appendTo($('body')).modal({});
+};
+
 Modal.prototype.newModal = function (opts, listenTo) {
   var view = new ModalView(opts);
   view.$el.appendTo($('body')).modal({});
@@ -123,6 +129,39 @@ var ModalView = Backbone.View.extend({
   save: function () {
     this.remove();
     this.opts.onAccept();
+  }
+});
+
+var MessageModel = Backbone.Model.extend({
+  defaults: {
+    title: 'Message',
+    body: 'Message text.',
+    btn1Text: 'Yes',
+    btn2Text: 'No',
+    onBtn: function (index) {}
+  }
+});
+
+var MessageView = Backbone.View.extend({
+  events: {
+    'click .close': 'btn2',
+    'click .btn1': 'btn1',
+    'click .btn2': 'btn2'
+  },
+  initialize: function () {
+    this.template = _.template($('#message-template').html());
+    this.render();
+  },
+  render: function () {
+    this.setElement(this.template(this.model.toJSON()));
+  },
+  btn1: function () {
+    this.remove();
+    this.model.attributes.onBtn(0);
+  },
+  btn2: function () {
+    this.remove();
+    this.model.attributes.onBtn(1);
   }
 });
 

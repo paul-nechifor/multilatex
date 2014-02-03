@@ -98,9 +98,25 @@ ProjectView.prototype.onRenameItem = function (item) {
 };
 
 ProjectView.prototype.onDeleteItem = function (item) {
-  if (item.opts.id >= 0) {
-    this.app.project.iDeleteFile(item);
+  var isFile = item.opts.id >= 0;
+
+  if (!isFile) {
+    return;
   }
+
+  var that = this;
+  var onBtn = function (index) {
+    if (index === 0) {
+      that.app.project.iDeleteFile(item);
+    }
+  };
+
+  this.app.gui.modal.showMessage({
+    title: 'Confim deletion',
+    body: 'Are you sure you want to delete <strong>“' + item.name +
+        '”</strong>?',
+    onBtn: onBtn
+  });
 };
 
 ProjectView.prototype.onNewFile = function (parentItem) {

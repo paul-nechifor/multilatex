@@ -138,7 +138,7 @@ exports.addModer = function (projectId, userId, callback) {
 exports.deleteFile = function (projectId, fid, filePath, userId, callback) {
   var update = {$set: {}};
   update.$set['modders.' + userId] = true;
-  update.$set['headFiles.' + fid] = true;
+  update.$set['headFiles.' + fid] = null;
 
   app.db.projects.update({_id: projectId}, update, {w: 1}, function (err) {
     if (err) return callback(err);

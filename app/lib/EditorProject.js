@@ -97,10 +97,10 @@ EditorProject.prototype.openFile = function (user, fid, callback) {
   if (fid >= headFiles || fid < 0 || headFiles[fid] === null) {
     return callback('no-such-file');
   }
-  
+
   file = new EditorFile(fid, this);
   this.files[file.fid] = file;
-  
+
   var that = this;
   file.open(function (err) {
     if (err) return callback(err);
@@ -148,6 +148,7 @@ EditorProject.prototype.deleteFile = function (user, fid, callback) {
     return callback();
   }
 
+  // Delete the file by placing null in place of its path.
   var filePath = this.doc.headFiles[fid];
   this.doc.headFiles[fid] = null;
 
