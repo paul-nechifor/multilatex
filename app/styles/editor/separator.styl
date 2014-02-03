@@ -1,5 +1,5 @@
 .separator
-  background-color #3d3d3d
+  background-color #b3b3b3
 
 .sep-vert
   cursor col-resize
@@ -8,13 +8,22 @@
     cursor pointer
     .arrow
       border 5px solid transparent
-  .collapser:hover
-    background-color #666
   .col-left
     .arrow
       border-left 0
-      border-right-color #ccc
+      border-right-color #111
   .col-right
     .arrow
       border-right 0
-      border-left-color #ccc
+      border-left-color #111
+  .collapser:hover
+    background-color #3d3d3d
+  .col-left:hover
+    .arrow
+      border-right-color #ddd
+  .col-right:hover
+    .arrow
+      border-left-color #ddd
+
+.sep-horiz
+  cursor row-resize

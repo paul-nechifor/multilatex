@@ -1,5 +1,7 @@
 var util = require('./util');
 var TreeView = require('./TreeView');
+var NotificationView = require('./NotificationView');
+var Horiz2PaneView = require('./Horiz2PaneView');
 
 var editableFiles = {
   'ind': true,
@@ -15,12 +17,14 @@ function ProjectView(app) {
   this.app = app;
   this.elem = null;
   this.tree = new TreeView();
+  this.notif = new NotificationView(app);
+  this.paneView = new Horiz2PaneView(app, [this.tree, this.notif]);
 }
 
 ProjectView.prototype.setup = function (parent, pos) {
   this.elem = util.createElement(parent, 'div', 'noselect');
   this.setupView(pos);
-  this.tree.setup(this.elem);
+  this.paneView.setup(this.elem, pos);
   this.setupTreeActions();
   this.setupTree();
 };
@@ -78,17 +82,16 @@ ProjectView.prototype.onStopDrag = function (separatorSide) {
 ProjectView.prototype.itemClicked = function (item) {
   item.collapse((item.collapsedState + 1) % 2);
 
-  var fileId = item.opts.id;
-  if (fileId === undefined) {
+  if (item.opts.type !== 'file') {
     return;
   }
 
-  var ext = item.name.split('.');
+  var ext = item.opts.name.split('.');
   if (!editableFiles[ext[ext.length - 1].toLowerCase()]) {
     return;
   }
 
-  this.app.project.loadFile(fileId);
+  this.app.project.loadFile(item.opts.id);
   this.removeSelection();
 };
 
@@ -96,9 +99,7 @@ ProjectView.prototype.onRenameItem = function (item) {
 };
 
 ProjectView.prototype.onDeleteItem = function (item) {
-  var isFile = item.opts.id >= 0;
-
-  if (!isFile) {
+  if (item.opts.type !== 'file') {
     return;
   }
 
@@ -111,7 +112,7 @@ ProjectView.prototype.onDeleteItem = function (item) {
 
   this.app.gui.modal.showMessage({
     title: 'Confim deletion',
-    body: 'Are you sure you want to delete <strong>“' + item.name +
+    body: 'Are you sure you want to delete <strong>“' + item.opts.name +
         '”</strong>?',
     onBtn: onBtn
   });

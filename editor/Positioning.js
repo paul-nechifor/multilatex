@@ -6,8 +6,10 @@ function Positioning(prefs) {
   this.menuSize = 40;
   this.vertPaneRatios = prefs.vals.vertPaneRatios;
   this.sepCollapsed = prefs.vals.sepCollapsed;
+  this.horizSep = 0.4;
   this.vertPaneHeight = -1;
   this.vertPaneRealWidth = [-1, -1, -1];
+  this.horizRealWidth = [-1, -1];
 }
 
 Positioning.prototype.realign = function (width, height) {
@@ -17,6 +19,7 @@ Positioning.prototype.realign = function (width, height) {
   this.vertPaneHeight = height - this.menuSize;
 
   this.realignPanes(width);
+  this.horizRealign();
 };
 
 Positioning.prototype.realignPanes = function (width) {
@@ -44,6 +47,12 @@ Positioning.prototype.realignPanes = function (width) {
   ws[0] = Math.floor(weight[0] * total);
   ws[2] = Math.floor(weight[2] * total);
   ws[1] = total - ws[0] - ws[2]; // The center gets the rest.
+};
+
+Positioning.prototype.horizRealign = function () {
+  var total = this.vertPaneHeight - this.sepSize;
+  this.horizRealWidth[0] = Math.floor(total * this.horizSep);
+  this.horizRealWidth[1] = total - this.horizRealWidth[0];
 };
 
 Positioning.prototype.onSepCollapse = function (index, collapsed) {
