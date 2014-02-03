@@ -13,6 +13,7 @@ Project.prototype.load = function () {
     if (msg.error) return that.app.panic(msg.error);
 
     that.doc = msg.project;
+    that.app.gui.project.notif.addAll(msg.notifList);
     that.loadProjectTree();
     that.loadMainFile();
     that.app.gui.output.pdf.loadNew('head/pdf');

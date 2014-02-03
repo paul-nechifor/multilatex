@@ -115,7 +115,7 @@ EditorUser.prototype.onMessage_getUserDoc = function () {
 EditorUser.prototype.onMessage_openProject = function (projectId) {
   // If a project is already opened, kick.
   if (this.project) return this.close();
-  
+
   var that = this;
   this.wss.openProject(this, projectId, function (err, project) {
     if (err) {
@@ -125,25 +125,29 @@ EditorUser.prototype.onMessage_openProject = function (projectId) {
       return;
     }
     that.project = project;
-    that.sendMsg('openProject', {project: projectMd.getPublic(project.doc)});
+    var resp = {
+      project: projectMd.getPublic(project.doc),
+      notifList: project.notifDoc.list
+    };
+    that.sendMsg('openProject', resp);
   });
 };
 
 EditorUser.prototype.onMessage_openFile = function (fid) {
   // If the project isn't open, kick.
   if (!this.project) return this.close();
-  
+
   // If a file was open, close it.
   if (this.file) {
     this.file.closeForUser(this);
   }
-  
+
   var that = this;
   this.project.openFile(this, fid, function (err, file) {
     if (err) return that.sendMsg('openFile', {error: err});
-    
+
     that.file = file;
-    
+
     that.sendMsg('openFile', {});
   });
 };

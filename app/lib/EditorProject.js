@@ -1,4 +1,5 @@
 var projectLogic = require('../logic/project');
+var notifLogic = require('../logic/notif');
 var EditorFile = require('./EditorFile');
 var ObjectID = require('mongodb').ObjectID;
 var util = require('../logic/util');
@@ -8,6 +9,7 @@ function EditorProject(id, wss) {
   this.idObj = new ObjectID(id);
   this.wss = wss;
   this.doc = null;
+  this.notifDoc = null;
   this.isClosing = false;
   this.users = {};
   this.files = {};
@@ -37,7 +39,13 @@ EditorProject.prototype.loadDoc = function (callback) {
     if (err) return callback(err);
     if (!project) return callback('not-found');
     that.doc = project;
-    callback();
+
+    notifLogic.getNotifById(project.notifId, function (err, notif) {
+      if (err) return callback(err);
+
+      that.notifDoc = notif;
+      callback();
+    });
   });
 };
 

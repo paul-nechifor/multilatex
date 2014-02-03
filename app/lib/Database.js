@@ -8,6 +8,7 @@ function Database(url) {
   this.commits = null;
   this.projects = null;
   this.users = null;
+  this.notifs = null;
 }
 
 Database.prototype.connect = function (callback) {
@@ -20,11 +21,13 @@ Database.prototype.connect = function (callback) {
     that.commits = that.db.collection('commits');
     that.projects = that.db.collection('projects');
     that.users = that.db.collection('users');
+    that.notifs = that.db.collection('notifs');
 
     var what = [
       [that.commits, {'projectId': 1}, {w: 1}],
       [that.projects, {'userId': 1, 'location': 1}, {unique: true, w: 1}],
-      [that.users, {'username': 1}, {unique: true, w: 1}]
+      [that.users, {'username': 1}, {unique: true, w: 1}],
+      [that.notifs, {'projectId': 1}, {w: 1}]
     ];
     ensureIndices(what, callback);
   });

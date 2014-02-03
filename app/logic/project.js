@@ -6,6 +6,7 @@ var spawn = require('child_process').spawn;
 var fs = require('fs');
 var fileStore = require('./fileStore');
 var commitLogic = require('./commit');
+var notifLogic = require('./notif');
 
 var app = null;
 
@@ -47,9 +48,18 @@ exports.createFrom = function (username, userId, puh, callback) {
     createInDb(doc, true, function (err, project) {
       if (err) return callback(err);
 
-      exports.commit(project, function (err) {
-        if (err) return callback(err);
-        callback(undefined, project);
+      notifLogic.create({project: project}, function (err, notif) {
+        project.notifId = notif._id;
+        var updateDoc = {notifId: notif._id};
+
+        updateProject(project, updateDoc, function (err) {
+          if (err) return callback(err);
+
+          exports.commit(project, function (err) {
+            if (err) return callback(err);
+            callback(undefined, project);
+          });
+        });
       });
     });
   });
@@ -64,9 +74,18 @@ exports.fork = function (uid, name, oldUser, project, commit, callback) {
     createInDb(doc, true, function (err, fork) {
       if (err) return callback(err);
 
-      updateForkParent(project, fork, function (err) {
-        if (err) return callback(err);
-        callback(undefined, fork);
+      notifLogic.create({project: fork}, function (err, notif) {
+        fork.notifId = notif._id;
+        var updateDoc = {notifId: notif._id};
+
+        updateProject(fork, updateDoc, function (err) {
+          if (err) return callback(err);
+
+          updateForkParent(project, fork, function (err) {
+            if (err) return callback(err);
+            callback(undefined, fork);
+          });
+        });
       });
     });
   });
@@ -147,6 +166,7 @@ exports.deleteFile = function (projectId, fid, filePath, userId, callback) {
 };
 
 function deleteFromHead(filePath, callback) {
+  // TODO: Delete the actual file.
   callback();
 }
 
@@ -233,15 +253,25 @@ function createAndInitHead(project, callback) {
     if (err) return callback(err);
     initHead(project, path, function (err, updateDoc) {
       if (err) return callback(err);
-      var query = {_id: project._id};
-      var update = {$set: updateDoc};
 
-      app.db.projects.update(query, update, {w: 1}, function (err, nUpdated) {
-        if (err) return callback(err);
-        exports.commit(project, callback);
+      notifLogic.create({project: project}, function (err, notif) {
+        project.notifId = notif._id;
+        updateDoc.notifId = notif._id;
+
+        updateProject(project, updateDoc, function (err) {
+          if (err) return callback(err);
+          exports.commit(project, callback);
+        });
       });
     });
   });
+}
+
+function updateProject(project, setVals, callback) {
+  var query = {_id: project._id};
+  var update = {$set: setVals};
+
+  app.db.projects.update(query, update, {w: 1}, callback);
 }
 
 function initHead(project, headPath, callback) {
