@@ -133,7 +133,31 @@ EditorProject.prototype.commit = function (callback) {
   var that = this;
   this.saveAllFiles(function (errs) {
     if (errs) return callback(errs);
-    projectLogic.commit(that.doc, callback);
+    projectLogic.commit(that.doc, function (err, commit) {
+      if (err) return callback(err);
+      callback();
+
+      that.addNotif({
+        type: 'commit',
+        date: commit.created,
+        order: commit.order,
+        pdfCreated: !!commit.pdfFile
+      });
+    });
+  });
+};
+
+EditorProject.prototype.addNotif = function (msg) {
+  var that = this;
+
+  notifLogic.addMsg(this.notifDoc._id, msg, function (err) {
+    if (err) util.logErr(err);
+
+    that.notifDoc.list.push(msg);
+
+    for (var eid in that.users) {
+      that.users[eid].sendMsg('notif', msg);
+    }
   });
 };
 

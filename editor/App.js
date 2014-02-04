@@ -44,7 +44,8 @@ App.prototype.loadUserDoc = function (callback) {
   });
 };
 
-App.prototype.onMessage_someMessage = function (msg) {
+App.prototype.onMessage_notif = function (msg) {
+  this.gui.project.notif.add(msg);
 };
 
 App.prototype.panic = function (error) {

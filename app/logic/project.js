@@ -181,7 +181,10 @@ function updateOnCommit(project, commit, callback) {
   project.modders = {};
   project.commits.push(commit._id);
 
-  app.db.projects.update(query, update, {w: 1}, callback);
+  app.db.projects.update(query, update, {w: 1}, function (err) {
+    if (err) return callback(err);
+    callback(undefined, commit);
+  });
 }
 
 function createHeadArchive2(project, callback) {

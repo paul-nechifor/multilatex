@@ -104,3 +104,13 @@ html(lang='en')
           Project was created.
         <% } %>
       </p></div>
+    script#notif-commit(type='text/template').
+      <div><p>
+        <% var url = 'commit/' + order; %>
+        <a href='<%= url %>'>Commit <%= order %></a> was created.
+        <% if (pdfCreated) { %>
+          <a href='<%= url %>/pdf'>View PDF.</a>
+        <% } else { %>
+          Compilation failed.
+        <% } %>
+      </p></div>
