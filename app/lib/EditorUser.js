@@ -205,6 +205,13 @@ EditorUser.prototype.onMessage_deleteFile = function (fid) {
 EditorUser.prototype.onMessage_moveFile = function (fid) {
 };
 
+EditorUser.prototype.onMessage_chat = function (text) {
+  // If the project isn't open, kick.
+  if (!this.project) return this.close();
+
+  this.project.chatMsg(this, text);
+};
+
 EditorUser.prototype.onSocketClose = function (event) {
   this.close();
 };

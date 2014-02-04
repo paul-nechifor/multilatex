@@ -147,6 +147,15 @@ EditorProject.prototype.commit = function (callback) {
   });
 };
 
+EditorProject.prototype.chatMsg = function (user, text) {
+  this.addNotif({
+    type: 'chat',
+    date: Date.now(),
+    from: user.username,
+    text: text
+  });
+};
+
 EditorProject.prototype.addNotif = function (msg) {
   var that = this;
 

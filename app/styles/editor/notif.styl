@@ -1,5 +1,26 @@
 @import '../site/mixins'
 
+.notif-view
+  position relative
+  padding-bottom 51px
+  textarea.msg
+    position absolute
+    bottom 0
+    display block
+    height 50px
+    width 100%
+    overflow auto
+    resize none
+    border 0
+    border-top 1px solid #888
+    background #e3e3e3
+    outline none
+    font-size 13px
+    padding 2px 4px
+.notif-view > div
+  height 100%
+  overflow auto
+
 .notif
   margin 3px
   padding 3px 5px

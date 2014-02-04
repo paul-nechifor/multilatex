@@ -3,18 +3,38 @@ var util = require('./util');
 function NotificationView(app) {
   this.app = app;
   this.elem = null;
+  this.listElem = null;
+  this.inputElem = null;
   this.list = [];
   this.templates = {};
 }
 
 NotificationView.prototype.setup = function (parent, pos) {
-  this.elem = util.createElement(parent);
+  this.elem = util.createElement(parent, 'div', 'notif-view');
   this.setupView(pos);
 };
 
 NotificationView.prototype.setupView = function (pos) {
-  this.listElem = util.createElement(this.elem);
+  var anotherDiv = util.createElement(this.elem);
+  this.listElem = util.createElement(anotherDiv);
+  this.inputElem = util.createElement(this.elem, 'textarea', 'msg');
+  this.inputElem.setAttribute('placeholder', 'type a message...');
+  this.setupChat();
   this.realign(pos);
+};
+
+NotificationView.prototype.setupChat = function (pos) {
+  var that = this;
+  this.inputElem.addEventListener('keydown', function (e) {
+    if (e.keyCode === 13) { // Enter.
+      e.preventDefault();
+      var $elem = $(that.inputElem);
+      var text = $elem.val();
+      $elem.val('');
+
+      that.app.wss.sendMsg('chat', text);
+    }
+  });
 };
 
 NotificationView.prototype.realign = function (pos) {

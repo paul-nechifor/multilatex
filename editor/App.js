@@ -32,7 +32,7 @@ App.prototype.setupActions = function () {
   this.actions.commit = this.project.commit.bind(this.project);
   this.actions.fullscreen = this.gui.toggleFullscreen.bind(this.gui);
   this.actions.editorSettings =
-      this.gui.modal.showEditorSettings.bind(this.modal);
+      this.gui.modal.showEditorSettings.bind(this.gui.modal);
 };
 
 App.prototype.loadUserDoc = function (callback) {

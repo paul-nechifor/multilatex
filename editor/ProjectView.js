@@ -33,10 +33,16 @@ ProjectView.prototype.setupView = function (pos) {
   var s = this.elem.style;
   s.height = '100%';
   s.cssFloat = 'left';
-  this.realign(pos);
+  this.realignSelf(pos);
 };
 
 ProjectView.prototype.realign = function (pos) {
+  this.realignSelf(pos);
+  this.notif.realign(pos);
+  this.tree.realign(pos);
+};
+
+ProjectView.prototype.realignSelf = function (pos) {
   var s = this.elem.style;
 
   if (pos.sepCollapsed[0]) {
