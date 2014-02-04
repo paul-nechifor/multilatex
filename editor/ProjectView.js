@@ -22,7 +22,7 @@ function ProjectView(app) {
 }
 
 ProjectView.prototype.setup = function (parent, pos) {
-  this.elem = util.createElement(parent, 'div', 'noselect');
+  this.elem = util.createElement(parent);
   this.setupView(pos);
   this.paneView.setup(this.elem, pos);
   this.setupTreeActions();

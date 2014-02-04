@@ -74,7 +74,8 @@ exports.fork = function (uid, name, oldUser, project, commit, callback) {
     createInDb(doc, true, function (err, fork) {
       if (err) return callback(err);
 
-      notifLogic.create({project: fork}, function (err, notif) {
+      var opts = {project: fork, forkFrom: project};
+      notifLogic.create(opts, function (err, notif) {
         fork.notifId = notif._id;
         var updateDoc = {notifId: notif._id};
 

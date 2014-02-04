@@ -13,7 +13,7 @@ function TreeView() {
 }
 
 TreeView.prototype.setup = function (parent, pos) {
-  this.elem = util.createElement(parent, 'div', 'tree-view');
+  this.elem = util.createElement(parent, 'div', 'tree-view noselect');
   this.setupView(pos);
   this.setupRoot();
 };

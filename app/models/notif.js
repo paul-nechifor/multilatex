@@ -4,5 +4,17 @@ exports.init = function (opts) {
     list: []
   };
 
+  var notif = {
+    type: 'created',
+    date: opts.project.created
+  };
+
+  if (opts.forkFrom) {
+    notif.forkUser = opts.forkFrom.username;
+    notif.forkLocation = opts.forkFrom.location;
+  }
+
+  doc.list.push(notif);
+
   return doc;
 };

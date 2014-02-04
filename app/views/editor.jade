@@ -95,3 +95,12 @@ html(lang='en')
           </div>
         </div>
       </div>
+    script#notif-created(type='text/template').
+      <div><p>
+        <% if (forkUser) { %>
+          Project was created by forking <% var url = forkUser + '/' + forkLocation; %>
+          <a href='/<%= url %>'><%= url %></a>.
+        <% } else { %>
+          Project was created.
+        <% } %>
+      </p></div>
