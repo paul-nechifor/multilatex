@@ -1,34 +1,38 @@
 var util = require('./util');
 
 var MENU = [
+//  {
+//    group: 0,
+//    title: 'Project',
+//    glyph: 'folder-open',
+//    subs: [
+//      {title: 'Commit', action: 'commit'},
+//      {title: 'Download project', href: 'head?action=download'}
+//    ]
+//  },
   {
     group: 0,
-    title: 'Project',
-    glyph: 'folder-open',
-    subs: [
-      {title: 'Commit', action: 'commit'},
-      {title: 'Download project', href: 'head?action=download'}
-    ]
-  },
-  {
-    group: 0,
-    title: 'Editor',
-    glyph: 'align-left',
-    subs: [
-      {title: 'Settings', action: 'editorSettings'}
-    ]
-  },
-  {
-    group: 1,
     title: 'Build',
     action: 'build',
     glyph: 'play'
   },
   {
-    group: 1,
+    group: 0,
+    title: 'Commit',
+    action: 'commit',
+    glyph: 'check'
+  },
+  {
+    group: 0,
     title: 'View Build Log',
     action: 'showBuildLog',
     glyph: 'list-alt'
+  },
+  {
+    group: 1,
+    title: 'Editor Settings',
+    glyph: 'align-left',
+    action: 'editorSettings'
   },
   {
     group: 2,
@@ -117,7 +121,7 @@ MenuItem.prototype.setup = function (parent) {
 
   $(this.a).tooltip({
     title: this.opts.title,
-    placement: this.opts.tooltipPlacement || 'right'
+    placement: this.opts.tooltipPlacement || 'bottom'
   });
 
   if (this.opts.subs) {
