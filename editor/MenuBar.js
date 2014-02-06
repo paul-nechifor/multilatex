@@ -25,6 +25,12 @@ var MENU = [
     glyph: 'play'
   },
   {
+    group: 1,
+    title: 'View Build Log',
+    action: 'showBuildLog',
+    glyph: 'list-alt'
+  },
+  {
     group: 2,
     title: 'Fullscreen',
     action: 'fullscreen',

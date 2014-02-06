@@ -18,7 +18,7 @@ Latex.prototype.build = function (dir, file, callback) {
 
   var pdflatex = spawn('pdflatex', args);
   pdflatex.on('close', function (code) {
-    callback(code);
+    callback(undefined, code !== 0);
   });
 };
 

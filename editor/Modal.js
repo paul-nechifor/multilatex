@@ -33,6 +33,20 @@ Modal.prototype.showMessage = function (opts) {
   view.$el.appendTo($('body')).modal({});
 };
 
+Modal.prototype.showBuildLog = function () {
+  var model = new LogModel({});
+  var opts = {
+    model: model,
+    inner: new LogView({model: model}),
+    onAccept: function () {
+    },
+    onReject: function () {
+    }
+  };
+
+  this.newModal(opts, {});
+};
+
 Modal.prototype.newModal = function (opts, listenTo) {
   var view = new ModalView(opts);
   view.$el.appendTo($('body')).modal({});
@@ -54,9 +68,19 @@ Modal.prototype.newModal = function (opts, listenTo) {
 
 var EditorSettingsModel = Backbone.Model.extend({
   defaults: {
+    modalClass: 'editor-settings-modal',
     title: 'Editor Settings',
+    acceptBtn: 'Save changes',
     editorShowLines: true,
     editorFontSize: 14
+  }
+});
+
+var LogModel = Backbone.Model.extend({
+  defaults: {
+    modalClass: 'log-modal',
+    title: 'Build Log',
+    acceptBtn: null
   }
 });
 
@@ -103,6 +127,39 @@ var EditorModalView = Backbone.View.extend({
       this.model.set({editorFontSize: size});
     }
     this.$('#font-size').val(size);
+  }
+});
+
+var LogView = Backbone.View.extend({
+  initialize: function () {
+    this.template = _.template($('#build-log-template').html());
+  },
+  render: function () {
+    this.setElement(this.template(this.model.toJSON()));
+    this.getLog();
+    setTimeout(this.watchSize.bind(this), 0);
+    return this.$el;
+  },
+  getLog: function () {
+    var that = this;
+    $.ajax({
+      url: 'head/log',
+      success: function (data) {
+        that.$el.text(data);
+      }
+    });
+  },
+  watchSize: function () {
+    var that = this;
+    var $w = $(window);
+    var resize = function () {
+      var h = $w.height();
+      var $e = that.$el.parent();
+      var max = h - 2 * $e.offset().top;
+      $e.css('max-height', max + 'px');
+    };
+    $w.resize(resize);
+    resize();
   }
 });
 

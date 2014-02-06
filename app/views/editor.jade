@@ -43,7 +43,7 @@ html(lang='en')
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     script#modal-template(type='text/template').
-      <div class="modal">
+      <div class="modal <%- modalClass %>">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -53,7 +53,9 @@ html(lang='en')
             <div class="modal-body"></div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default close-btn" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary save-btn" data-dismiss="modal">Save changes</button>
+              <% if (acceptBtn) { %>
+                <button type="button" class="btn btn-primary save-btn" data-dismiss="modal"><%- acceptBtn %></button>
+              <% } %>
             </div>
           </div>
         </div>
@@ -79,6 +81,8 @@ html(lang='en')
           </div>
         </div>
       </form>
+    script#build-log-template(type='text/template').
+      <pre><code></code></pre>
     script#message-template(type='text/template').
       <div class="modal">
         <div class="modal-dialog">
@@ -117,4 +121,8 @@ html(lang='en')
     script#notif-chat(type='text/template').
       <div><p>
         <a href='/<%- from %>'><%- from %></a>: <%- text %>
+      </p></div>
+    script#notif-buildError(type='text/template').
+      <div><p>
+        Failed to build. <a href='javascript:showBuildLog()'>View the logs.</a>
       </p></div>

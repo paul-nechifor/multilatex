@@ -127,6 +127,12 @@ exports.headPdf = function (req, res) {
   });
 };
 
+exports.headLog = function (req, res) {
+  getProjectDataNoErrContrib(req, res, function (user, project) {
+    serveHeadFile(req, res, projectMd.getLogFileHead(project), project);
+  });
+};
+
 exports.headFiles = function (req, res) {
   var file = req.param(0);
 

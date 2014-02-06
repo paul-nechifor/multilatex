@@ -61,6 +61,7 @@ exports.registerRoutes = function (app) {
   e.get('/:username/:location/fork', project.fork);
   e.get('/:username/:location/head', project.head);
   e.get('/:username/:location/head/pdf', project.headPdf);
+  e.get('/:username/:location/head/log', project.headLog);
   e.get('/:username/:location/head/*', project.headFiles);
   e.get('/:username/:location/pdf', project.pdf);
   e.get('/:username/:location/zip', project.zip);

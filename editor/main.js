@@ -12,6 +12,10 @@ function main() {
 
   var app = new App(opts);
   app.load();
+
+  window.showBuildLog = function () {
+    app.actions.showBuildLog();
+  };
 }
 
 $(document).ready(main);

@@ -158,7 +158,7 @@ EditorUser.prototype.onMessage_buildProject = function () {
 
   var that = this;
   this.project.build(function (err) {
-    if (err) return that.sendMsg('buildProject', {error: err});
+    if (err) util.logErr(err);
     that.sendMsg('buildProject', {});
   });
 };

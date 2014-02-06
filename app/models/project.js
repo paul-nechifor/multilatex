@@ -71,6 +71,11 @@ exports.getPdfFileHead = function (doc) {
   return head.substring(0, head.length - 4) + '.pdf';
 };
 
+exports.getLogFileHead = function (doc) {
+  var head = doc.headFiles[doc.mainFile];
+  return head.substring(0, head.length - 4) + '.log';
+};
+
 exports.getPdfFile = function (doc) {
   return doc.headPath + '/' + exports.getPdfFileHead(doc);
 };

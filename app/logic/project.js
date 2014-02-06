@@ -136,14 +136,10 @@ exports.build = function (project, callback) {
 };
 
 exports.commit = function (project, callback) {
-  exports.build(project, function (err) {
-    if (err) util.logErr(err); // Don't return on error.
-    exports.createHeadArchive(project, function (err, zipFile) {
+  exports.build(project, function (err, buildError) {
+    commitState(project, function (err, commit) {
       if (err) return callback(err);
-      commitLogic.commit(project, zipFile, function (err, commit) {
-        if (err) return callback(err);
-        updateOnCommit(project, commit, callback);
-      });
+      callback(undefined, commit, buildError);
     });
   });
 };
@@ -169,6 +165,16 @@ exports.deleteFile = function (projectId, fid, filePath, userId, callback) {
 function deleteFromHead(filePath, callback) {
   // TODO: Delete the actual file.
   callback();
+}
+
+function commitState(project, callback) {
+  exports.createHeadArchive(project, function (err, zipFile) {
+    if (err) return callback(err);
+    commitLogic.commit(project, zipFile, function (err, commit) {
+      if (err) return callback(err);
+      updateOnCommit(project, commit, callback);
+    });
+  });
 }
 
 function updateOnCommit(project, commit, callback) {

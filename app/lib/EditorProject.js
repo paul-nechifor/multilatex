@@ -125,7 +125,18 @@ EditorProject.prototype.build = function (callback) {
   var that = this;
   this.saveAllFiles(function (errs) {
     if (errs) return callback(errs);
-    projectLogic.build(that.doc, callback);
+    projectLogic.build(that.doc, function (err, buildError) {
+      if (err) return callback(err);
+
+      if (buildError) {
+        that.addNotif({
+          type: 'buildError',
+          date: Date.now()
+        });
+      }
+
+      callback();
+    });
   });
 };
 
@@ -133,7 +144,7 @@ EditorProject.prototype.commit = function (callback) {
   var that = this;
   this.saveAllFiles(function (errs) {
     if (errs) return callback(errs);
-    projectLogic.commit(that.doc, function (err, commit) {
+    projectLogic.commit(that.doc, function (err, commit, buildError) {
       if (err) return callback(err);
       callback();
 

@@ -30,9 +30,10 @@ App.prototype.load = function () {
 App.prototype.setupActions = function () {
   this.actions.build = this.project.build.bind(this.project);
   this.actions.commit = this.project.commit.bind(this.project);
-  this.actions.fullscreen = this.gui.toggleFullscreen.bind(this.gui);
   this.actions.editorSettings =
-      this.gui.modal.showEditorSettings.bind(this.gui.modal);
+    this.gui.modal.showEditorSettings.bind(this.gui.modal);
+  this.actions.fullscreen = this.gui.toggleFullscreen.bind(this.gui);
+  this.actions.showBuildLog = this.gui.modal.showBuildLog.bind(this.gui.modal);
 };
 
 App.prototype.loadUserDoc = function (callback) {
