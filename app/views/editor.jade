@@ -120,7 +120,7 @@ html(lang='en')
       </p></div>
     script#notif-chat(type='text/template').
       <div><p>
-        <a href='/<%- from %>'><%- from %></a>: <%- text %>
+        <a href='/<%- from %>'><%- from %></a>: <span class='msg'><%- text %></span>
       </p></div>
     script#notif-buildError(type='text/template').
       <div><p>

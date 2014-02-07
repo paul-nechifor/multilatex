@@ -16,6 +16,10 @@ function main() {
   window.showBuildLog = function () {
     app.actions.showBuildLog();
   };
+
+  window.gotoFileLine = function (fileId, lineNo) {
+    app.gui.editor.gotoFileLine(fileId, lineNo);
+  };
 }
 
 $(document).ready(main);

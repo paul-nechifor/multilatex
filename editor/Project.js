@@ -30,7 +30,7 @@ Project.prototype.loadMainFile = function () {
   this.loadFile(this.doc.mainFile);
 };
 
-Project.prototype.loadFile = function (fid) {
+Project.prototype.loadFile = function (fid, callback) {
   if (this.file) {
     this.file.close();
   }
@@ -40,7 +40,7 @@ Project.prototype.loadFile = function (fid) {
     if (msg.error) return that.app.panic(msg.error);
 
     that.file = new ActiveFile(that, fid);
-    that.file.load();
+    that.file.load(callback);
   });
 };
 
@@ -62,6 +62,18 @@ Project.prototype.commit = function () {
 Project.prototype.iDeleteFile = function (item) {
   item.remove();
   this.app.wss.sendMsg('deleteFile', item.opts.id);
+};
+
+Project.prototype.findFileId = function (file) {
+  // TODO: Improve this.
+  var list = this.doc.headFiles;
+  for (var i = 0, len = list.length; i < len; i++) {
+    if (list[i] === file) {
+      return i;
+    }
+  }
+
+  return -1;
 };
 
 module.exports = Project;

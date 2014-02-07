@@ -70,6 +70,30 @@ NotificationView.prototype.add = function (msg) {
     time += ':' + (s > 9 ? s : '0' + s);
     $div.prepend($('<div class="date"/>').text(time));
   }
+
+  if (msg.type === 'chat') {
+    this.checkExpressions($div);
+  }
+};
+
+NotificationView.prototype.checkExpressions = function ($div) {
+  var $span = $div.find('span.msg');
+  var html = $span.html();
+
+  var project = this.app.project;
+
+  html = html.replace(/(\b[^ ]+):(\d+)/g, function (match, file, line) {
+    var lineNo = Number(line);
+    var fileId = project.findFileId(file);
+    if (fileId === -1) {
+      return match;
+    }
+
+    return '<a href="javascript:gotoFileLine(' + fileId + ', ' + lineNo +
+        ')">' + match + '</a>';
+  });
+
+  $span.html(html);
 };
 
 NotificationView.prototype.getTemplate = function (type) {

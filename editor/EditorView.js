@@ -56,7 +56,7 @@ EditorView.prototype.setupListeners = function () {
 EditorView.prototype.onStopDrag = function (separatorSide) {
 };
 
-EditorView.prototype.setActiveFile = function (file) {
+EditorView.prototype.setActiveFile = function (file, callback) {
   this.file = file;
 
   this.editor.setReadOnly(false);
@@ -65,6 +65,10 @@ EditorView.prototype.setActiveFile = function (file) {
   sharejs.open(this.file.shareJsId, 'text', function (err, doc) {
     that.shareJsDoc = doc;
     that.shareJsDoc.attach_ace(that.editor);
+
+    if (callback) {
+      callback();
+    }
   });
 };
 
@@ -81,6 +85,18 @@ EditorView.prototype.setFontSize = function (fontSize) {
 
 EditorView.prototype.showGutter = function (checked) {
   this.editor.renderer.setShowGutter(checked);
+};
+
+EditorView.prototype.gotoFileLine = function (fileId, lineNo) {
+  if (this.file.fid === fileId) {
+    this.editor.gotoLine(lineNo, 0, true);
+    return;
+  }
+
+  var that = this;
+  this.app.project.loadFile(fileId, function () {
+    that.editor.gotoLine(lineNo, 0, true);
+  });
 };
 
 module.exports = EditorView;

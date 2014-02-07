@@ -4,8 +4,8 @@ function ActiveFile(project, fid) {
   this.shareJsId = encodeURIComponent(project.doc._id + ' ' + fid);
 }
 
-ActiveFile.prototype.load = function () {
-  this.project.app.gui.editor.setActiveFile(this);
+ActiveFile.prototype.load = function (callback) {
+  this.project.app.gui.editor.setActiveFile(this, callback);
   this.project.app.gui.project.setSelected(this.fid);
 };
 
