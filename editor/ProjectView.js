@@ -88,6 +88,10 @@ ProjectView.prototype.onStopDrag = function (separatorSide) {
 ProjectView.prototype.itemClicked = function (item) {
   item.collapse((item.collapsedState + 1) % 2);
 
+  if (item.opts.type === 'marker') {
+    this.moveToMarker(item);
+  }
+
   if (item.opts.type !== 'file') {
     return;
   }
@@ -144,6 +148,9 @@ ProjectView.prototype.removeSelection = function () {
   }
 };
 
-
+ProjectView.prototype.moveToMarker = function (item) {
+  var line = item.opts.data.line;
+  this.app.gui.editor.gotoLine(line);
+};
 
 module.exports = ProjectView;

@@ -32,7 +32,11 @@ Project.prototype.loadMainFile = function () {
 
 Project.prototype.loadFile = function (fid, callback) {
   if (this.file) {
-    this.file.close();
+    if (this.file.fid === fid) {
+      return;
+    } else {
+      this.file.close();
+    }
   }
 
   var that = this;

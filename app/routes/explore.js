@@ -21,7 +21,6 @@ exports.index = function (req, res) {
     if (req.headers.referer) {
       var parts = req.headers.referer.split('/');
       var orig = parts[3];
-      console.log(req.url);
       if (orig.indexOf('explore') === 0 && req.url !== '/explore') {
         prevPage = orig;
       }

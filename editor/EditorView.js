@@ -66,6 +66,7 @@ EditorView.prototype.setActiveFile = function (file, callback) {
     that.shareJsDoc = doc;
     that.shareJsDoc.attach_ace(that.editor);
 
+    that.gotoLine(0);
     if (callback) {
       callback();
     }
@@ -87,15 +88,20 @@ EditorView.prototype.showGutter = function (checked) {
   this.editor.renderer.setShowGutter(checked);
 };
 
+EditorView.prototype.gotoLine = function (lineNo) {
+  this.editor.gotoLine(lineNo, 0, true);
+};
+
 EditorView.prototype.gotoFileLine = function (fileId, lineNo) {
+  var that = this;
+
   if (this.file.fid === fileId) {
-    this.editor.gotoLine(lineNo, 0, true);
+    that.gotoLine(lineNo);
     return;
   }
 
-  var that = this;
   this.app.project.loadFile(fileId, function () {
-    that.editor.gotoLine(lineNo, 0, true);
+    that.gotoLine(lineNo);
   });
 };
 

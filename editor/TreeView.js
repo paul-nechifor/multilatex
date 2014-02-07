@@ -52,14 +52,16 @@ TreeView.prototype.addFile = function (path, id) {
   }
 };
 
-TreeView.prototype.addItem = function (parentItem, name, type, id) {
+TreeView.prototype.addItem = function (parentItem, name, type, id, data) {
   var item = parentItem.container.add({
     id: type === 'file' ? id : this.lastFakeId--,
     name: name,
     type: type,
-    actions: this.actions[type]
+    actions: this.actions[type],
+    data: data
   });
   this.items[item.opts.id] = item;
+  return item;
 };
 
 TreeView.prototype.removeItem = function (item) {
@@ -113,9 +115,12 @@ TreeViewContainer.prototype.add = function (opts) {
   var index = this.getIndex(typeList, opts.name);
   item.index = index;
 
-  if (index > 0 && index < typeList.length) {
-    typeList.splice(index, 0, item);
+  if (index >= 0 && index < typeList.length) {
     this.elem.insertBefore(li, typeList[index].elem);
+    typeList.splice(index, 0, item);
+    for (var i = index + 1, len = typeList.length; i < len; i++) {
+      typeList[i].index = i;
+    }
   } else {
     typeList.push(item);
     if (item.opts.type === 'dir' && this.nonDirs.length > 0) {
@@ -137,14 +142,15 @@ TreeViewContainer.prototype.removeChild = function (item) {
   delete this.names[item.opts.name];
   var typeList = item.opts.type === 'dir' ? this.dirs : this.nonDirs;
   typeList.splice(item.index, 1);
+  for (var i = item.index, len = typeList.length; i < len; i++) {
+    typeList[i].index = i;
+  }
 };
 
 TreeViewContainer.prototype.getIndex = function (typeList, newName) {
-  var i = 0;
-  var len = typeList.length;
-  for (; i < len; i++) {
-    if (typeList[i] >= newName) {
-      break;
+  for (var i = 0, len = typeList.length; i < len; i++) {
+    if (newName < typeList[i].opts.name) {
+      return i;
     }
   }
   return i;
@@ -199,7 +205,8 @@ TreeViewItem.prototype.setup = function (elem) {
   }
 
   this.label = util.createElement(this.item, 'span');
-  this.label.textContent = this.opts.name;
+  this.label.textContent = this.opts.data ?
+      this.opts.data.name : this.opts.name;
 
   this.container = new TreeViewContainer(this.tv, this);
   this.container.setup(this.elem);
@@ -248,6 +255,10 @@ TreeViewItem.prototype.setSelected = function (select) {
     this.isSelected = false;
     this.item.setAttribute('class', 'item');
   }
+};
+
+TreeViewItem.prototype.addItem = function (name, type, id, data) {
+  return this.tv.addItem(this, name, type, id, data);
 };
 
 TreeViewItem.prototype.collapse = function (state) {
