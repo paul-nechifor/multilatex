@@ -69,7 +69,9 @@ mixin projectFiles(p, c, projRel)
 
   .panel.panel-info.panel-simple-list.panel-files
     .panel-heading
-      p Files
+      p
+        i.glyphicon.glyphicon-folder-open
+        |  Files
         if projRel
           |  (
           a(href=p.location + '/commit/' + c.order) Commit #{c.order}

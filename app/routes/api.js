@@ -1,5 +1,6 @@
 var projectLogic = require('../logic/project');
 var userLogic = require('../logic/user');
+var util = require('../logic/util');
 var ProjectUploadHandler = require('../lib/ProjectUploadHandler');
 
 var app = null;
@@ -11,6 +12,35 @@ exports.setApp = function (pApp) {
 exports.checkAuth = function (req, res, next) {
   if (req.session.username) return next();
   res.json({ok: false, error: 'You need to be logged in.'});
+};
+
+exports.contributors = function (req, res) {
+  var action = req.body.action;
+
+  projectLogic.getProjectById(req.body.projectId, function (err, project) {
+    if (err) return respond(res, err);
+    if (!project) return respond(res, 'user-not-found');
+    if (!project.contributorsIds[req.session.userId.toString()]) {
+      return respond(res, 'not-a-contributor');
+    }
+
+    var end = function (err, softErr) {
+      if (err) {
+        util.logErr(err);
+        respond(res, 'update-error');
+        return;
+      }
+      respond(res, softErr);
+    };
+
+    if (action === 'remove') {
+      removeContrib(project, req.session.userId, req.body.userId, end);
+    } else if (action === 'add') {
+      addContrib(project, req.session.userId, req.body.username, end);
+    } else {
+      respond(res, 'invalid-action');
+    }
+  });
 };
 
 exports.create = function (req, res) {
@@ -81,6 +111,52 @@ exports.upload = function (req, res) {
     });
   });
 };
+
+// No need to check if a user exists in order to remove him.
+function removeContrib(project, authorId, userIdStr, callback) {
+  var names = project.contributors;
+  var ids = project.contributorsIds;
+
+  for (var name in names) {
+    if (names[name] === userIdStr) {
+      delete names[name];
+      return;
+    }
+  }
+
+  delete ids[userIdStr];
+
+  var query = {_id: project._id};
+  var update = {$set: {contributors: names, contributorsIds: ids}};
+  app.db.projects.update(query, update, {w: 1}, function (err) {
+    callback(err);
+  });
+
+  // TODO: Notify the editor.
+
+  // TODO: Log who removed whom.
+}
+
+function addContrib(project, authorId, username, callback) {
+  userLogic.getUser(username, function (err, user) {
+    if (err) return callback(err);
+    if (!user) return callback(undefined, 'no-such-user');
+
+    var names = project.contributors;
+    var ids = project.contributorsIds;
+
+    names[user.username] = Date.now();
+    ids[user._id.toString()] = username;
+
+    var query = {_id: project._id};
+    var update = {$set: {contributors: names, contributorsIds: ids}};
+    app.db.projects.update(query, update, {w: 1}, function (err) {
+      callback(err);
+    });
+  });
+
+  // TODO: Log who added whom.
+}
 
 function respond(res, err) {
   if (err) {

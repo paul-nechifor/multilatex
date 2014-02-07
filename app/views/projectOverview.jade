@@ -3,12 +3,41 @@ block variables
 
 extends project
 
+mixin listContrib(p)
+  list = []
+  for name, id in p.contributorsIds
+    - list.push([p.contributorsIds[id], name, id])
+  - list.sort()
+  for item in list
+    u = item[1]
+    p
+      a(href='/' + u)= u
+      if u !== p.username
+        a(data-id=item[2]).rem
+          i.glyphicon.glyphicon-remove
+
 block content2
   .row
     .col-md-4
       +projectThumb(p, c)
     .col-md-8
-      +projectFiles(p, c, true)
+      .panel.panel-info.panel-simple-list.panel-contrib
+        .panel-heading
+          p
+            i.glyphicon.glyphicon-user
+            |  Contributors
+        .panel-body
+          +listContrib(p)
 
+      if session.userId in p.contributorsIds
+        form.contrib-add-form
+          div.input-group.input-group-sm
+            input.form-control(type='text', value='', placeholder='username')
+            span.input-group-btn
+              button.btn.btn-default Add contributor
+          .alert.alert-danger(style='display: none') <p></p>
+
+      +projectFiles(p, c, true)
 block scripts
   script(src='/s/js/thumbs.js')
+  script(src='/s/js/contributors.js')

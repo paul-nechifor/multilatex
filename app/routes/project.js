@@ -249,6 +249,7 @@ function getProjectData(username, projectLocation, callback) {
 function projectOverview(req, res, data) {
   getCommitNoErr(req, res, data.p, -1, function (commit) {
     data.c = commit;
+    data.globalData = {projectId: data.p._id};
     res.render('projectOverview', data);
   });
 }

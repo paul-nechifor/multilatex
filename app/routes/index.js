@@ -30,6 +30,7 @@ exports.registerRoutes = function (app) {
   userLogic.setApp(app);
   util.setApp(app);
 
+  e.post('/api/contributors', api.checkAuth);
   e.post('/api/create', api.checkAuth);
   e.post('/api/upload', api.checkAuth);
   e.get('/create', root.checkAuth);
@@ -38,6 +39,7 @@ exports.registerRoutes = function (app) {
   e.get('/:username/:location/fork', root.checkAuth);
 
   e.get('/', root.index);
+  e.post('/api/contributors', api.contributors);
   e.post('/api/create', api.create);
   e.post('/api/login', api.login);
   e.post('/api/logout', api.logout);

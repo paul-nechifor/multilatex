@@ -18,7 +18,7 @@ exports.init = function (opts, callback) {
     // User ID to time added to project.
     contributorsIds: {},
 
-    // Username to time added to project.
+    // Username to userId added to project.
     contributors: {},
 
     // ProjectId of fork.
@@ -46,7 +46,7 @@ exports.init = function (opts, callback) {
   };
 
   doc.contributors[opts.username] = doc.created;
-  doc.contributorsIds[opts.userId.toString()] = doc.created;
+  doc.contributorsIds[opts.userId.toString()] = doc.username;
   doc.modders[opts.userId.toString()] = true;
 
   // TODO: Validate values.
@@ -93,7 +93,7 @@ exports.initFork = function (uid, name, project, commit) {
   doc.contributors = con;
 
   var codIds = {};
-  codIds[doc.userId.toString()] = doc.created;
+  codIds[doc.userId.toString()] = doc.username;
   doc.contributorsIds = codIds;
 
   doc.forkedFrom = project._id;
