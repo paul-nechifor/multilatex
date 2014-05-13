@@ -21,3 +21,5 @@ node_modules
 
 # Use your own secret.
 /config/secret.json
+
+/build

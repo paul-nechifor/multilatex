@@ -8,6 +8,26 @@ the [blog][blog] for project updates.
 
 [![Multilatex Demo](http://img.youtube.com/vi/8zAGN35_GpY/0.jpg)][demo]
 
+## Install
+
+Install dependencies:
+
+    npm install
+
+Get gulp:
+
+    sudo npm install -g gulp
+
+## Usage
+
+Build it:
+
+    gulp
+
+Run it:
+
+    node build/app/app.js
+
 ## License
 
 MIT
