@@ -24,6 +24,10 @@ Build it:
 
     gulp
 
+For the production mode use:
+
+    gulp --production
+
 Run it:
 
     node build/app/app.js

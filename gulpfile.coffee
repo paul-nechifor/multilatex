@@ -1,7 +1,13 @@
 gulp = require 'gulp'
 stylus = require 'gulp-stylus'
+browserify = require 'gulp-browserify'
+rename = require 'gulp-rename'
+gutil = require 'gulp-util'
+uglify = require 'gulp-uglify'
 nib = require 'nib'
 {spawn} = require 'child_process'
+
+production = '--production' in process.argv
 
 gulp.task 'rsync', (cb) ->
   c = spawn 'rsync', [
@@ -26,6 +32,16 @@ cssTask = (prefix) ->
 cssTask 'site'
 cssTask 'editor'
 
-gulp.task 'build', ['site-css', 'editor-css']
+gulp.task 'editor-js', ['rsync'], ->
+  gulp.src 'editor/main.coffee', read: false
+  .pipe browserify
+    transform: ['coffeeify']
+    extensions: ['.coffee']
+    debug: !production
+  .pipe rename 'editor.js'
+  .pipe if production then uglify() else gutil.noop()
+  .pipe gulp.dest 'build/static/js'
+
+gulp.task 'build', ['site-css', 'editor-css', 'editor-js']
 
 gulp.task 'default', ['build']
