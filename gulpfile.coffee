@@ -5,6 +5,7 @@ rename = require 'gulp-rename'
 gutil = require 'gulp-util'
 uglify = require 'gulp-uglify'
 nib = require 'nib'
+runSequence = require 'run-sequence'
 {spawn} = require 'child_process'
 
 production = '--production' in process.argv
@@ -21,7 +22,7 @@ gulp.task 'rsync', (cb) ->
     cb()
 
 cssTask = (prefix) ->
-  gulp.task prefix + '-css', ['rsync'],  ->
+  gulp.task prefix + '-css',  ->
     # TODO: Compress.
     gulp.src "app/styles/#{prefix}/#{prefix}.styl"
     .pipe stylus
@@ -32,7 +33,7 @@ cssTask = (prefix) ->
 cssTask 'site'
 cssTask 'editor'
 
-gulp.task 'editor-js', ['rsync'], ->
+gulp.task 'editor-js', ->
   gulp.src 'editor/main.coffee', read: false
   .pipe browserify
     transform: ['coffeeify']
@@ -42,6 +43,16 @@ gulp.task 'editor-js', ['rsync'], ->
   .pipe if production then uglify() else gutil.noop()
   .pipe gulp.dest 'build/static/js'
 
-gulp.task 'build', ['site-css', 'editor-css', 'editor-js']
+gulp.task 'bootstrap', ->
+  gulp.src 'bower_components/bootstrap/dist/**/*.*',
+      {base: 'bower_components/bootstrap/dist'}
+  .pipe gulp.dest 'build/static/bootstrap'
+
+gulp.task 'static', ['bootstrap']
+
+gulp.task 'build-files', ['site-css', 'editor-css', 'editor-js', 'static']
+
+gulp.task 'build', (cb) ->
+  runSequence 'rsync', 'build-files', cb
 
 gulp.task 'default', ['build']
