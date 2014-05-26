@@ -48,7 +48,25 @@ gulp.task 'bootstrap', ->
       {base: 'bower_components/bootstrap/dist'}
   .pipe gulp.dest 'build/static/bootstrap'
 
-gulp.task 'static', ['bootstrap']
+gulp.task 'jslibs', ->
+  bc = 'bower_components/'
+  files = [
+    bc + 'backbone/backbone.js'
+    bc + 'underscore/underscore.js'
+    bc + 'jquery-file-upload/js/jquery.fileupload.js'
+    bc + 'jquery-file-upload/js/jquery.fileupload-ui.js'
+    bc + 'jquery-file-upload/js/jquery.fileupload-jquery-ui.js'
+    bc + 'jquery-file-upload/js/jquery.iframe-transport.js'
+  ]
+  gulp.src files
+  .pipe uglify()
+  .pipe gulp.dest 'build/static/jslibs'
+
+gulp.task 'jslibs-other', ->
+  gulp.src 'bower_components/jquery-file-upload/css/jquery.fileupload.css'
+  .pipe gulp.dest 'build/static/css'
+
+gulp.task 'static', ['bootstrap', 'jslibs', 'jslibs-other']
 
 gulp.task 'build-files', ['site-css', 'editor-css', 'editor-js', 'static']
 
