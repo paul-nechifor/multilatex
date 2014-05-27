@@ -59,6 +59,7 @@ function registerInDb(opts, doc, callback) {
   doc.passwordSha1 = util.sha1Sum(opts.password + doc.registered);
 
   generateIdenticon(doc, function (err, hash) {
+    if (err) return callback('problem-generating-identicon');
     doc.avatarHash = hash;
     app.db.users.insert(doc, {w: 1}, function (err, items) {
       if (err) {
