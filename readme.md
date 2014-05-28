@@ -28,9 +28,15 @@ For the production mode use:
 
     gulp --production
 
-Run it:
+## Running
 
-    node build/app/app.js
+Download [Vagrant][vagrant].
+
+Go to the `machines` dir and bring up them up. This will take a long while the
+first time.
+
+    cd machines
+    vagrant up
 
 ## License
 
@@ -39,3 +45,4 @@ MIT
 [multilatex]: http://multilatex.com
 [blog]: http://multilatex.com/blog
 [demo]: https://www.youtube.com/watch?v=8zAGN35_GpY
+[vagrant]: https://www.vagrantup.com/downloads.html
