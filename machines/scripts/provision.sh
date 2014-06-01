@@ -3,6 +3,7 @@ main() {
   install_mongo
   install_node
   install_packages
+  create_user
 }
 
 packages=(
@@ -35,6 +36,12 @@ install_node() {
 install_packages() {
   apt-get update
   apt-get -y install ${packages[@]}
+}
+
+create_user() {
+  useradd multilatex 2>/dev/null
+  touch /var/log/multilatex
+  chown multilatex:multilatex /var/log/multilatex
 }
 
 main $@

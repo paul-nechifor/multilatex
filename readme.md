@@ -38,6 +38,8 @@ first time.
     cd machines
     vagrant up
 
+Configure passwordless SSH for root and vagrant.
+
 ## License
 
 MIT

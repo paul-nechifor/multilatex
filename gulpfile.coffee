@@ -6,9 +6,13 @@ gutil = require 'gulp-util'
 uglify = require 'gulp-uglify'
 nib = require 'nib'
 runSequence = require 'run-sequence'
-{spawn} = require 'child_process'
+{spawn, exec} = require 'child_process'
 
 production = '--production' in process.argv
+deployUser = 'vagrant'
+deployServer = '10.10.10.11'
+deployAddress = deployUser + '@' + deployServer
+deployRoot = 'root@' + deployServer
 
 gulp.task 'rsync', (cb) ->
   c = spawn 'rsync', [
@@ -72,5 +76,19 @@ gulp.task 'build-files', ['site-css', 'editor-css', 'editor-js', 'static']
 
 gulp.task 'build', (cb) ->
   runSequence 'rsync', 'build-files', cb
+
+gulp.task 'dev-deploy', (cb) ->
+  exec """
+    ssh #{deployRoot} <<END
+      service multilatex stop
+    END
+
+    rsync -a --del --exclude .git build/ #{deployRoot}:/opt/multilatex
+    scp data/upstart/multilatex.conf #{deployRoot}:/etc/init
+
+    ssh #{deployRoot} <<END
+      service multilatex start
+    END
+  """, cb
 
 gulp.task 'default', ['build']
