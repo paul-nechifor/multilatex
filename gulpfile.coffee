@@ -6,24 +6,24 @@ gutil = require 'gulp-util'
 uglify = require 'gulp-uglify'
 nib = require 'nib'
 runSequence = require 'run-sequence'
+config = require './config'
 {spawn, exec} = require 'child_process'
 
 production = '--production' in process.argv
 deployUser = 'vagrant'
 deployServer = '10.10.10.11'
-deployAddress = deployUser + '@' + deployServer
 deployRoot = 'root@' + deployServer
 
 gulp.task 'rsync', (cb) ->
   c = spawn 'rsync', [
     '-a', '--del'
-    'app', 'config', 'data', 'node_modules', 'static'
+    'app', 'data', 'node_modules', 'static'
     'build'
   ]
   c.stdout.on 'data', (d) -> process.stdout.write d
   c.on 'close', (code) ->
     return cb 'err-' + code unless code is 0
-    cb()
+    exec 'coffee --compile --bare --output build/config config', cb
 
 cssTask = (prefix) ->
   gulp.task prefix + '-css',  ->
@@ -87,6 +87,17 @@ gulp.task 'dev-deploy', (cb) ->
     scp data/upstart/multilatex.conf #{deployRoot}:/etc/init
 
     ssh #{deployRoot} <<END
+      mkdir -p \
+        #{config.dirs.store} \
+        #{config.dirs.heads} \
+        #{config.dirs.tmp} \
+        #{config.dirs.upload} \
+        2>/dev/null
+      chown -R multilatex:multilatex \
+        #{config.dirs.store} \
+        #{config.dirs.heads} \
+        #{config.dirs.tmp} \
+        #{config.dirs.upload}
       service multilatex start
     END
   """, cb
