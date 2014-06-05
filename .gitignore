@@ -22,6 +22,6 @@ node_modules
 /static/css
 
 # Use your own secret.
-/config/secret.json
+/config/secret.coffee
 
 /build
