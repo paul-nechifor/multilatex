@@ -36,6 +36,10 @@ Deploy to the running VM:
 
     gulp dev-deploy
 
+Follow the logs (doesn't end):
+
+    gulp dev-log
+
 Recreate the templates (optional):
 
     gulp dev-templates

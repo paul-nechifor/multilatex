@@ -102,6 +102,13 @@ gulp.task 'dev-deploy', (cb) ->
     END
   """, cb
 
+gulp.task 'dev-log', (cb) ->
+  c = spawn 'ssh', [deployRoot, 'tail', '-f', '/var/log/multilatex']
+  c.stdout.on 'data', (d) -> process.stdout.write d
+  c.on 'close', (code) ->
+    return cb 'err-' + code unless code is 0
+    cb()
+
 updateProjectAndGoToIt = """
   cd /home/vagrant
   git clone https://github.com/paul-nechifor/multilatex.git 2>/dev/null
