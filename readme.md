@@ -4,6 +4,8 @@ Multilatex
 [Multilatex][multilatex] is a collaborative web editor for Latex projects. [Old
 demo.][demo]
 
+![Multilatex screenshot](screenshot.png)
+
 ## Install
 
 Install dependencies:
