@@ -7,8 +7,19 @@ main() {
 }
 
 packages=(
-  texlive-full
+  # In order to build canvas.
+  build-essential
+  g++
+  libcairo2-dev
+  libcairo2-dev
+  libgif-dev
+  libjpeg8-dev
+  libpango1.0-dev
+  pkg-config
+
   imagemagick
+  git
+  texlive-full
 )
 
 upgrade() {
@@ -31,6 +42,8 @@ install_node() {
   add-apt-repository -y ppa:chris-lea/node.js
   apt-get update
   apt-get install -y nodejs
+
+  npm install -g gulp bower
 }
 
 install_packages() {
