@@ -9,25 +9,23 @@
   },
   "dependencies": {
     "browserify": "~3.19.1",
+    "coffee-script": "^1.7.1",
+    "coffeeify": "^0.6.0",
     "connect-mongo": ">=0.4.0",
     "express": ">=3.4.5",
+    "gulp": "^3.6.2",
+    "gulp-browserify": "^0.5.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-stylus": "^1.0.0",
+    "gulp-uglify": "^0.3.0",
+    "gulp-util": "^2.2.14",
     "identicon": "0.0.1",
     "jade": ">=0.35.0",
     "mongodb": ">=1.3.20",
-    "share": "0.6",
-    "ws": ">=0.4.30",
-    "gulp-stylus": "^1.0.0",
     "nib": "^1.0.2",
-    "gulp-browserify": "^0.5.0",
-    "gulp-rename": "^1.2.0",
-    "coffeeify": "^0.6.0",
-    "gulp-uglify": "^0.3.0",
-    "gulp-util": "^2.2.14",
-    "run-sequence": "^0.3.6"
-  },
-  "devDependencies": {
-    "gulp": "^3.6.2",
-    "coffee-script": "^1.7.1"
+    "run-sequence": "^0.3.6",
+    "share": "0.6",
+    "ws": ">=0.4.30"
   },
   "license": "MIT"
 }
