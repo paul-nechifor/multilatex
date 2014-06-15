@@ -47,6 +47,10 @@ function recreateTemplates(user, callback) {
 
     var next = function () {
       if (i >= files.length) return callback();
+      if (files[i].indexOf('.') === 0) {
+        i++;
+        return next();
+      }
 
       recreateTemplate(user, files[i], dir + '/' + files[i], function (err) {
         if (err) return callback(err);

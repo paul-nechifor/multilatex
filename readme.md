@@ -36,6 +36,10 @@ Deploy to the running VM:
 
     gulp dev-deploy
 
+Recreate the templates (optional):
+
+    gulp dev-templates
+
 Now go to [10.10.10.11](http://10.10.10.11).
 
 ## License

@@ -102,4 +102,26 @@ gulp.task 'dev-deploy', (cb) ->
     END
   """, cb
 
+updateProjectAndGoToIt = """
+  cd /home/vagrant
+  git clone https://github.com/paul-nechifor/multilatex.git 2>/dev/null
+  cd multilatex
+  git submodule init
+  git submodule update
+  yes | bower install --allow-root
+  npm install
+"""
+
+gulp.task 'dev-templates', (cb) ->
+  exec """
+    ssh #{deployRoot} <<END
+      #{updateProjectAndGoToIt}
+      gulp templates
+    END
+  """, cb
+
+gulp.task 'templates', (cb) ->
+  templates = require './app/logic/templates'
+  templates.recreate config, cb
+
 gulp.task 'default', ['build']
