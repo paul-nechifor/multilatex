@@ -1,12 +1,8 @@
 Multilatex
 ==========
 
-[Multilatex][multilatex] is a collaborative web editor for Latex projects. Read
-the [blog][blog] for project updates.
-
-## Demo
-
-[![Multilatex Demo](http://img.youtube.com/vi/8zAGN35_GpY/0.jpg)][demo]
+[Multilatex][multilatex] is a collaborative web editor for Latex projects. [Old
+demo.][demo]
 
 ## Install
 
@@ -14,21 +10,9 @@ Install dependencies:
 
     npm install
 
-Get gulp:
+Install Gulp globaly:
 
     sudo npm install -g gulp
-
-## Usage
-
-Build it:
-
-    gulp
-
-For the production mode use:
-
-    gulp --production
-
-## Running
 
 Download [Vagrant][vagrant].
 
@@ -38,13 +22,26 @@ first time.
     cd machines
     vagrant up
 
-Configure passwordless SSH for root and vagrant.
+Configure passwordless SSH for `root` and `vagrant` users for easy access.
+
+Build the project:
+
+    gulp
+
+Or for the production mode use:
+
+    gulp --production
+
+Deploy to the running VM:
+
+    gulp dev-deploy
+
+Now go to [10.10.10.11](http://10.10.10.11).
 
 ## License
 
 MIT
 
 [multilatex]: http://multilatex.com
-[blog]: http://multilatex.com/blog
 [demo]: https://www.youtube.com/watch?v=8zAGN35_GpY
 [vagrant]: https://www.vagrantup.com/downloads.html
