@@ -24,7 +24,9 @@ first time.
     cd machines
     vagrant up
 
-Configure passwordless SSH for `root` and `vagrant` users for easy access.
+Configure passwordless SSH for `root` and `vagrant` users for easy access:
+
+    gulp ssh-copy-id -i ~/.ssh/id_rsa.pub root@10.10.10.11
 
 Build the project:
 

@@ -110,13 +110,8 @@ gulp.task 'dev-log', (cb) ->
     cb()
 
 updateProjectAndGoToIt = """
-  cd /home/vagrant
-  git clone https://github.com/paul-nechifor/multilatex.git 2>/dev/null
-  cd multilatex
-  git submodule init
-  git submodule update
-  yes | bower install --allow-root
-  npm install
+  rsync -a --del ./ #{deployRoot}:/opt/multilatex-dev/
+  cd /opt/multilatex-dev
 """
 
 gulp.task 'dev-templates', (cb) ->
@@ -126,6 +121,19 @@ gulp.task 'dev-templates', (cb) ->
       gulp templates
     END
   """, cb
+
+gulp.task 'dev-project', (cb) ->
+  exec """
+    #{updateProjectAndGoToIt}
+  """, cb
+
+gulp.task 'clear-db', (cb) ->
+  Database = require './app/lib/Database'
+  db = new Database config.mongoUrl
+  db.connect ->
+    db.db.dropDatabase (err, result) ->
+      console.log err if err
+      db.disconnect cb
 
 gulp.task 'templates', (cb) ->
   templates = require './app/logic/templates'

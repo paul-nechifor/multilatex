@@ -1,7 +1,7 @@
 path = require 'path'
 
 name = 'multilatex'
-app = '/opt/' + name
+workDirs = '/opt/multilatex-work-dirs'
 
 module.exports = do ->
   config =
@@ -11,11 +11,11 @@ module.exports = do ->
     port: process.env.PORT || 3000
     username: name
     dirs:
-      app: app
-      store: app + '/store'
-      heads: app + '/heads'
-      tmp: app + '/tmp'
-      upload: app + '/upload'
+      app: '/opt/' + name
+      store: workDirs + '/store'
+      heads: workDirs + '/heads'
+      tmp: workDirs + '/tmp'
+      upload: workDirs + '/upload'
     debug: true
     avatarSize: 253
     logger: ':date :remote-addr :method :url :status :response-time'
