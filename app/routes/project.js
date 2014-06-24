@@ -289,7 +289,7 @@ function decorateCommitWithAuthors(commits, callback) {
     idsList.push(ids[id]);
   }
 
-  userLogic.getUsersById(ids, function (err, users) {
+  userLogic.getUsersById(idsList, function (err, users) {
     if (err) return callback(err);
 
     var i, j, len, len2;
