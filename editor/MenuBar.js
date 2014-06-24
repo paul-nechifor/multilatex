@@ -1,15 +1,6 @@
 var util = require('./util');
 
 var MENU = [
-//  {
-//    group: 0,
-//    title: 'Project',
-//    glyph: 'folder-open',
-//    subs: [
-//      {title: 'Commit', action: 'commit'},
-//      {title: 'Download project', href: 'head?action=download'}
-//    ]
-//  },
   {
     group: 0,
     title: 'Build',
@@ -21,6 +12,12 @@ var MENU = [
     title: 'Commit',
     action: 'commit',
     glyph: 'check'
+  },
+  {
+    group: 0,
+    title: 'Download project',
+    href: 'head?action=download',
+    glyph: 'download'
   },
   {
     group: 0,
