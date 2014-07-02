@@ -53,14 +53,22 @@ gulp.task 'bootstrap', ->
   .pipe gulp.dest 'build/static/bootstrap'
 
 gulp.task 'jslibs', ->
-  bc = 'bower_components/'
+#  bc = 'bower_components/'
+#  files = [
+#    bc + 'backbone/backbone.js'
+#    bc + 'underscore/underscore.js'
+#    bc + 'jquery-file-upload/js/jquery.fileupload.js'
+#    bc + 'jquery-file-upload/js/jquery.fileupload-ui.js'
+#    bc + 'jquery-file-upload/js/jquery.fileupload-jquery-ui.js'
+#    bc + 'jquery-file-upload/js/jquery.iframe-transport.js'
+#  ]
   files = [
-    bc + 'backbone/backbone.js'
-    bc + 'underscore/underscore.js'
-    bc + 'jquery-file-upload/js/jquery.fileupload.js'
-    bc + 'jquery-file-upload/js/jquery.fileupload-ui.js'
-    bc + 'jquery-file-upload/js/jquery.fileupload-jquery-ui.js'
-    bc + 'jquery-file-upload/js/jquery.iframe-transport.js'
+    'static/jslibs/backbone-min.js'
+    'static/jslibs/jquery.fileupload.css'
+    'static/jslibs/jquery.fileupload.js'
+    'static/jslibs/jquery.iframe-transport.js'
+    'static/jslibs/jquery.ui.widget.js'
+    'static/jslibs/underscore-min.js'
   ]
   gulp.src files
   .pipe uglify()
