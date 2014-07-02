@@ -28,6 +28,8 @@ block content2
                 img(src=storeUrl(a.avatarHash), alt=a.username + "'s avatar")
                 = ' ' + a.username
               = ' '
+            if cm.authors.length === 0
+              a &nbsp;
       .panel-body
         for mod in cm.mods
           path = cm.files[mod[0]]

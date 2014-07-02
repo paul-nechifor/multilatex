@@ -50,6 +50,11 @@ Recreate the templates (optional):
 
 Now go to [10.10.10.11](http://10.10.10.11).
 
+## DO Deployment
+
+    vagrant plugin install vagrant-digitalocean
+    vagrant up --provider=digital_ocean
+
 ## License
 
 MIT

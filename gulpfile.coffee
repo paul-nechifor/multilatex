@@ -11,7 +11,7 @@ config = require './config'
 
 production = '--production' in process.argv
 deployUser = 'vagrant'
-deployServer = '10.10.10.11'
+deployServer = config.devServer
 deployRoot = 'root@' + deployServer
 
 gulp.task 'rsync', (cb) ->

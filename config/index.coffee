@@ -21,6 +21,8 @@ module.exports = do ->
     logger: ':date :remote-addr :method :url :status :response-time'
     fileLimit: 1024 * 1024
     thumbSize: 360
+    devServer: '10.10.10.11'
+    #devServer: '5.101.103.84'
 
   try
     secretConfig = require path.resolve __dirname + '/secret'
